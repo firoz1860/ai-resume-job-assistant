@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 36" fill="none">
+  <rect width="32" height="32" rx="7" fill="#0B1F3A" y="2"/>
+  <path d="M7 11h12M7 16h12M7 21h7" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="23" cy="15" r="4" fill="#2563EB" opacity="0.85"/>
+  <path d="M23 13v4M21 15h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="40" y="24" font-family="Inter, sans-serif" font-weight="700" font-size="16" fill="#0B1F3A">Resume<tspan fill="#2563EB">AI</tspan></text>
+</svg>
