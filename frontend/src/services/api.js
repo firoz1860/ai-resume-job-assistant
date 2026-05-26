@@ -53,6 +53,7 @@ async function request(path, options = {}) {
   const data = await response.json();
   if (response.status === 401) {
     localStorage.removeItem('careeros_token');
+    window.dispatchEvent(new Event('careeros:auth-expired'));
   }
   if (!response.ok || !data.success) throw new Error(data.error || 'Request failed.');
   return data.data;
@@ -121,4 +122,9 @@ export const voiceInterviewApi = {
 
 export const dashboardApi = {
   stats: () => request('/api/dashboard/stats'),
+};
+
+export const intelligenceApi = {
+  overview: () => request('/api/intelligence/overview'),
+  inspectJob: (payload) => post('/api/intelligence/inspect-job', payload),
 };

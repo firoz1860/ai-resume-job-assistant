@@ -1,16 +1,20 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import CommandPalette from './CommandPalette.jsx';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
 
   const primaryLinks = [
     { label: 'Home', to: '/' },
     { label: 'Dashboard', to: '/dashboard' },
+    { label: 'Intelligence', to: '/career-intelligence' },
     { label: 'Generator', to: '/generator' },
     { label: 'Voice Interview', to: '/voice-interview' },
     { label: 'Applications', to: '/applications' },
@@ -31,6 +35,13 @@ export default function Navbar() {
 
   const allLinks = [...primaryLinks, ...toolLinks];
   const isToolsActive = toolLinks.some((link) => pathname === link.to);
+  const handleLogout = async () => {
+    await logout();
+    setOpen(false);
+    setToolsOpen(false);
+    setCommandOpen(false);
+    navigate('/login', { replace: true });
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-border shadow-sm">
@@ -86,8 +97,17 @@ export default function Navbar() {
               </div>
             )}
           </div>
+          {isAuthenticated && (
+            <button
+              onClick={() => setCommandOpen(true)}
+              className="ml-2 hidden xl:inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-surface text-xs font-semibold text-muted hover:text-ink hover:bg-white transition-colors"
+            >
+              Search
+              <span className="border border-border bg-white rounded px-1.5 py-0.5 text-[10px]">Ctrl K</span>
+            </button>
+          )}
           {isAuthenticated ? (
-            <button onClick={logout} className="ml-3 btn-secondary text-sm px-4 py-2">Logout</button>
+            <button onClick={handleLogout} className="ml-3 btn-secondary text-sm px-4 py-2">Logout</button>
           ) : (
             <Link to="/login" className="ml-3 btn-primary text-sm px-4 py-2">Login</Link>
           )}
@@ -115,6 +135,14 @@ export default function Navbar() {
       {open && (
         <div className="lg:hidden border-t border-border bg-white animate-fade-in">
           <nav className="max-w-7xl mx-auto px-4 py-4">
+            {isAuthenticated && (
+              <button
+                onClick={() => { setCommandOpen(true); setOpen(false); }}
+                className="w-full mb-4 px-4 py-2.5 rounded-lg border border-border bg-surface text-left text-sm font-semibold text-muted"
+              >
+                Search actions with Ctrl K
+              </button>
+            )}
             <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">Main</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 mb-4">
               {primaryLinks.map((l) => (
@@ -146,13 +174,35 @@ export default function Navbar() {
             ))}
             </div>
             {isAuthenticated ? (
-              <button onClick={() => { logout(); setOpen(false); }} className="btn-secondary text-sm mt-1 justify-center">Logout</button>
+              <button onClick={handleLogout} className="btn-secondary text-sm mt-1 justify-center">Logout</button>
             ) : (
               <Link to="/login" onClick={() => setOpen(false)} className="btn-primary text-sm mt-1 justify-center">Login</Link>
             )}
           </nav>
         </div>
       )}
+      {isAuthenticated && (
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-border px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+          <div className="grid grid-cols-5 gap-1">
+            {[
+              ['Home', '/dashboard'],
+              ['AI', '/career-intelligence'],
+              ['Gen', '/generator'],
+              ['Voice', '/voice-interview'],
+              ['Jobs', '/applications'],
+            ].map(([label, to]) => (
+              <Link
+                key={to}
+                to={to}
+                className={`text-center rounded-lg px-1 py-2 text-xs font-semibold ${pathname === to ? 'bg-accent/10 text-accent' : 'text-muted'}`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+      <CommandPalette open={commandOpen} onOpen={() => setCommandOpen(true)} onClose={() => setCommandOpen(false)} />
     </header>
   );
 }

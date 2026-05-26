@@ -8,6 +8,7 @@ import { createRoadmap } from '../controllers/roadmapController.js';
 import { createApplication, deleteApplication, followUp, listApplications, updateApplication } from '../controllers/applicationController.js';
 import { getDashboardStats } from '../controllers/dashboardController.js';
 import { deleteGeneratedContent, listGeneratedContent } from '../controllers/contentController.js';
+import { getCareerIntelligence, inspectJobPost } from '../controllers/intelligenceController.js';
 import { optionalAuth, protect } from '../middleware/authMiddleware.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
@@ -16,6 +17,8 @@ const router = Router();
 router.post('/generate', optionalAuth, generate);
 router.post('/match', match);
 router.get('/dashboard/stats', protect, asyncHandler(getDashboardStats));
+router.get('/intelligence/overview', protect, asyncHandler(getCareerIntelligence));
+router.post('/intelligence/inspect-job', protect, asyncHandler(inspectJobPost));
 router.post('/career/analyze', protect, analyzeCareer);
 router.post('/job/analyze', protect, asyncHandler(analyzeJob));
 router.post('/generate/content', optionalAuth, generate);

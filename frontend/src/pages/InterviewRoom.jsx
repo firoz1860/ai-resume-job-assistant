@@ -96,12 +96,12 @@ export default function InterviewRoom() {
       <Navbar />
       <main className="flex-1 py-8 md:py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex items-start justify-between gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-ink mb-1.5">10-Minute AI Interview Room</h1>
               <p className="text-sm text-muted">One question at a time, answer feedback, timer, and final report.</p>
             </div>
-            {session && <div className="card px-4 py-3 text-2xl font-extrabold text-accent tabular-nums">{formatTime(timeLeft)}</div>}
+            {session && <div className="card px-4 py-3 text-2xl font-extrabold text-accent tabular-nums w-full sm:w-auto text-center">{formatTime(timeLeft)}</div>}
           </div>
 
           {report ? <Report report={report} /> : (
@@ -127,9 +127,9 @@ export default function InterviewRoom() {
                       <p className="text-base leading-relaxed">{session.question}</p>
                     </div>
                     <textarea value={answer} onChange={(e) => setAnswer(e.target.value)} rows={6} placeholder="Type your answer..." className="form-textarea" />
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <button onClick={submitAnswer} className="btn-primary" disabled={loading || !answer.trim()}>{loading ? 'Evaluating...' : 'Submit Answer'}</button>
-                      <button onClick={endInterview} className="btn-secondary" disabled={loading}>End Interview</button>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <button onClick={submitAnswer} className="btn-primary justify-center" disabled={loading || !answer.trim()}>{loading ? 'Evaluating...' : 'Submit Answer'}</button>
+                      <button onClick={endInterview} className="btn-secondary justify-center" disabled={loading}>End Interview</button>
                     </div>
                   </>
                 ) : <p className="text-sm text-muted">Configure the interview to begin.</p>}

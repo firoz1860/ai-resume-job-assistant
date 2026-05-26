@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import AuthVisual from '../components/AuthVisual.jsx';
 
 export default function Login() {
   const { login } = useAuth();
@@ -13,8 +14,8 @@ export default function Login() {
     e.preventDefault(); setLoading(true); setError('');
     try { await login(form); navigate('/dashboard'); } catch (err) { setError(err.message); } finally { setLoading(false); }
   };
-  return <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-surface">
-    <div className="hidden lg:flex bg-navy-900 text-white p-12 flex-col justify-center"><h1 className="text-4xl font-extrabold mb-4">CareerOS AI</h1><p className="text-white/70 text-lg">Secure career copilot for applications, interviews, roadmaps, and job tracking.</p></div>
+  return <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-surface px-4 py-8 lg:p-0">
+    <AuthVisual mode="login" />
     <form onSubmit={submit} className="max-w-md w-full mx-auto self-center card p-6 sm:p-8">
       <h2 className="text-2xl font-bold text-ink mb-1">Login</h2><p className="text-sm text-muted mb-6">Continue to your career dashboard.</p>
       <input name="email" value={form.email} onChange={set} placeholder="Email" className="form-input mb-3" />

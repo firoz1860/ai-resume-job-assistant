@@ -50,6 +50,16 @@ export function AuthProvider({ children }) {
 
   useEffect(() => { fetchMe(); }, []);
 
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      setToken(null);
+      setUser(null);
+      setLoading(false);
+    };
+    window.addEventListener('careeros:auth-expired', handleAuthExpired);
+    return () => window.removeEventListener('careeros:auth-expired', handleAuthExpired);
+  }, []);
+
   const value = useMemo(() => ({ user, token, loading, isAuthenticated: Boolean(user && token), login, signup, logout, fetchMe }), [user, token, loading]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

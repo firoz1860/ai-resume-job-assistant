@@ -11,6 +11,17 @@ const applicationSchema = new mongoose.Schema(
     followUpDate: String,
     notes: String,
     generatedContent: String,
+    recruiterName: String,
+    recruiterEmail: String,
+    recruiterLinkedIn: String,
+    source: String,
+    priority: { type: String, enum: ['Low', 'Medium', 'High'], default: 'Medium' },
+    lastContactDate: String,
+    companyResearch: String,
+    projectEvidence: String,
+    resumeBefore: String,
+    resumeAfter: String,
+    jobDescription: String,
   },
   { timestamps: true }
 );

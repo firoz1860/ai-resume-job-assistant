@@ -2,10 +2,39 @@ import { dbState } from '../config/db.js';
 import Application from '../models/Application.js';
 
 const applications = [];
+const VALID_STATUSES = ['Saved', 'Applied', 'Interview', 'Rejected', 'Offer'];
 
 function normalizeApplication(app) {
   const data = app?.toObject ? app.toObject() : app;
   return { ...data, id: String(data._id || data.id) };
+}
+
+function cleanApplicationPayload(body = {}) {
+  return {
+    companyName: String(body.companyName || '').trim(),
+    role: String(body.role || '').trim(),
+    jobLink: String(body.jobLink || '').trim(),
+    status: VALID_STATUSES.includes(body.status) ? body.status : 'Saved',
+    appliedDate: body.appliedDate || '',
+    followUpDate: body.followUpDate || '',
+    notes: String(body.notes || '').trim(),
+    generatedContent: String(body.generatedContent || '').trim(),
+    recruiterName: String(body.recruiterName || '').trim(),
+    recruiterEmail: String(body.recruiterEmail || '').trim(),
+    recruiterLinkedIn: String(body.recruiterLinkedIn || '').trim(),
+    source: String(body.source || '').trim(),
+    priority: ['Low', 'Medium', 'High'].includes(body.priority) ? body.priority : 'Medium',
+    lastContactDate: body.lastContactDate || '',
+    companyResearch: String(body.companyResearch || '').trim(),
+    projectEvidence: String(body.projectEvidence || '').trim(),
+    resumeBefore: String(body.resumeBefore || '').trim(),
+    resumeAfter: String(body.resumeAfter || '').trim(),
+    jobDescription: String(body.jobDescription || '').trim(),
+  };
+}
+
+function isValidMongoId(value) {
+  return /^[a-f\d]{24}$/i.test(String(value || ''));
 }
 
 export async function listApplications(req, res) {
@@ -18,17 +47,14 @@ export async function listApplications(req, res) {
 }
 
 export async function createApplication(req, res) {
+  const payload = cleanApplicationPayload(req.body);
+  if (!payload.companyName) return res.status(400).json({ success: false, error: 'Company name is required.' });
+  if (!payload.role) return res.status(400).json({ success: false, error: 'Role is required.' });
+
   if (dbState.isConnected) {
     const app = await Application.create({
       userId: req.user._id,
-      companyName: req.body.companyName || '',
-      role: req.body.role || '',
-      jobLink: req.body.jobLink || '',
-      status: req.body.status || 'Saved',
-      appliedDate: req.body.appliedDate || '',
-      followUpDate: req.body.followUpDate || '',
-      notes: req.body.notes || '',
-      generatedContent: req.body.generatedContent || '',
+      ...payload,
     });
 
     return res.status(201).json({ success: true, data: normalizeApplication(app) });
@@ -36,14 +62,7 @@ export async function createApplication(req, res) {
 
   const app = {
     id: Date.now().toString(),
-    companyName: req.body.companyName || '',
-    role: req.body.role || '',
-    jobLink: req.body.jobLink || '',
-    status: req.body.status || 'Saved',
-    appliedDate: req.body.appliedDate || '',
-    followUpDate: req.body.followUpDate || '',
-    notes: req.body.notes || '',
-    generatedContent: req.body.generatedContent || '',
+    ...payload,
     createdAt: new Date().toISOString(),
   };
   applications.unshift(app);
@@ -51,10 +70,15 @@ export async function createApplication(req, res) {
 }
 
 export async function updateApplication(req, res) {
+  const payload = cleanApplicationPayload(req.body);
+  if (!payload.companyName) return res.status(400).json({ success: false, error: 'Company name is required.' });
+  if (!payload.role) return res.status(400).json({ success: false, error: 'Role is required.' });
+
   if (dbState.isConnected) {
+    if (!isValidMongoId(req.params.id)) return res.status(404).json({ success: false, error: 'Application not found.' });
     const app = await Application.findOneAndUpdate(
       { _id: req.params.id, userId: req.user._id },
-      req.body,
+      payload,
       { new: true, runValidators: true }
     );
 
@@ -64,12 +88,13 @@ export async function updateApplication(req, res) {
 
   const index = applications.findIndex((item) => item.id === req.params.id);
   if (index === -1) return res.status(404).json({ success: false, error: 'Application not found.' });
-  applications[index] = { ...applications[index], ...req.body };
+  applications[index] = { ...applications[index], ...payload, updatedAt: new Date().toISOString() };
   res.json({ success: true, data: applications[index] });
 }
 
 export async function deleteApplication(req, res) {
   if (dbState.isConnected) {
+    if (!isValidMongoId(req.params.id)) return res.status(404).json({ success: false, error: 'Application not found.' });
     const deleted = await Application.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
     if (!deleted) return res.status(404).json({ success: false, error: 'Application not found.' });
     return res.json({ success: true, data: normalizeApplication(deleted) });
@@ -88,6 +113,10 @@ function buildFollowUp(app) {
 }
 
 export async function followUp(req, res) {
+  if (dbState.isConnected && !isValidMongoId(req.params.id)) {
+    return res.status(404).json({ success: false, error: 'Application not found.' });
+  }
+
   const app = dbState.isConnected
     ? await Application.findOne({ _id: req.params.id, userId: req.user._id }).lean()
     : applications.find((item) => item.id === req.params.id);

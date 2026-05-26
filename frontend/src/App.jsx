@@ -16,6 +16,7 @@ import VoiceInterview from './pages/VoiceInterview.jsx';
 import VoiceInterviewHistory from './pages/VoiceInterviewHistory.jsx';
 import VoiceInterviewDetail from './pages/VoiceInterviewDetail.jsx';
 import ContentLibrary from './pages/ContentLibrary.jsx';
+import CareerIntelligence from './pages/CareerIntelligence.jsx';
 import About from './pages/About.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={privatePage(<Dashboard />)} />
+        <Route path="/career-intelligence" element={privatePage(<CareerIntelligence />)} />
         <Route path="/career-dna" element={privatePage(<CareerDNA />)} />
         <Route path="/job-analyzer" element={privatePage(<JobAnalyzer />)} />
         <Route path="/generator" element={privatePage(<Generator />)} />

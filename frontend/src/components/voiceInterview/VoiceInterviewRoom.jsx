@@ -7,12 +7,12 @@ import VoiceTimer from './VoiceTimer.jsx';
 export default function VoiceInterviewRoom({ secondsLeft, state, session, subtitle, transcript, interimTranscript, setTranscript, recognitionError, isListening, isSpeaking, feedback, history, onReplay, onAnswerNow, onStartListening, onStopListening, onReset, onSubmit, onSkip, onEnd }) {
   const busy = state === 'evaluating' || isSpeaking || state === 'ai_speaking';
   const canForceReady = state === 'ai_speaking' || isSpeaking;
-  return <div className="grid grid-cols-1 xl:grid-cols-[0.85fr_1.15fr] gap-6 items-start">
-    <div className="space-y-4">
+  return <div className="grid grid-cols-1 xl:grid-cols-[0.85fr_1.15fr] gap-6 items-start min-w-0">
+    <div className="space-y-4 min-w-0">
       <VoiceTimer secondsLeft={secondsLeft} />
       <AIInterviewerAvatar status={state} />
       <div className="card p-5">
-        <div className="flex items-center justify-between gap-3 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 mb-2">
           <p className="text-xs text-muted uppercase font-semibold">AI Subtitle</p>
           <button onClick={onReplay} className="text-xs font-semibold text-accent">Replay AI Voice</button>
         </div>
@@ -27,7 +27,7 @@ export default function VoiceInterviewRoom({ secondsLeft, state, session, subtit
         <p className="text-sm text-muted">Listen to the AI question, read the subtitle, then click Start Answer and speak. You can edit the transcript before submitting.</p>
       </div>
     </div>
-    <div className="space-y-4">
+    <div className="space-y-4 min-w-0">
       <TranscriptBox transcript={transcript} interimTranscript={interimTranscript} onChange={setTranscript} error={recognitionError} />
       <SpeechControls isListening={isListening} disabled={busy} canForceReady={canForceReady} canSubmit={Boolean(transcript.trim())} onAnswerNow={onAnswerNow} onStart={onStartListening} onStop={onStopListening} onReset={onReset} onSubmit={onSubmit} onSkip={onSkip} onEnd={onEnd} />
       <VoiceFeedbackPanel feedback={feedback} />

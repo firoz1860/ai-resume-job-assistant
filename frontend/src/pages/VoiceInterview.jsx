@@ -144,9 +144,9 @@ export default function VoiceInterview() {
     <Navbar />
     <main className="flex-1 py-8 md:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-start justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
           <div><h1 className="text-2xl sm:text-3xl font-bold text-ink">AI Voice Interview Room</h1><p className="text-sm text-muted mt-1">Speak answers, get feedback, and continue for a 20-minute real interview.</p></div>
-          <div className="flex flex-wrap gap-2 justify-end">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full sm:w-auto">
             <button onClick={() => unlockSpeech(true)} className="btn-primary">Enable Voice</button>
             <button onClick={toggleMute} className="btn-secondary">{muted ? 'Unmute AI' : 'Mute AI'}</button>
           </div>
