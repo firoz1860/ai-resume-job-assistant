@@ -5,6 +5,10 @@ export const CONTENT_TYPES = [
   'LinkedIn Message',
   'Tell Me About Yourself',
   'Project Explanation',
+  'Follow-up Email',
+  'Referral Request',
+  'GitHub README Bio',
+  'LinkedIn About Section',
 ];
 
 export const TONES = [
@@ -13,6 +17,7 @@ export const TONES = [
   'Fresher Friendly',
   'Concise',
   'Humanized',
+  'Impact-focused',
 ];
 
 export const CONTENT_TYPE_DESCRIPTIONS = {
@@ -22,6 +27,10 @@ export const CONTENT_TYPE_DESCRIPTIONS = {
   'LinkedIn Message': 'A short connection request message (under 300 chars).',
   'Tell Me About Yourself': 'A structured 60-90 second interview answer.',
   'Project Explanation': 'A compelling description of your project for interviews.',
+  'Follow-up Email': 'A polite follow-up email after applying or interviewing.',
+  'Referral Request': 'A clear message asking for a referral.',
+  'GitHub README Bio': 'A short developer bio for your GitHub profile README.',
+  'LinkedIn About Section': 'A polished LinkedIn About section for your profile.',
 };
 
 export const FEATURES = [

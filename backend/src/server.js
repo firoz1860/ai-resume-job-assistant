@@ -1,15 +1,30 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { config } from './config/env.js';
+import { connectDB, dbHealth } from './config/db.js';
 import generateRoutes from './routes/generateRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import voiceInterviewRoutes from './routes/voiceInterviewRoutes.js';
+import { apiLimiter } from './middleware/rateLimiter.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 const app = express();
 
-app.use(cors({ origin: '*' }));
-app.use(express.json({ limit: '10kb' }));
+await connectDB();
 
-app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
+app.use(helmet());
+app.use(cors({ origin: config.clientUrl, credentials: true }));
+app.use(cookieParser());
+app.use(express.json({ limit: '1mb' }));
+app.use(apiLimiter);
+
+app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString(), db: dbHealth() }));
+app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/voice-interview', voiceInterviewRoutes);
 app.use('/api', generateRoutes);
 
 app.use(notFound);

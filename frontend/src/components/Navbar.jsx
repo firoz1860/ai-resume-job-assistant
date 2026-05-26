@@ -1,41 +1,61 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
   const { pathname } = useLocation();
+  const { isAuthenticated, logout } = useAuth();
 
-  const links = [
+  const primaryLinks = [
     { label: 'Home', to: '/' },
+    { label: 'Dashboard', to: '/dashboard' },
     { label: 'Generator', to: '/generator' },
+    { label: 'Voice Interview', to: '/voice-interview' },
+    { label: 'Applications', to: '/applications' },
+  ];
+
+  const toolLinks = [
+    { label: 'Career DNA', to: '/career-dna' },
+    { label: 'Job Analyzer', to: '/job-analyzer' },
+    { label: 'Content Library', to: '/content-library' },
     { label: 'Matcher', to: '/matcher' },
+    { label: 'Text Interview', to: '/interview-room' },
+    { label: 'Interview History', to: '/interview-history' },
+    { label: 'Voice History', to: '/voice-interview-history' },
+    { label: 'Roadmap', to: '/roadmap' },
+    { label: 'Profile', to: '/profile' },
     { label: 'About', to: '/about' },
   ];
 
+  const allLinks = [...primaryLinks, ...toolLinks];
+  const isToolsActive = toolLinks.some((link) => pathname === link.to);
+
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-border">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-border shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 shrink-0">
-          <div className="w-8 h-8 bg-navy-900 rounded-lg flex items-center justify-center">
+          <div className="w-9 h-9 bg-navy-900 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/20">
             <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
               <path d="M5 7h10M5 11h10M5 15h6" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"/>
               <circle cx="18" cy="10" r="3" fill="#2563EB" opacity="0.85"/>
               <path d="M18 8.5v3M16.5 10h3" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
             </svg>
           </div>
-          <span className="font-bold text-navy-900 text-lg">
-            Resume<span className="text-accent">AI</span>
+          <span className="font-bold text-navy-900 text-lg whitespace-nowrap">
+            CareerOS<span className="text-accent">AI</span>
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1">
-          {links.map((l) => (
+        <nav className="hidden lg:flex items-center gap-1.5">
+          {primaryLinks.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
                 pathname === l.to
                   ? 'bg-accent/10 text-accent'
                   : 'text-muted hover:text-ink hover:bg-surface'
@@ -44,15 +64,39 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
-          <Link to="/generator" className="ml-3 btn-primary text-sm px-4 py-2">
-            Try Free
-          </Link>
+          <div className="relative">
+            <button
+              onClick={() => setToolsOpen((value) => !value)}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${isToolsActive ? 'bg-accent/10 text-accent' : 'text-muted hover:text-ink hover:bg-surface'}`}
+            >
+              Tools
+            </button>
+            {toolsOpen && (
+              <div className="absolute right-0 top-11 w-64 bg-white border border-border rounded-xl shadow-card-hover p-2 animate-fade-in">
+                {toolLinks.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    onClick={() => setToolsOpen(false)}
+                    className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${pathname === l.to ? 'bg-accent/10 text-accent' : 'text-ink hover:bg-surface'}`}
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+          {isAuthenticated ? (
+            <button onClick={logout} className="ml-3 btn-secondary text-sm px-4 py-2">Logout</button>
+          ) : (
+            <Link to="/login" className="ml-3 btn-primary text-sm px-4 py-2">Login</Link>
+          )}
         </nav>
 
         {/* Mobile hamburger */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden p-2 rounded-lg text-muted hover:text-ink hover:bg-surface transition-colors"
+          className="lg:hidden p-2 rounded-lg text-muted hover:text-ink hover:bg-surface transition-colors"
           aria-label="Toggle menu"
         >
           {open ? (
@@ -69,9 +113,26 @@ export default function Navbar() {
 
       {/* Mobile dropdown */}
       {open && (
-        <div className="md:hidden border-t border-border bg-white animate-fade-in">
-          <nav className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">
-            {links.map((l) => (
+        <div className="lg:hidden border-t border-border bg-white animate-fade-in">
+          <nav className="max-w-7xl mx-auto px-4 py-4">
+            <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">Main</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 mb-4">
+              {primaryLinks.map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  onClick={() => setOpen(false)}
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    pathname === l.to ? 'bg-accent/10 text-accent' : 'text-ink hover:bg-surface'
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+            <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">Tools</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+            {toolLinks.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
@@ -83,13 +144,12 @@ export default function Navbar() {
                 {l.label}
               </Link>
             ))}
-            <Link
-              to="/generator"
-              onClick={() => setOpen(false)}
-              className="btn-primary text-sm mt-1 justify-center"
-            >
-              Try Free
-            </Link>
+            </div>
+            {isAuthenticated ? (
+              <button onClick={() => { logout(); setOpen(false); }} className="btn-secondary text-sm mt-1 justify-center">Logout</button>
+            ) : (
+              <Link to="/login" onClick={() => setOpen(false)} className="btn-primary text-sm mt-1 justify-center">Login</Link>
+            )}
           </nav>
         </div>
       )}

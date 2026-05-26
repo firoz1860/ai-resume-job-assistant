@@ -44,6 +44,15 @@ const toneInstructions = {
       'Avoid corporate buzzwords and robotic phrasing.',
     ],
   },
+  'Impact-focused': {
+    voice: 'specific, outcome-oriented, and metrics-aware',
+    linkedinOpen: 'I noticed your work and the impact your team is creating',
+    rules: [
+      'Emphasize outcomes, scale, measurable improvements, and business value.',
+      'Use strong action verbs and concrete proof.',
+      'Avoid vague claims that do not connect to impact.',
+    ],
+  },
 };
 
 const contentInstructions = {
@@ -110,6 +119,42 @@ const contentInstructions = {
       'Length: 100-150 words.',
       'Explain what it does, technologies used, one challenge, solution, and impact.',
       'Do not write a cover letter, email, LinkedIn message, or resume summary.',
+    ],
+  },
+  'Follow-up Email': {
+    systemRole: 'You write only professional follow-up emails.',
+    maxOutputTokens: 260,
+    format: [
+      'Output a follow-up email only.',
+      'Include a subject line, greeting, concise body, and sign-off.',
+      'Keep it polite, specific, and under 160 words.',
+    ],
+  },
+  'Referral Request': {
+    systemRole: 'You write only referral request messages.',
+    maxOutputTokens: 220,
+    format: [
+      'Output one referral request message only.',
+      'Keep it respectful, concise, and easy to say yes or no to.',
+      'Mention the target role and relevant strengths.',
+    ],
+  },
+  'GitHub README Bio': {
+    systemRole: 'You write only GitHub profile README bios.',
+    maxOutputTokens: 220,
+    format: [
+      'Output a short GitHub profile bio only.',
+      'Use 3-5 compact lines.',
+      'Mention role focus, skills, projects, and learning direction.',
+    ],
+  },
+  'LinkedIn About Section': {
+    systemRole: 'You write only LinkedIn About sections.',
+    maxOutputTokens: 420,
+    format: [
+      'Output a LinkedIn About section only.',
+      'Use 2-4 short paragraphs.',
+      'Balance human story, skills, projects, and target direction.',
     ],
   },
 };

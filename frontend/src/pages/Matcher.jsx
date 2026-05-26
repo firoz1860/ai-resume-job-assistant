@@ -44,6 +44,52 @@ function KeywordList({ title, items, tone }) {
   );
 }
 
+function StrategyList({ title, items, tone = 'neutral' }) {
+  const colors = {
+    neutral: 'bg-surface border-border text-ink',
+    good: 'bg-emerald-50 border-emerald-200 text-emerald-800',
+    warn: 'bg-amber-50 border-amber-200 text-amber-800',
+  };
+
+  return (
+    <div>
+      <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">{title}</p>
+      <ul className="space-y-2">
+        {items.map((item) => (
+          <li key={item} className={`text-sm border rounded-lg px-3 py-2 leading-relaxed ${colors[tone]}`}>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function StrategyPanel({ strategy }) {
+  if (!strategy) return null;
+
+  return (
+    <div className="border-t border-border pt-5 space-y-5">
+      <div>
+        <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">Application Strategy</p>
+        <p className="text-sm text-ink bg-surface border border-border rounded-lg px-3 py-3 leading-relaxed">
+          {strategy.positioning}
+        </p>
+      </div>
+
+      <div className="bg-accent/5 border border-accent/15 rounded-lg px-3 py-3">
+        <p className="text-xs font-semibold text-accent uppercase tracking-wide mb-1">Best Next Content</p>
+        <p className="text-sm font-semibold text-ink">{strategy.recommendedContent.contentType}</p>
+        <p className="text-xs text-muted mt-1 leading-relaxed">{strategy.recommendedContent.reason}</p>
+      </div>
+
+      <StrategyList title="Focus Plan" items={strategy.focusPlan} />
+      <StrategyList title="Interview / Resume Talking Points" items={strategy.talkingPoints} tone="good" />
+      <StrategyList title="Risk Areas" items={strategy.riskAreas} tone="warn" />
+    </div>
+  );
+}
+
 function MatchResult({ result }) {
   const scoreColor = result.score >= 75 ? 'text-emerald-600' : result.score >= 45 ? 'text-amber-600' : 'text-red-600';
 
@@ -78,6 +124,8 @@ function MatchResult({ result }) {
             ))}
           </ul>
         </div>
+
+        <StrategyPanel strategy={result.strategy} />
       </div>
     </div>
   );

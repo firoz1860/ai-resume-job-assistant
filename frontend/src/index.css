@@ -8,6 +8,9 @@
   }
   body {
     @apply font-sans text-ink bg-surface antialiased;
+    background:
+      radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 32rem),
+      linear-gradient(180deg, #ffffff 0%, #F8FAFC 22rem);
   }
   ::-webkit-scrollbar {
     @apply w-1.5;
@@ -22,31 +25,34 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white font-semibold rounded-lg
-           hover:bg-blue-700 active:scale-95 transition-all duration-150 shadow-sm;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-accent text-white font-semibold rounded-lg
+           hover:bg-blue-700 active:scale-95 transition-all duration-150 shadow-sm shadow-blue-500/20
+           focus:outline-none focus:ring-2 focus:ring-accent/30 disabled:opacity-60 disabled:cursor-not-allowed;
   }
   .btn-secondary {
-    @apply inline-flex items-center gap-2 px-5 py-2.5 bg-white text-ink font-semibold rounded-lg
-           border border-border hover:bg-surface active:scale-95 transition-all duration-150 shadow-sm;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-ink font-semibold rounded-lg
+           border border-border hover:bg-surface active:scale-95 transition-all duration-150 shadow-sm
+           focus:outline-none focus:ring-2 focus:ring-accent/20 disabled:opacity-60 disabled:cursor-not-allowed;
   }
   .card {
     @apply bg-card rounded-xl border border-border shadow-card;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.05), 0 12px 32px rgb(15 23 42 / 0.04);
   }
   .form-label {
     @apply block text-sm font-medium text-ink mb-1.5;
   }
   .form-input {
-    @apply w-full px-3.5 py-2.5 rounded-lg border border-border bg-white text-ink text-sm
+    @apply w-full px-3.5 py-2.5 rounded-lg border border-border bg-white text-ink text-sm shadow-sm
            placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
            transition-colors duration-150;
   }
   .form-select {
-    @apply w-full px-3.5 py-2.5 rounded-lg border border-border bg-white text-ink text-sm
+    @apply w-full px-3.5 py-2.5 rounded-lg border border-border bg-white text-ink text-sm shadow-sm
            focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
            transition-colors duration-150 cursor-pointer;
   }
   .form-textarea {
-    @apply w-full px-3.5 py-2.5 rounded-lg border border-border bg-white text-ink text-sm
+    @apply w-full px-3.5 py-2.5 rounded-lg border border-border bg-white text-ink text-sm shadow-sm
            placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
            transition-colors duration-150 resize-none;
   }

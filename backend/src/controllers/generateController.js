@@ -1,5 +1,7 @@
 import { buildPrompt, enforceContentType } from '../utils/buildPrompt.js';
 import { generateContent } from '../services/aiService.js';
+import { dbState } from '../config/db.js';
+import GeneratedContent from '../models/GeneratedContent.js';
 
 const VALID_CONTENT_TYPES = [
   'Resume Summary',
@@ -8,9 +10,13 @@ const VALID_CONTENT_TYPES = [
   'LinkedIn Message',
   'Tell Me About Yourself',
   'Project Explanation',
+  'Follow-up Email',
+  'Referral Request',
+  'GitHub README Bio',
+  'LinkedIn About Section',
 ];
 
-const VALID_TONES = ['Professional', 'Confident', 'Fresher Friendly', 'Concise', 'Humanized'];
+const VALID_TONES = ['Professional', 'Confident', 'Fresher Friendly', 'Concise', 'Humanized', 'Impact-focused'];
 
 export async function generate(req, res, next) {
   try {
@@ -32,6 +38,20 @@ export async function generate(req, res, next) {
     const promptSpec = buildPrompt({ contentType, tone, fullName, education, skills, projects, experience, targetRole, companyName, jobDescription });
     const generated = await generateContent(promptSpec);
     const data = enforceContentType(generated, promptSpec);
+
+    if (dbState.isConnected && req.user?._id) {
+      try {
+        await GeneratedContent.create({
+          userId: req.user._id,
+          contentType,
+          tone,
+          prompt: promptSpec.userPrompt || '',
+          content: data,
+        });
+      } catch (saveErr) {
+        console.warn(`[Generate] Content generated but not saved: ${saveErr.message}`);
+      }
+    }
 
     res.json({ success: true, data });
   } catch (err) {

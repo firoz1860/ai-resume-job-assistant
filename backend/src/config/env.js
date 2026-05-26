@@ -19,6 +19,10 @@ function readModelList() {
 
 export const config = {
   port: process.env.PORT || 5000,
+  clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
+  mongoUri: process.env.MONGO_URI?.trim(),
+  jwtSecret: process.env.JWT_SECRET || 'dev-careeros-secret-change-me',
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   aiApiKey: process.env.AI_API_KEY?.trim(),
   aiModels: readModelList().length ? readModelList() : ['gemini-3.5-flash'],
 };
