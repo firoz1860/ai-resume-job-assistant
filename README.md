@@ -4,6 +4,9 @@ CareerOS AI is a full-stack AI career operating system for job seekers. It combi
 
 The purpose of the project is to reduce scattered job-search work. Instead of using separate tools for resume editing, interview notes, job tracking, follow-ups, and AI-generated messages, CareerOS AI keeps those workflows connected around the user's profile, applications, interviews, and saved career history.
 
+![alt text](image.png)
+![alt text](image-1.png)
+
 ## What This Project Does
 
 - Stores a user's career profile with skills, education, projects, experience, links, preferences, and resume text
@@ -29,6 +32,8 @@ CareerOS AI solves this by acting as a career command center:
 - Resume versions stay linked to target roles or companies
 - Career Vault makes old work reusable instead of lost
 
+![alt text](image-2.png)
+![alt text](image-3.png)
 ## Navbar Guide
 
 The app is organized around the navbar. Each page has a specific role in the job-search workflow.
