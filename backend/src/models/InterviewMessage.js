@@ -15,6 +15,7 @@ const interviewMessageSchema = new mongoose.Schema(
     mistakes: [String],
     nextQuestion: String,
     speakingTimeSeconds: Number,
+    audioMetrics: mongoose.Schema.Types.Mixed,
   },
   { timestamps: true }
 );

@@ -305,7 +305,7 @@ function buildPortfolioAnalyzer(profile, applications) {
     improvements: [
       evidence ? 'Convert saved project evidence into README proof sections.' : 'Add project evidence to applications.',
       profile?.githubUrl ? 'Keep GitHub pinned projects aligned with your target role.' : 'Add GitHub URL in profile.',
-      profile?.portfolioUrl ? 'Add case studies to portfolio pages.' : 'Add a portfolio/live demo link.',
+      profile?.portfolioUrl ? 'Add case studies to portfolio pages.' : 'Add a portfolio or live project link.',
     ],
   };
 }

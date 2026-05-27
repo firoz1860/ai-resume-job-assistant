@@ -9,16 +9,31 @@ import { createApplication, deleteApplication, followUp, listApplications, updat
 import { getDashboardStats } from '../controllers/dashboardController.js';
 import { deleteGeneratedContent, listGeneratedContent } from '../controllers/contentController.js';
 import { getCareerIntelligence, inspectJobPost } from '../controllers/intelligenceController.js';
+import { searchCareerVault } from '../controllers/careerVaultController.js';
+import { getAdminStats } from '../controllers/adminController.js';
+import { applyParsedResume, listResumeVersions, parseResume, resumeDiff, saveResumeVersion } from '../controllers/resumeController.js';
 import { optionalAuth, protect } from '../middleware/authMiddleware.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import multer from 'multer';
 
 const router = Router();
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 router.post('/generate', optionalAuth, generate);
 router.post('/match', match);
 router.get('/dashboard/stats', protect, asyncHandler(getDashboardStats));
 router.get('/intelligence/overview', protect, asyncHandler(getCareerIntelligence));
 router.post('/intelligence/inspect-job', protect, asyncHandler(inspectJobPost));
+router.get('/career-vault/search', protect, asyncHandler(searchCareerVault));
+router.get('/admin/stats', protect, asyncHandler(getAdminStats));
+router.post('/resume/parse', protect, upload.single('resume'), asyncHandler(parseResume));
+router.post('/resume/apply-parsed', protect, asyncHandler(applyParsedResume));
+router.get('/resume/versions', protect, asyncHandler(listResumeVersions));
+router.post('/resume/versions', protect, asyncHandler(saveResumeVersion));
+router.post('/resume/diff', protect, asyncHandler(resumeDiff));
 router.post('/career/analyze', protect, analyzeCareer);
 router.post('/job/analyze', protect, asyncHandler(analyzeJob));
 router.post('/generate/content', optionalAuth, generate);

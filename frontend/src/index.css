@@ -3,38 +3,69 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply box-border;
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   body {
     @apply font-sans text-ink bg-surface antialiased;
     background:
       radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 32rem),
       linear-gradient(180deg, #ffffff 0%, #F8FAFC 22rem);
   }
+
   #root {
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
-  main {
-    @apply pb-20 lg:pb-0;
+
+  /* Reserve space for mobile bottom nav — class set by Navbar based on auth state */
+  body.has-bottom-nav main {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
   }
+  /* Bottom tab bar hides at lg (1024px+), so remove the padding there */
+  @media (min-width: 1024px) {
+    body.has-bottom-nav main {
+      padding-bottom: 0;
+    }
+  }
+
   img,
   svg,
   video,
   canvas {
     max-width: 100%;
+    height: auto;
   }
-  p,
-  a,
-  span,
-  div {
-    overflow-wrap: anywhere;
+
+  /* Prevent long words from overflowing containers */
+  p, a, span, div, h1, h2, h3, h4, h5, h6,
+  button, input, textarea, select, label, li {
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
+
   ::-webkit-scrollbar {
-    @apply w-1.5;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
     @apply bg-border rounded-full;
@@ -42,52 +73,124 @@
 }
 
 @layer components {
+  /* ─── Buttons ─────────────────────────────────────────── */
+
+  /* Base button - does NOT force full width. Callers add w-full when needed. */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 bg-accent text-white font-semibold rounded-lg
-           hover:bg-blue-700 active:scale-95 transition-all duration-150 shadow-sm shadow-blue-500/20
-           focus:outline-none focus:ring-2 focus:ring-accent/30 disabled:opacity-60 disabled:cursor-not-allowed
-           min-h-10 text-center;
+    @apply inline-flex items-center justify-center gap-2
+           px-4 sm:px-5 py-2.5 min-h-[2.5rem]
+           bg-accent text-white font-semibold rounded-lg
+           hover:bg-blue-700 active:scale-95
+           transition-all duration-150
+           shadow-sm shadow-blue-500/20
+           focus:outline-none focus:ring-2 focus:ring-accent/30
+           disabled:opacity-60 disabled:cursor-not-allowed;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.3;
+    min-width: 0;
+    max-width: 100%;
   }
+
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 bg-white text-ink font-semibold rounded-lg
-           border border-border hover:bg-surface active:scale-95 transition-all duration-150 shadow-sm
-           focus:outline-none focus:ring-2 focus:ring-accent/20 disabled:opacity-60 disabled:cursor-not-allowed
-           min-h-10 text-center;
+    @apply inline-flex items-center justify-center gap-2
+           px-4 sm:px-5 py-2.5 min-h-[2.5rem]
+           bg-white text-ink font-semibold rounded-lg
+           border border-border
+           hover:bg-surface active:scale-95
+           transition-all duration-150 shadow-sm
+           focus:outline-none focus:ring-2 focus:ring-accent/20
+           disabled:opacity-60 disabled:cursor-not-allowed;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.3;
+    min-width: 0;
+    max-width: 100%;
   }
+
+  /* ─── Cards ───────────────────────────────────────────── */
   .card {
-    @apply bg-card rounded-xl border border-border shadow-card min-w-0;
+    @apply bg-card rounded-xl border border-border;
     box-shadow: 0 1px 2px rgb(15 23 42 / 0.05), 0 12px 32px rgb(15 23 42 / 0.04);
+    min-width: 0;
+    overflow: hidden;
   }
+
+  /* ─── Form elements ────────────────────────────────────── */
   .form-label {
     @apply block text-sm font-medium text-ink mb-1.5;
   }
+
   .form-input {
-    @apply w-full px-3.5 py-2.5 rounded-lg border border-border bg-white text-ink text-sm shadow-sm
-           placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
+    @apply w-full px-3.5 py-2.5 min-h-[2.75rem] rounded-lg
+           border border-border bg-white text-ink text-sm shadow-sm
+           placeholder:text-muted
+           focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
            transition-colors duration-150;
     min-width: 0;
   }
+
   .form-select {
-    @apply w-full px-3.5 py-2.5 rounded-lg border border-border bg-white text-ink text-sm shadow-sm
+    @apply w-full px-3.5 py-2.5 min-h-[2.75rem] rounded-lg
+           border border-border bg-white text-ink text-sm shadow-sm
            focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
            transition-colors duration-150 cursor-pointer;
     min-width: 0;
   }
+
   .form-textarea {
-    @apply w-full px-3.5 py-2.5 rounded-lg border border-border bg-white text-ink text-sm shadow-sm
-           placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
+    @apply w-full px-3.5 py-2.5 rounded-lg
+           border border-border bg-white text-ink text-sm shadow-sm
+           placeholder:text-muted
+           focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
            transition-colors duration-150 resize-none;
     min-width: 0;
+    min-height: 6.5rem;
+  }
+
+  /* ─── Page wrapper ─────────────────────────────────────── */
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12;
+    width: 100%;
+  }
+
+  .page-header {
+    @apply mb-6 sm:mb-8;
   }
 }
 
 @layer utilities {
+  /* Animations */
   .animate-fade-in {
-    animation: fadeIn 0.4s ease-out both;
+    animation: fadeIn 0.3s ease-out both;
   }
   .animate-slide-up {
-    animation: slideUp 0.4s ease-out both;
+    animation: slideUp 0.35s ease-out both;
   }
+
+  /* Truncate with tooltip hint */
+  .text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  /* Safe area padding helpers */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* Scrollable table wrapper for mobile */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ── Auth page decorative scene ───── */
   .auth-grid {
     background-image:
       linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
@@ -179,22 +282,30 @@
   }
 }
 
+/* ── Print styles ────────────────────────────────────────── */
+@media print {
+  body {
+    background: white !important;
+  }
+  .print\\:hidden {
+    display: none !important;
+  }
+}
+
+/* ── Keyframes ───────────────────────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
-
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes authFloat {
   0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-14px) scale(1.02); }
+  50%       { transform: translateY(-14px) scale(1.02); }
 }
-
 @keyframes authPulse {
   0%, 100% { transform: scaleY(0.65); opacity: 0.65; }
-  50% { transform: scaleY(1); opacity: 1; }
+  50%       { transform: scaleY(1); opacity: 1; }
 }

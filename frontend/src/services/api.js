@@ -59,6 +59,17 @@ async function request(path, options = {}) {
   return data.data;
 }
 
+async function upload(path, formData) {
+  const response = await fetch(`${BASE_URL}${path}`, {
+    method: 'POST',
+    headers: { ...authHeaders() },
+    body: formData,
+  });
+  const data = await response.json();
+  if (!response.ok || !data.success) throw new Error(data.error || 'Upload failed.');
+  return data.data;
+}
+
 export const careerApi = {
   analyze: (payload) => post('/api/career/analyze', payload),
 };
@@ -127,4 +138,25 @@ export const dashboardApi = {
 export const intelligenceApi = {
   overview: () => request('/api/intelligence/overview'),
   inspectJob: (payload) => post('/api/intelligence/inspect-job', payload),
+};
+
+export const careerVaultApi = {
+  search: (query = '') => request(`/api/career-vault/search?q=${encodeURIComponent(query)}`),
+};
+
+export const resumeApi = {
+  parse: ({ file, text }) => {
+    const formData = new FormData();
+    if (file) formData.append('resume', file);
+    if (text) formData.append('text', text);
+    return upload('/api/resume/parse', formData);
+  },
+  applyParsed: (payload) => post('/api/resume/apply-parsed', payload),
+  versions: () => request('/api/resume/versions'),
+  saveVersion: (payload) => post('/api/resume/versions', payload),
+  diff: (payload) => post('/api/resume/diff', payload),
+};
+
+export const adminApi = {
+  stats: () => request('/api/admin/stats'),
 };

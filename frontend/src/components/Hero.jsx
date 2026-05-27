@@ -29,7 +29,7 @@ function DashboardPreview({ dashboard, isAuthenticated, loading }) {
 
   return (
     <div className="relative">
-      <div className="absolute -inset-4 bg-accent/20 blur-3xl rounded-full" />
+      <div className="absolute -inset-2 sm:-inset-4 bg-accent/20 blur-3xl rounded-full" />
       <div className="relative bg-white text-ink rounded-xl border border-white/20 shadow-card-hover overflow-hidden">
         <div className="bg-navy-900 text-white px-4 py-3 flex items-center justify-between">
           <div>
@@ -96,7 +96,7 @@ export default function Hero() {
 
   return (
     <section className="bg-navy-900 text-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 lg:py-24 grid grid-cols-1 xl:grid-cols-[0.95fr_1.05fr] gap-8 lg:gap-12 items-center">
         <div className="animate-slide-up">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-white/80 text-xs font-medium mb-6 border border-white/10">
             <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
@@ -120,7 +120,7 @@ export default function Hero() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 mt-10 text-white/65 text-sm max-w-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-8 sm:mt-10 text-white/65 text-sm max-w-xl">
             {[['10+', 'Career tools'], ['20 min', 'Voice interview'], ['JWT', 'Secure data']].map(([num, label]) => (
               <div key={label} className="border border-white/10 rounded-lg p-3 bg-white/5">
                 <span className="block text-white text-xl font-bold">{num}</span>

@@ -17,24 +17,32 @@ import VoiceInterviewHistory from './pages/VoiceInterviewHistory.jsx';
 import VoiceInterviewDetail from './pages/VoiceInterviewDetail.jsx';
 import ContentLibrary from './pages/ContentLibrary.jsx';
 import CareerIntelligence from './pages/CareerIntelligence.jsx';
+import CareerVault from './pages/CareerVault.jsx';
+import ResumeBuilder from './pages/ResumeBuilder.jsx';
 import About from './pages/About.jsx';
+import NotFound from './pages/NotFound.jsx';
+import AdminDashboard from './pages/AdminDashboard.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import ToastProvider from './components/ToastProvider.jsx';
 
 const privatePage = (element) => <ProtectedRoute>{element}</ProtectedRoute>;
 
 export default function App() {
   return (
     <BrowserRouter>
+      <ToastProvider>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={privatePage(<Dashboard />)} />
         <Route path="/career-intelligence" element={privatePage(<CareerIntelligence />)} />
+        <Route path="/career-vault" element={privatePage(<CareerVault />)} />
         <Route path="/career-dna" element={privatePage(<CareerDNA />)} />
         <Route path="/job-analyzer" element={privatePage(<JobAnalyzer />)} />
         <Route path="/generator" element={privatePage(<Generator />)} />
         <Route path="/content-library" element={privatePage(<ContentLibrary />)} />
+        <Route path="/resume-builder" element={privatePage(<ResumeBuilder />)} />
         <Route path="/matcher" element={<Matcher />} />
         <Route path="/interview-room" element={privatePage(<InterviewRoom />)} />
         <Route path="/interview-history" element={privatePage(<InterviewHistory />)} />
@@ -44,8 +52,11 @@ export default function App() {
         <Route path="/roadmap" element={privatePage(<Roadmap />)} />
         <Route path="/applications" element={privatePage(<Applications />)} />
         <Route path="/profile" element={privatePage(<Profile />)} />
+        <Route path="/admin" element={privatePage(<AdminDashboard />)} />
         <Route path="/about" element={<About />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
+      </ToastProvider>
     </BrowserRouter>
   );
 }

@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 const actions = [
   { label: 'Open Dashboard', href: '/dashboard', group: 'Navigation', keywords: 'home overview stats' },
   { label: 'Career Intelligence', href: '/career-intelligence', group: 'Navigation', keywords: 'insights ai vault report' },
+  { label: 'Career Vault Search', href: '/career-vault', group: 'Library', keywords: 'search memory profile applications interviews content' },
   { label: 'Generate Content', href: '/generator', group: 'Create', keywords: 'resume cover letter linkedin email' },
+  { label: 'Resume Builder', href: '/resume-builder', group: 'Create', keywords: 'resume cv pdf export profile' },
   { label: 'Add Application', href: '/applications', group: 'Track', keywords: 'job tracker kanban follow up' },
   { label: 'Start Voice Interview', href: '/voice-interview', group: 'Practice', keywords: 'speaking mock interview microphone' },
   { label: 'Text Interview Room', href: '/interview-room', group: 'Practice', keywords: 'mock questions answer feedback' },
@@ -62,6 +64,14 @@ export default function CommandPalette({ open, onOpen, onClose }) {
               className="w-full outline-none text-sm text-ink placeholder:text-muted"
             />
             <kbd className="hidden sm:inline-flex text-[11px] font-semibold text-muted bg-surface border border-border rounded-md px-2 py-1">Esc</kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-9 h-9 rounded-lg text-muted hover:text-ink hover:bg-surface shrink-0"
+              aria-label="Close search"
+            >
+              x
+            </button>
           </div>
         </div>
         <div className="overflow-auto p-2">

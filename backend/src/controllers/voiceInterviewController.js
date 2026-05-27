@@ -4,6 +4,7 @@ import { buildVoiceInterviewReportPrompt } from '../prompts/voiceInterviewReport
 import { generateContent } from '../services/aiService.js';
 import {
   createVoiceSession,
+  calculateAudioMetrics,
   fallbackVoiceFeedback,
   fallbackVoiceReport,
   findVoiceSession,
@@ -91,7 +92,8 @@ export async function answerVoiceInterview(req, res, next) {
 
     const messages = await getVoiceMessages(sessionId);
     const currentQuestion = [...messages].reverse().find((message) => message.role === 'ai' && message.question)?.question || 'Tell me about yourself.';
-    await saveVoiceMessage({ sessionId, userId: req.user._id, role: 'user', answer: transcript, transcript, speakingTimeSeconds });
+    const audioMetrics = calculateAudioMetrics(transcript, speakingTimeSeconds);
+    await saveVoiceMessage({ sessionId, userId: req.user._id, role: 'user', answer: transcript, transcript, speakingTimeSeconds, audioMetrics });
 
     const history = messages.slice(-8).map((message) => `${message.role}: ${message.question || message.transcript || message.feedback || ''}`).join('\n');
     let evaluation = fallbackVoiceFeedback(transcript, currentQuestion, session.interviewType);
@@ -121,7 +123,7 @@ export async function answerVoiceInterview(req, res, next) {
     });
     await updateVoiceSession(sessionId, { questionsAsked: (session.questionsAsked || 0) + 1, transcripts: [...(session.transcripts || []), transcript] });
 
-    res.json({ success: true, message: 'Voice answer evaluated.', data: { ...evaluation, timeRemaining: secondsRemaining(session), shouldEnd: false } });
+    res.json({ success: true, message: 'Voice answer evaluated.', data: { ...evaluation, audioMetrics, timeRemaining: secondsRemaining(session), shouldEnd: false } });
   } catch (err) {
     next(err);
   }

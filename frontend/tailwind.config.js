@@ -2,6 +2,14 @@
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
+    screens: {
+      xs: '375px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       colors: {
         navy: {
@@ -21,6 +29,9 @@ export default {
       boxShadow: {
         card: '0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07)',
         'card-hover': '0 4px 16px 0 rgb(0 0 0 / 0.10)',
+      },
+      maxWidth: {
+        '8xl': '88rem',
       },
     },
   },

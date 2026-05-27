@@ -304,7 +304,7 @@ export default function Applications() {
 
           {error && <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
             {Object.entries(stats).map(([label, value]) => <StatCard key={label} label={label} value={value} />)}
           </div>
 
@@ -320,7 +320,7 @@ export default function Applications() {
               <div className="card p-5 sm:p-6">
                 <h2 className="font-bold text-ink mb-2">Job Link Import</h2>
                 <p className="text-xs text-muted mb-3">Paste a job link or job post. It fills role, company, link, and JD where possible.</p>
-                <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={4} className="form-textarea" placeholder="Frontend Developer at Company&#10;https://example.com/job&#10;Job description..." />
+                <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={4} className="form-textarea" placeholder="Paste role, company, job link, and job description..." />
                 <button type="button" onClick={importJob} className="btn-secondary w-full justify-center mt-3">Import Into Form</button>
               </div>
 
@@ -390,7 +390,7 @@ export default function Applications() {
                           {statusItems.length === 0 && <p className="text-sm text-muted bg-surface border border-border rounded-lg p-3">No applications in this stage.</p>}
                           {statusItems.map((item) => (
                             <article key={item.id} className="bg-surface border border-border rounded-lg p-4 hover:border-accent/30 transition-colors">
-                              <div className="flex items-start justify-between gap-3">
+                              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                                 <div className="min-w-0">
                                   <div className="flex items-center gap-2 min-w-0">
                                     <p className="font-semibold text-ink truncate">{item.companyName}</p>
@@ -400,7 +400,7 @@ export default function Applications() {
                                   <p className="text-sm text-muted truncate">{item.role}</p>
                                   <p className="text-xs text-muted mt-1">{item.source || 'No source'} | {nextAction(item)}</p>
                                 </div>
-                                <select value={item.status} onChange={(e) => moveStatus(item, e.target.value)} className="text-xs border border-border rounded-lg px-2 py-1 bg-white max-w-32">
+                  <select value={item.status} onChange={(e) => moveStatus(item, e.target.value)} className="text-xs border border-border rounded-lg px-2 py-1 bg-white w-full sm:w-auto sm:max-w-32">
                                   {statuses.map((option) => <option key={option}>{option}</option>)}
                                 </select>
                               </div>
@@ -442,10 +442,10 @@ export default function Applications() {
 
       {selected && (
         <div className="fixed inset-0 z-[70] bg-navy-900/35 backdrop-blur-sm flex justify-end" onMouseDown={() => setSelected(null)}>
-          <aside className="w-full sm:max-w-3xl bg-white h-full shadow-card-hover overflow-auto" onMouseDown={(event) => event.stopPropagation()}>
-            <div className="sticky top-0 bg-white border-b border-border p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-              <div><p className="text-xs font-bold text-accent uppercase tracking-wide">Application Intelligence</p><h2 className="text-xl font-bold text-ink mt-1">{selected.companyName}</h2><p className="text-sm text-muted">{selected.role}</p></div>
-              <button onClick={() => setSelected(null)} className="btn-secondary text-sm px-3 py-2 w-full sm:w-auto">Close</button>
+          <aside className="w-full sm:max-w-2xl lg:max-w-3xl bg-white h-full shadow-card-hover overflow-y-auto overflow-x-hidden" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="sticky top-0 bg-white border-b border-border p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <div className="min-w-0"><p className="text-xs font-bold text-accent uppercase tracking-wide">Application Intelligence</p><h2 className="text-xl font-bold text-ink mt-1 truncate">{selected.companyName}</h2><p className="text-sm text-muted truncate">{selected.role}</p></div>
+              <button onClick={() => setSelected(null)} className="btn-secondary text-sm px-3 py-2 w-full sm:w-auto shrink-0">Close</button>
             </div>
             <div className="p-4 sm:p-5 space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">

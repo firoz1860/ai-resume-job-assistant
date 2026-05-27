@@ -30,6 +30,8 @@ const fallbackData = {
 const actions = [
   ['Career DNA', '/career-dna'],
   ['Career Intelligence', '/career-intelligence'],
+  ['Career Vault', '/career-vault'],
+  ['Resume Builder', '/resume-builder'],
   ['Analyze Job', '/job-analyzer'],
   ['Mock Interview', '/interview-room'],
   ['Voice Interview', '/voice-interview'],
@@ -41,8 +43,9 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
+  const loadStats = () => {
     let active = true;
+    setIsLoading(true);
     dashboardApi.stats()
       .then((stats) => {
         if (active) setData({ ...fallbackData, ...stats });
@@ -54,6 +57,10 @@ export default function Dashboard() {
         if (active) setIsLoading(false);
       });
     return () => { active = false; };
+  };
+
+  useEffect(() => {
+    return loadStats();
   }, []);
 
   return (
@@ -79,6 +86,11 @@ export default function Dashboard() {
                     <p className="text-xs text-white/70 mt-1 leading-relaxed">{action.help}</p>
                   </a>
                 ))}
+              </div>
+              <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                <a href="/career-vault" className="btn-secondary text-sm bg-white/10 border-white/20 text-white hover:bg-white/20">Search Career Vault</a>
+                <a href="/resume-builder" className="btn-secondary text-sm bg-white/10 border-white/20 text-white hover:bg-white/20">Build Resume</a>
+                <a href="/applications" className="btn-primary text-sm">Track Application</a>
               </div>
             </section>
 

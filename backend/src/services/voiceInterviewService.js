@@ -74,6 +74,29 @@ export function fallbackVoiceFeedback(transcript, question, interviewType) {
   };
 }
 
+export function calculateAudioMetrics(transcript = '', speakingTimeSeconds = 0) {
+  const words = transcript.trim().split(/\s+/).filter(Boolean);
+  const seconds = Number(speakingTimeSeconds) > 0 ? Number(speakingTimeSeconds) : Math.max(20, words.length / 2.2);
+  const fillers = ['um', 'uh', 'like', 'actually', 'basically', 'literally', 'you know'];
+  const lower = transcript.toLowerCase();
+  const fillerCount = fillers.reduce((sum, filler) => sum + (lower.match(new RegExp(`\\b${filler}\\b`, 'g')) || []).length, 0);
+  const pauseCount = (transcript.match(/\.{2,}|—|--|\bpause\b/gi) || []).length;
+  const speakingSpeedWpm = Math.round((words.length / seconds) * 60);
+  const hasStar = ['situation', 'task', 'action', 'result'].filter((term) => lower.includes(term)).length;
+  const structureScore = Math.min(10, Math.max(1, hasStar * 2 + (/built|created|solved|improved|led|designed/.test(lower) ? 2 : 0) + (/\d|%|users|seconds|minutes/.test(lower) ? 2 : 0)));
+  const confidenceScore = Math.max(1, Math.min(10, 9 - fillerCount - Math.floor(pauseCount / 2) + (words.length > 60 ? 1 : 0)));
+
+  return {
+    wordCount: words.length,
+    speakingSpeedWpm,
+    pauseCount,
+    fillerCount,
+    confidenceScore,
+    starScore: Math.min(10, hasStar * 2.5),
+    structureScore,
+  };
+}
+
 export function fallbackVoiceReport(messages) {
   const scores = messages.map((message) => message.score).filter(Boolean);
   const avg = scores.length ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 6;
