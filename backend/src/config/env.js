@@ -4,6 +4,12 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const backendRoot = path.resolve(__dirname, '../..');
+const defaultClientUrls = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5174',
+];
 
 dotenv.config({ path: path.join(backendRoot, '.env') });
 
@@ -19,13 +25,18 @@ function readModelList() {
 
 export const config = {
   port: process.env.PORT || 5000,
-  clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
-  mongoUri: process.env.MONGO_URI?.trim(),
+  clientUrls: [...new Set([
+    ...defaultClientUrls,
+    ...(process.env.CLIENT_URL || '').split(',').map((url) => url.trim()).filter(Boolean),
+  ])],
+  mongoUri: (process.env.MONGO_URI || process.env.MONGODB_URI)?.trim(),
   jwtSecret: process.env.JWT_SECRET || 'dev-careeros-secret-change-me',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   aiApiKey: process.env.AI_API_KEY?.trim(),
   aiModels: readModelList().length ? readModelList() : ['gemini-3.5-flash'],
 };
+
+config.clientUrl = config.clientUrls[0];
 
 config.aiModel = config.aiModels[0];
 

@@ -1,4 +1,4 @@
-import { createUser, validateUser, findUserById } from '../services/authService.js';
+import { createUser, validateUser, findUserById, getOrCreateGuestUser } from '../services/authService.js';
 import { generateToken } from '../utils/generateToken.js';
 
 function authResponse(res, user, message) {
@@ -31,6 +31,15 @@ export async function login(req, res, next) {
     const user = await validateUser(email, password);
     if (!user) return res.status(401).json({ success: false, error: 'Invalid email or password.' });
     return authResponse(res, user, 'Login successful.');
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function guestLogin(req, res, next) {
+  try {
+    const user = await getOrCreateGuestUser();
+    return authResponse(res, user, 'Guest login successful.');
   } catch (err) {
     next(err);
   }

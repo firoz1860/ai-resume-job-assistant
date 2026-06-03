@@ -19,6 +19,11 @@ export function AuthProvider({ children }) {
     applyAuth(data);
   };
 
+  const guestLogin = async () => {
+    const data = await authApi.guestLogin();
+    applyAuth(data);
+  };
+
   const signup = async (payload) => {
     const data = await authApi.signup(payload);
     applyAuth(data);
@@ -60,7 +65,7 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener('careeros:auth-expired', handleAuthExpired);
   }, []);
 
-  const value = useMemo(() => ({ user, token, loading, isAuthenticated: Boolean(user && token), login, signup, logout, fetchMe }), [user, token, loading]);
+  const value = useMemo(() => ({ user, token, loading, isAuthenticated: Boolean(user && token), login, guestLogin, signup, logout, fetchMe }), [user, token, loading]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

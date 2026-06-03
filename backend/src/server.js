@@ -16,7 +16,15 @@ const app = express();
 await connectDB();
 
 app.use(helmet());
-app.use(cors({ origin: config.clientUrl, credentials: true }));
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || config.clientUrls.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked origin: ${origin}`));
+  },
+  credentials: true,
+}));
 app.use(cookieParser());
 app.use(express.json({ limit: '1mb' }));
 app.use(apiLimiter);

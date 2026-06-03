@@ -110,6 +110,7 @@ export const contentApi = {
 export const authApi = {
   signup: (payload) => post('/api/auth/signup', payload),
   login: (payload) => post('/api/auth/login', payload),
+  guestLogin: () => post('/api/auth/guest', {}),
   me: () => request('/api/auth/me'),
   logout: () => post('/api/auth/logout', {}),
 };

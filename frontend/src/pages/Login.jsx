@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import AuthVisual from '../components/AuthVisual.jsx';
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, guestLogin } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
@@ -21,6 +21,19 @@ export default function Login() {
       navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Login failed. Check your credentials.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const continueAsGuest = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await guestLogin();
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message || 'Guest login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -58,6 +71,9 @@ export default function Login() {
               {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
               <button type="submit" className="btn-primary w-full justify-center py-3" disabled={loading}>
                 {loading ? 'Logging in…' : 'Login'}
+              </button>
+              <button type="button" onClick={continueAsGuest} className="btn-secondary w-full justify-center py-3" disabled={loading}>
+                Continue as Guest
               </button>
             </form>
 
