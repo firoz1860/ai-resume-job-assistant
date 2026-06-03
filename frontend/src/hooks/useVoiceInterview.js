@@ -10,12 +10,19 @@ export default function useVoiceInterview() {
   const [error, setError] = useState('');
 
   const start = async (payload) => {
-    setState('starting'); setError('');
-    const data = await voiceInterviewApi.start(payload);
-    setSession(data);
-    setHistory([{ id: data.sessionId, question: data.question, transcript: '', feedback: null, score: null }]);
-    setState('ai_speaking');
-    return data;
+    setState('starting');
+    setError('');
+    try {
+      const data = await voiceInterviewApi.start(payload);
+      setSession(data);
+      setHistory([{ id: data.sessionId, question: data.question, transcript: '', feedback: null, score: null }]);
+      setState('ai_speaking');
+      return data;
+    } catch (err) {
+      setState('setup');
+      setError(err.message || 'Unable to start voice interview.');
+      throw err;
+    }
   };
 
   const submitAnswer = async (transcript, speakingTimeSeconds) => {

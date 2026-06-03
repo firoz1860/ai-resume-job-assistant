@@ -23,6 +23,12 @@ export default function VoiceInterview() {
   const recognition = useSpeechRecognition();
   const timer = useCountdownTimer(voice.session?.timeRemaining || 1200, Boolean(voice.session && voice.state !== 'completed'), () => voice.end());
   const { speak, stop: stopSpeaking, unlock: unlockSpeech } = speech;
+  const end = useCallback(async () => {
+    if (readyTimerRef.current) window.clearTimeout(readyTimerRef.current);
+    stopSpeaking();
+    recognition.stopListening();
+    await voice.end();
+  }, [recognition, stopSpeaking, voice]);
 
   const markReadyAfterSpeech = useCallback((text, nextState) => {
     if (readyTimerRef.current) window.clearTimeout(readyTimerRef.current);
@@ -66,9 +72,13 @@ export default function VoiceInterview() {
   const start = async (e) => {
     e.preventDefault();
     unlockSpeech(false);
-    const data = await voice.start(form);
-    timer.setSecondsLeft(data.timeRemaining || 1200);
-    speakQuestion(data.question);
+    try {
+      const data = await voice.start(form);
+      timer.setSecondsLeft(data.timeRemaining || 1200);
+      speakQuestion(data.question);
+    } catch {
+      stopSpeaking();
+    }
   };
 
   const submit = async () => {
@@ -101,13 +111,6 @@ export default function VoiceInterview() {
     } else {
       speakQuestion(data.nextQuestion);
     }
-  };
-
-  const end = async () => {
-    if (readyTimerRef.current) window.clearTimeout(readyTimerRef.current);
-    stopSpeaking();
-    recognition.stopListening();
-    await voice.end();
   };
 
   const answerNow = () => {

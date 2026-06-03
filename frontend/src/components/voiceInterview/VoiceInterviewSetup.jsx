@@ -3,7 +3,7 @@ const types = ['HR Interview', 'Technical Interview', 'Project-Based Interview',
 export default function VoiceInterviewSetup({ form, setForm, onStart, loading }) {
   const set = (e) => setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
   return <form onSubmit={onStart} className="card p-5 sm:p-6 space-y-4">
-    <input name="targetRole" value={form.targetRole} onChange={set} placeholder="Target role" className="form-input" />
+    <input name="targetRole" value={form.targetRole} onChange={set} placeholder="Target role" className="form-input" required />
     <select name="interviewType" value={form.interviewType} onChange={set} className="form-select">{types.map((type) => <option key={type}>{type}</option>)}</select>
     <select name="difficulty" value={form.difficulty} onChange={set} className="form-select">{['Easy', 'Medium', 'Hard'].map((x) => <option key={x}>{x}</option>)}</select>
     <input name="skills" value={form.skills} onChange={set} placeholder="Skills" className="form-input" />
