@@ -26,6 +26,29 @@ const empty = {
 };
 
 const statuses = ['Saved', 'Applied', 'Interview', 'Rejected', 'Offer'];
+const dateFields = {
+  Saved: [
+    { name: 'followUpDate', label: 'Reminder date', help: 'Optional reminder before you apply.' },
+  ],
+  Applied: [
+    { name: 'appliedDate', label: 'Applied date', help: 'When you submitted the application.' },
+    { name: 'followUpDate', label: 'Follow-up date', help: 'Next follow-up reminder.' },
+  ],
+  Interview: [
+    { name: 'appliedDate', label: 'Applied date', help: 'When you submitted the application.' },
+    { name: 'lastContactDate', label: 'Interview/contact date', help: 'Latest recruiter or interview contact.' },
+    { name: 'followUpDate', label: 'Next follow-up date', help: 'Reminder for thank-you or next check-in.' },
+  ],
+  Rejected: [
+    { name: 'appliedDate', label: 'Applied date', help: 'When you submitted the application.' },
+    { name: 'lastContactDate', label: 'Decision date', help: 'When you received the update.' },
+  ],
+  Offer: [
+    { name: 'appliedDate', label: 'Applied date', help: 'When you submitted the application.' },
+    { name: 'lastContactDate', label: 'Offer date', help: 'When you received the offer.' },
+    { name: 'followUpDate', label: 'Response deadline', help: 'Optional date to respond or negotiate.' },
+  ],
+};
 const statusStyles = {
   Saved: 'bg-slate-100 text-slate-700 border-slate-200',
   Applied: 'bg-blue-50 text-blue-700 border-blue-200',
@@ -43,15 +66,74 @@ const templates = {
   recruiterReply: 'Thanks for reaching out. I am interested in learning more about the role, team, and interview process.',
 };
 
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function addDaysISO(days) {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+function normalizeDateInput(value) {
+  if (!value) return '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(String(value))) return value;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '' : date.toISOString().slice(0, 10);
+}
+
 function formatDate(value) {
   if (!value) return 'Not set';
+  const normalized = normalizeDateInput(value);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
+    const [year, month, day] = normalized.split('-').map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString();
+  }
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString();
 }
 
 function isFollowUpDue(item) {
   if (!item.followUpDate || ['Rejected', 'Offer'].includes(item.status)) return false;
-  return item.followUpDate <= new Date().toISOString().slice(0, 10);
+  return normalizeDateInput(item.followUpDate) <= todayISO();
+}
+
+function visibleDateFields(status) {
+  return dateFields[status] || dateFields.Saved;
+}
+
+function dateSummary(item) {
+  return visibleDateFields(item.status).map((field) => ({
+    label: field.label.replace(' date', ''),
+    value: item[field.name],
+  }));
+}
+
+function applyStatusDates(data, status) {
+  const next = {
+    ...data,
+    status,
+    appliedDate: normalizeDateInput(data.appliedDate),
+    followUpDate: normalizeDateInput(data.followUpDate),
+    lastContactDate: normalizeDateInput(data.lastContactDate),
+  };
+  const today = todayISO();
+
+  if (['Applied', 'Interview', 'Rejected', 'Offer'].includes(status) && !next.appliedDate) {
+    next.appliedDate = today;
+  }
+  if (['Interview', 'Rejected', 'Offer'].includes(status) && !next.lastContactDate) {
+    next.lastContactDate = today;
+  }
+  if (['Applied', 'Interview'].includes(status) && !next.followUpDate) {
+    next.followUpDate = addDaysISO(status === 'Interview' ? 2 : 7);
+  }
+  if (status === 'Rejected') {
+    next.followUpDate = '';
+  }
+
+  return next;
 }
 
 function words(text = '') {
@@ -167,7 +249,13 @@ export default function Applications() {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const set = (e) => setForm((current) => ({ ...current, [e.target.name]: e.target.value }));
+  const set = (e) => {
+    const { name, value } = e.target;
+    setForm((current) => {
+      if (name !== 'status') return { ...current, [name]: value };
+      return applyStatusDates(current, value);
+    });
+  };
 
   const load = async () => {
     setLoading(true);
@@ -210,9 +298,15 @@ export default function Applications() {
     e.preventDefault();
     setSaving(true);
     setError('');
+    const payload = {
+      ...form,
+      appliedDate: normalizeDateInput(form.appliedDate),
+      followUpDate: normalizeDateInput(form.followUpDate),
+      lastContactDate: normalizeDateInput(form.lastContactDate),
+    };
     try {
-      if (editingId) await applicationsApi.update(editingId, form);
-      else await applicationsApi.create(form);
+      if (editingId) await applicationsApi.update(editingId, payload);
+      else await applicationsApi.create(payload);
       resetForm();
       await load();
     } catch (err) {
@@ -224,7 +318,12 @@ export default function Applications() {
 
   const edit = (item) => {
     setEditingId(item.id);
-    setForm(Object.keys(empty).reduce((next, key) => ({ ...next, [key]: item[key] || empty[key] }), {}));
+    setForm(Object.keys(empty).reduce((next, key) => ({
+      ...next,
+      [key]: ['appliedDate', 'followUpDate', 'lastContactDate'].includes(key)
+        ? normalizeDateInput(item[key])
+        : item[key] || empty[key],
+    }), {}));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -243,7 +342,7 @@ export default function Applications() {
   const moveStatus = async (item, status) => {
     setError('');
     try {
-      const updated = await applicationsApi.update(item.id, { ...item, status });
+      const updated = await applicationsApi.update(item.id, applyStatusDates(item, status));
       setItems((current) => current.map((entry) => (entry.id === item.id ? updated : entry)));
       if (selected?.id === item.id) setSelected(updated);
     } catch (err) {
@@ -341,10 +440,14 @@ export default function Applications() {
                   <select name="priority" value={form.priority} onChange={set} className="form-select">{['Low', 'Medium', 'High'].map((value) => <option key={value}>{value}</option>)}</select>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input type="date" name="appliedDate" value={form.appliedDate} onChange={set} className="form-input" />
-                  <input type="date" name="followUpDate" value={form.followUpDate} onChange={set} className="form-input" />
+                  {visibleDateFields(form.status).map((field) => (
+                    <label key={field.name} className="block">
+                      <span className="text-xs font-semibold text-muted">{field.label}</span>
+                      <input type="date" name={field.name} value={form[field.name]} onChange={set} className="form-input mt-1" />
+                      <span className="block text-[11px] text-muted mt-1">{field.help}</span>
+                    </label>
+                  ))}
                 </div>
-                <input type="date" name="lastContactDate" value={form.lastContactDate} onChange={set} className="form-input" />
                 <input name="source" value={form.source} onChange={set} placeholder="Source: LinkedIn, Naukri, Referral, Company site" className="form-input" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input name="recruiterName" value={form.recruiterName} onChange={set} placeholder="Recruiter/contact name" className="form-input" />
@@ -406,8 +509,9 @@ export default function Applications() {
                               </div>
 
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 text-xs text-muted">
-                                <p>Applied: <span className="text-ink">{formatDate(item.appliedDate)}</span></p>
-                                <p>Follow-up: <span className="text-ink">{formatDate(item.followUpDate)}</span></p>
+                                {dateSummary(item).map((entry) => (
+                                  <p key={entry.label}>{entry.label}: <span className="text-ink">{formatDate(entry.value)}</span></p>
+                                ))}
                               </div>
 
                               <div className="flex flex-wrap gap-2 mt-4">
