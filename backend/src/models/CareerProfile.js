@@ -27,6 +27,7 @@ const careerProfileSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-careerProfileSchema.index({ userId: 1 });
+// One profile per user — unique enforces the 1:1 relationship and speeds up findOne
+careerProfileSchema.index({ userId: 1 }, { unique: true });
 
 export default mongoose.model('CareerProfile', careerProfileSchema);

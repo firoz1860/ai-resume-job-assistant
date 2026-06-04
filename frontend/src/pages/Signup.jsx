@@ -18,7 +18,10 @@ export default function Signup() {
     setError('');
     try {
       await signup(form);
-      navigate('/dashboard');
+      navigate('/login', {
+        replace: true,
+        state: { email: form.email.trim(), accountCreated: true },
+      });
     } catch (err) {
       setError(err.message || 'Signup failed. Please try again.');
     } finally {

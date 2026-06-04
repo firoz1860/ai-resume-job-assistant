@@ -11,4 +11,8 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// email already has unique:true which creates an index.
+// Add a createdAt index for admin/analytics queries sorting by date.
+userSchema.index({ createdAt: -1 });
+
 export default mongoose.model('User', userSchema);

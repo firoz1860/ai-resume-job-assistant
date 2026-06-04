@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import AuthVisual from '../components/AuthVisual.jsx';
 
 export default function Login() {
   const { login, guestLogin } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const location = useLocation();
+  const [form, setForm] = useState({ email: location.state?.email || '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -66,6 +67,11 @@ export default function Login() {
             <p className="text-sm text-muted mb-6">Continue to your career dashboard.</p>
 
             <form onSubmit={submit} className="space-y-3">
+              {location.state?.accountCreated && (
+                <p className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                  Account created. Login with the same credentials to continue.
+                </p>
+              )}
               <input name="email" type="email" value={form.email} onChange={set} placeholder="Email address" className="form-input" autoComplete="email" required />
               <input name="password" type="password" value={form.password} onChange={set} placeholder="Password" className="form-input" autoComplete="current-password" required />
               {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}

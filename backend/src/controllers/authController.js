@@ -1,8 +1,8 @@
 import { createUser, validateUser, findUserById, getOrCreateGuestUser } from '../services/authService.js';
 import { generateToken } from '../utils/generateToken.js';
 
-function authResponse(res, user, message) {
-  return res.json({ success: true, message, data: { user, token: generateToken(user._id) } });
+function authResponse(res, user, message, status = 200) {
+  return res.status(status).json({ success: true, message, data: { user, token: generateToken(user._id) } });
 }
 
 export async function signup(req, res, next) {
@@ -15,7 +15,7 @@ export async function signup(req, res, next) {
       return res.status(400).json({ success: false, error: 'Password must be at least 6 characters.' });
     }
     const user = await createUser({ name, email, password });
-    return authResponse(res, user, 'Signup successful.');
+    return authResponse(res, user, 'Account created successfully.', 201);
   } catch (err) {
     if (err.code === 11000 || err.status === 409) return res.status(409).json({ success: false, error: 'User already exists.' });
     next(err);

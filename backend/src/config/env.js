@@ -33,7 +33,7 @@ export const config = {
   jwtSecret: process.env.JWT_SECRET || 'dev-careeros-secret-change-me',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   aiApiKey: process.env.AI_API_KEY?.trim(),
-  aiModels: readModelList().length ? readModelList() : ['gemini-3.5-flash'],
+  aiModels: readModelList().length ? readModelList() : ['gemini-2.0-flash'],
 };
 
 config.clientUrl = config.clientUrls[0];
