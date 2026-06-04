@@ -20,4 +20,9 @@ const interviewMessageSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+interviewMessageSchema.index({ sessionId: 1, createdAt: 1 });
+interviewMessageSchema.index({ userId: 1, createdAt: -1 });
+interviewMessageSchema.index({ userId: 1, sessionId: 1, createdAt: 1 });
+interviewMessageSchema.index({ sessionId: 1, mode: 1, createdAt: 1 });
+
 export default mongoose.model('InterviewMessage', interviewMessageSchema);

@@ -13,7 +13,8 @@ export async function listGeneratedContent(req, res) {
 
   const items = await GeneratedContent.find({ userId: req.user._id })
     .sort({ createdAt: -1 })
-    .limit(100);
+    .limit(100)
+    .lean();
 
   res.json({ success: true, data: items.map(normalizeGeneratedContent) });
 }

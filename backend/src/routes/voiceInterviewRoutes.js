@@ -7,14 +7,15 @@ import {
   voiceInterviewDetail,
   voiceInterviewHistory,
 } from '../controllers/voiceInterviewController.js';
+import { cacheFor, invalidateUserCache } from '../middleware/cache.js';
 
 const router = Router();
 
 router.use(protect);
-router.post('/start', startVoiceInterview);
-router.post('/answer', answerVoiceInterview);
-router.post('/end', endVoiceInterview);
-router.get('/history', voiceInterviewHistory);
-router.get('/:id', voiceInterviewDetail);
+router.post('/start', invalidateUserCache, startVoiceInterview);
+router.post('/answer', invalidateUserCache, answerVoiceInterview);
+router.post('/end', invalidateUserCache, endVoiceInterview);
+router.get('/history', cacheFor(20), voiceInterviewHistory);
+router.get('/:id', cacheFor(20), voiceInterviewDetail);
 
 export default router;

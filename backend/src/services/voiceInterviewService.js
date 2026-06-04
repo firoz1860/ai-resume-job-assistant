@@ -39,7 +39,7 @@ export async function findVoiceSession(sessionId, userId) {
 }
 
 export async function listVoiceSessions(userId) {
-  if (dbState.isConnected) return InterviewSession.find({ userId, mode: 'voice' }).sort({ createdAt: -1 }).limit(50);
+  if (dbState.isConnected) return InterviewSession.find({ userId, mode: 'voice' }).sort({ createdAt: -1 }).limit(50).lean();
   return memoryVoiceSessions.filter((session) => String(session.userId) === String(userId)).reverse();
 }
 
@@ -51,7 +51,7 @@ export async function saveVoiceMessage(message) {
 }
 
 export async function getVoiceMessages(sessionId) {
-  if (dbState.isConnected) return InterviewMessage.find({ sessionId, mode: 'voice' }).sort({ createdAt: 1 });
+  if (dbState.isConnected) return InterviewMessage.find({ sessionId, mode: 'voice' }).sort({ createdAt: 1 }).lean();
   return memoryVoiceMessages.filter((message) => String(message.sessionId) === String(sessionId));
 }
 

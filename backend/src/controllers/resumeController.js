@@ -70,7 +70,7 @@ export async function applyParsedResume(req, res) {
 
 export async function listResumeVersions(req, res) {
   if (dbState.isConnected) {
-    const versions = await ResumeVersion.find({ userId: req.user._id }).sort({ updatedAt: -1 }).limit(30);
+    const versions = await ResumeVersion.find({ userId: req.user._id }).sort({ updatedAt: -1 }).limit(30).lean();
     return res.json({ success: true, data: versions.map(normalizeVersion) });
   }
 

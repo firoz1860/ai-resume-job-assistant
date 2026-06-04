@@ -27,4 +27,6 @@ const careerProfileSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+careerProfileSchema.index({ userId: 1 });
+
 export default mongoose.model('CareerProfile', careerProfileSchema);

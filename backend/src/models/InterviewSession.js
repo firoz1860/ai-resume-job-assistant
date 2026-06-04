@@ -24,4 +24,8 @@ const interviewSessionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+interviewSessionSchema.index({ userId: 1, mode: 1, createdAt: -1 });
+interviewSessionSchema.index({ userId: 1, status: 1 });
+interviewSessionSchema.index({ status: 1, overallScore: 1 });
+
 export default mongoose.model('InterviewSession', interviewSessionSchema);

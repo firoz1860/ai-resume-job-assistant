@@ -12,4 +12,6 @@ const roadmapSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+roadmapSchema.index({ userId: 1, createdAt: -1 });
+
 export default mongoose.model('Roadmap', roadmapSchema);

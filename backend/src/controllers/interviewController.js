@@ -51,7 +51,7 @@ async function findSession(sessionId, userId) {
 }
 
 async function listSessions(userId) {
-  if (dbState.isConnected) return InterviewSession.find({ userId, mode: { $ne: 'voice' } }).sort({ createdAt: -1 }).limit(50);
+  if (dbState.isConnected) return InterviewSession.find({ userId, mode: { $ne: 'voice' } }).sort({ createdAt: -1 }).limit(50).lean();
   return memorySessions.filter((session) => String(session.userId) === String(userId)).reverse();
 }
 
@@ -63,7 +63,7 @@ async function saveMessage(message) {
 }
 
 async function getMessages(sessionId) {
-  if (dbState.isConnected) return InterviewMessage.find({ sessionId }).sort({ createdAt: 1 });
+  if (dbState.isConnected) return InterviewMessage.find({ sessionId }).sort({ createdAt: 1 }).lean();
   return memoryMessages.filter((message) => String(message.sessionId) === String(sessionId));
 }
 

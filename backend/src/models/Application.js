@@ -26,4 +26,9 @@ const applicationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+applicationSchema.index({ userId: 1, createdAt: -1 });
+applicationSchema.index({ userId: 1, updatedAt: -1 });
+applicationSchema.index({ userId: 1, followUpDate: 1, status: 1 });
+applicationSchema.index({ userId: 1, status: 1 });
+
 export default mongoose.model('Application', applicationSchema);

@@ -39,7 +39,7 @@ function isValidMongoId(value) {
 
 export async function listApplications(req, res) {
   if (dbState.isConnected) {
-    const items = await Application.find({ userId: req.user._id }).sort({ createdAt: -1 });
+    const items = await Application.find({ userId: req.user._id }).sort({ createdAt: -1 }).lean();
     return res.json({ success: true, data: items.map(normalizeApplication) });
   }
 
