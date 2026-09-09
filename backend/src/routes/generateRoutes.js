@@ -13,7 +13,7 @@ import { searchCareerVault } from '../controllers/careerVaultController.js';
 import { getAdminStats } from '../controllers/adminController.js';
 import { applyParsedResume, listResumeVersions, parseResume, resumeDiff, saveResumeVersion } from '../controllers/resumeController.js';
 import { cacheFor, invalidateUserCache } from '../middleware/cache.js';
-import { optionalAuth, protect } from '../middleware/authMiddleware.js';
+import { optionalAuth, protect, requireAdmin } from '../middleware/authMiddleware.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import multer from 'multer';
 
@@ -29,7 +29,7 @@ router.get('/dashboard/stats', protect, cacheFor(30), asyncHandler(getDashboardS
 router.get('/intelligence/overview', protect, cacheFor(45), asyncHandler(getCareerIntelligence));
 router.post('/intelligence/inspect-job', protect, asyncHandler(inspectJobPost));
 router.get('/career-vault/search', protect, cacheFor(30), asyncHandler(searchCareerVault));
-router.get('/admin/stats', protect, asyncHandler(getAdminStats));
+router.get('/admin/stats', protect, requireAdmin, asyncHandler(getAdminStats));
 router.post('/resume/parse', protect, upload.single('resume'), asyncHandler(parseResume));
 router.post('/resume/apply-parsed', protect, invalidateUserCache, asyncHandler(applyParsedResume));
 router.get('/resume/versions', protect, cacheFor(30), asyncHandler(listResumeVersions));

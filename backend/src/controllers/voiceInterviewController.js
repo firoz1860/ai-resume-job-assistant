@@ -10,11 +10,14 @@ import {
   findVoiceSession,
   getVoiceMessages,
   listVoiceSessions,
+  recordVoiceAnswer,
   saveVoiceMessage,
   secondsRemaining,
   updateVoiceSession,
 } from '../services/voiceInterviewService.js';
 import { parseAIJson } from '../utils/parseAIJson.js';
+import { dbState } from '../config/db.js';
+import { isValidMongoId } from '../utils/validateId.js';
 
 function cleanQuestion(text) {
   return String(text || '').trim().replace(/^["']|["']$/g, '').trim();
@@ -121,7 +124,7 @@ export async function answerVoiceInterview(req, res, next) {
       mistakes: evaluation.mistakes || [],
       nextQuestion: evaluation.nextQuestion,
     });
-    await updateVoiceSession(sessionId, { questionsAsked: (session.questionsAsked || 0) + 1, transcripts: [...(session.transcripts || []), transcript] });
+    await recordVoiceAnswer(sessionId, transcript);
 
     res.json({ success: true, message: 'Voice answer evaluated.', data: { ...evaluation, audioMetrics, timeRemaining: secondsRemaining(session), shouldEnd: false } });
   } catch (err) {
@@ -162,6 +165,9 @@ export async function voiceInterviewHistory(req, res, next) {
 
 export async function voiceInterviewDetail(req, res, next) {
   try {
+    if (dbState.isConnected && !isValidMongoId(req.params.id)) {
+      return res.status(404).json({ success: false, error: 'Voice interview session not found.' });
+    }
     const session = await findVoiceSession(req.params.id, req.user._id);
     if (!session) return res.status(404).json({ success: false, error: 'Voice interview session not found.' });
     const messages = await getVoiceMessages(req.params.id);

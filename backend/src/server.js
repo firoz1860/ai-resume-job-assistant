@@ -13,6 +13,11 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 const app = express();
 
+// Behind Render/Vercel/any reverse proxy the client IP is in X-Forwarded-For.
+// Trusting the first hop lets express-rate-limit key by real per-client IP
+// instead of lumping every user under the proxy's single IP.
+app.set('trust proxy', 1);
+
 await connectDB();
 
 app.use(helmet());

@@ -72,7 +72,8 @@ function retryDelayMs(err, fallbackMs) {
 export async function generateContent(promptSpec) {
   const MAX_RETRIES = 2;
   const RETRY_DELAY_MS = 6000;
-  let lastRateLimitError = null;
+  const TRANSIENT_DELAY_MS = 1500;
+  let lastTransientError = null;
 
   for (const model of config.aiModels) {
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
@@ -81,16 +82,19 @@ export async function generateContent(promptSpec) {
         return extractText(response);
       } catch (err) {
         const status = err.response?.status;
+        // Retryable: rate limit, server errors, and network/timeout (no response).
+        // Retry within the model, then fall through to the next configured model.
+        const isTransient = status === 429 || (typeof status === 'number' && status >= 500) || !err.response;
 
-        if (status === 429) {
-          lastRateLimitError = err;
+        if (isTransient) {
+          lastTransientError = err;
           if (attempt < MAX_RETRIES) {
-            const delay = retryDelayMs(err, RETRY_DELAY_MS);
-            console.log(`[Retry] Gemini model "${model}" rate limited. Waiting ${delay / 1000}s before retry ${attempt + 1}/${MAX_RETRIES}.`);
+            const delay = status === 429 ? retryDelayMs(err, RETRY_DELAY_MS) : TRANSIENT_DELAY_MS;
+            console.log(`[Retry] Gemini model "${model}" ${status || 'network error'}. Waiting ${delay / 1000}s before retry ${attempt + 1}/${MAX_RETRIES}.`);
             await sleep(delay);
             continue;
           }
-          break;
+          break; // retries exhausted for this model → try the next fallback model
         }
 
         if (status === 404) {
@@ -120,12 +124,17 @@ export async function generateContent(promptSpec) {
     }
   }
 
-  const detail = geminiErrorDetail(lastRateLimitError);
+  const detail = geminiErrorDetail(lastTransientError);
   const modelList = config.aiModels.join(', ');
   const suffix = detail ? ` Gemini said: ${detail}` : '';
+  const rateLimited = lastTransientError?.response?.status === 429;
 
   throw Object.assign(
-    new Error(`Rate limit reached for configured Gemini model(s): ${modelList}. Wait a minute or set AI_MODEL to the exact model that worked in Postman.${suffix}`),
-    { isOperational: true, status: 429 }
+    new Error(
+      rateLimited
+        ? `Rate limit reached for configured Gemini model(s): ${modelList}. Wait a minute or set AI_MODEL to the exact model that worked in Postman.${suffix}`
+        : `AI service is temporarily unavailable across configured model(s): ${modelList}. Please try again shortly.${suffix}`
+    ),
+    { isOperational: true, status: rateLimited ? 429 : 503 }
   );
 }

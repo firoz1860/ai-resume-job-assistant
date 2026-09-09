@@ -25,6 +25,14 @@ export async function protect(req, res, next) {
   }
 }
 
+// Gate admin-only routes. Must run AFTER protect (which sets req.user).
+export function requireAdmin(req, res, next) {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({ success: false, error: 'Admin access required.' });
+  }
+  next();
+}
+
 export async function optionalAuth(req, res, next) {
   try {
     const header = req.headers.authorization || '';

@@ -22,13 +22,17 @@ export async function getAdminStats(req, res) {
     });
   }
 
-  const [totalUsers, generatedContent, interviewsCompleted, trackedApplications, resumeVersions, scored, roles] = await Promise.all([
+  const [totalUsers, generatedContent, interviewsCompleted, trackedApplications, resumeVersions, scoreAgg, roles] = await Promise.all([
     User.countDocuments(),
     GeneratedContent.countDocuments(),
     InterviewSession.countDocuments({ status: 'completed' }),
     Application.countDocuments(),
     ResumeVersion.countDocuments(),
-    InterviewSession.find({ overallScore: { $gt: 0 } }).select('overallScore').lean(),
+    // Average computed in the DB (scales instead of loading every session into memory).
+    InterviewSession.aggregate([
+      { $match: { overallScore: { $gt: 0 } } },
+      { $group: { _id: null, avg: { $avg: '$overallScore' } } },
+    ]),
     InterviewSession.aggregate([
       { $match: { targetRole: { $nin: [null, ''] } } },
       { $group: { _id: '$targetRole', count: { $sum: 1 } } },
@@ -37,9 +41,7 @@ export async function getAdminStats(req, res) {
     ]),
   ]);
 
-  const averageScore = scored.length
-    ? Math.round(scored.reduce((sum, item) => sum + Number(item.overallScore || 0), 0) / scored.length)
-    : 0;
+  const averageScore = scoreAgg.length ? Math.round(scoreAgg[0].avg) : 0;
 
   res.json({
     success: true,

@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 const ToastContext = createContext({ notify: () => {} });
 
@@ -8,9 +8,12 @@ export function useToast() {
 
 export default function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
+  const idRef = useRef(0);
 
   const notify = useCallback((message, type = 'success') => {
-    const id = Date.now().toString();
+    // Monotonic id — Date.now() collides for toasts fired in the same ms.
+    idRef.current += 1;
+    const id = idRef.current;
     setToasts((current) => [...current, { id, message, type }].slice(-4));
     window.setTimeout(() => {
       setToasts((current) => current.filter((toast) => toast.id !== id));

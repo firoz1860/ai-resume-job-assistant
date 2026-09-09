@@ -18,10 +18,9 @@ export default function Signup() {
     setError('');
     try {
       await signup(form);
-      navigate('/login', {
-        replace: true,
-        state: { email: form.email.trim(), accountCreated: true },
-      });
+      // signup() already authenticates (stores token + user), so go straight
+      // to the app instead of asking the user to log in again.
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       setError(err.message || 'Signup failed. Please try again.');
     } finally {

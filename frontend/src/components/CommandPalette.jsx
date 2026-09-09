@@ -27,11 +27,11 @@ export default function CommandPalette({ open, onOpen, onClose }) {
         event.preventDefault();
         onOpen();
       }
-      if (event.key === 'Escape') onClose();
+      if (open && event.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [onClose, onOpen]);
+  }, [open, onClose, onOpen]);
 
   useEffect(() => {
     if (!open) setQuery('');

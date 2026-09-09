@@ -157,6 +157,15 @@ export default function useSpeechSynthesis({ rate = 1, pitch = 1, volume = 1 } =
   const pause = useCallback(() => { if (isSupported) window.speechSynthesis.pause(); }, [isSupported]);
   const resume = useCallback(() => { if (isSupported) window.speechSynthesis.resume(); }, [isSupported]);
 
+  // Self-clean on unmount: cancel any in-flight speech and clear the keep-alive
+  // interval so it doesn't run forever (and no onend fires setState after unmount).
+  useEffect(() => () => {
+    clearResumeTimer();
+    queueRef.current = [];
+    onDoneRef.current = null;
+    if (isSupported) window.speechSynthesis.cancel();
+  }, [clearResumeTimer, isSupported]);
+
   return {
     speak,
     stop,

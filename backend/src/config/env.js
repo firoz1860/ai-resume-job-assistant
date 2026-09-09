@@ -44,3 +44,10 @@ if (!config.aiApiKey) {
   console.error('FATAL: AI_API_KEY is not set in environment variables.');
   process.exit(1);
 }
+
+// Never run in production with the public default JWT secret — anyone could
+// forge a valid token for any user id and pass protect(). Fail fast instead.
+if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+  console.error('FATAL: JWT_SECRET is not set in production. Refusing to start with an insecure default secret.');
+  process.exit(1);
+}
