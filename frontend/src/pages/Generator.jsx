@@ -5,6 +5,7 @@ import GeneratorForm from '../components/GeneratorForm.jsx';
 import ResultCard from '../components/ResultCard.jsx';
 import Loader from '../components/Loader.jsx';
 import EmptyState from '../components/EmptyState.jsx';
+import PageHeader from '../components/PageHeader.jsx';
 import { generateContent } from '../services/api.js';
 
 const RATE_LIMIT_COOLDOWN = 30; // seconds to show countdown on 429
@@ -98,10 +99,12 @@ export default function Generator() {
       <Navbar />
       <main className="flex-1 py-8 md:py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-ink mb-1.5">Content Generator</h1>
-            <p className="text-muted text-sm">Fill in your details, choose content type and tone, then generate.</p>
-          </div>
+          <PageHeader
+            icon="doc"
+            eyebrow="AI content"
+            title="Content Generator"
+            subtitle="Fill in your details, choose content type and tone, then generate tailored, ready-to-send content."
+          />
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6 items-start">
             {/* Left: Form */}
