@@ -12,6 +12,7 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   html,
@@ -26,6 +27,10 @@
     background:
       radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 32rem),
       linear-gradient(180deg, #ffffff 0%, #F8FAFC 22rem);
+  }
+
+  h1, h2, h3, .font-display {
+    font-feature-settings: 'ss01' on, 'cv01' on;
   }
 
   #root {
@@ -108,12 +113,65 @@
     max-width: 100%;
   }
 
+  /* Gradient CTA — premium primary for marketing surfaces */
+  .btn-gradient {
+    @apply inline-flex items-center justify-center gap-2
+           px-6 py-3 min-h-[2.75rem]
+           text-white font-semibold rounded-xl
+           bg-brand-gradient bg-[length:200%_200%]
+           transition-all duration-300 active:scale-95
+           shadow-glow hover:shadow-glow-violet
+           focus:outline-none focus:ring-2 focus:ring-white/40;
+    background-position: 0% 50%;
+  }
+  .btn-gradient:hover {
+    background-position: 100% 50%;
+  }
+
   /* ─── Cards ───────────────────────────────────────────── */
   .card {
     @apply bg-card rounded-xl border border-border;
     box-shadow: 0 1px 2px rgb(15 23 42 / 0.05), 0 12px 32px rgb(15 23 42 / 0.04);
     min-width: 0;
     overflow: hidden;
+  }
+
+  /* Glass panel for hero / overlays on dark backgrounds */
+  .glass {
+    background: linear-gradient(155deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255,255,255,0.14);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  /* Gradient-border feature card */
+  .card-gradient {
+    position: relative;
+    @apply bg-card rounded-2xl border border-border;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.05), 0 18px 44px -20px rgb(15 23 42 / 0.14);
+    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease;
+    min-width: 0;
+  }
+  .card-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(140deg, rgba(37,99,235,0.6), rgba(109,92,240,0.35), rgba(6,182,212,0.45));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .card-gradient:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 60px -22px rgb(37 99 235 / 0.32);
+  }
+  .card-gradient:hover::before {
+    opacity: 1;
   }
 
   /* ─── Form elements ────────────────────────────────────── */
@@ -157,6 +215,12 @@
   .page-header {
     @apply mb-6 sm:mb-8;
   }
+
+  /* Small pill / eyebrow badge */
+  .eyebrow-pill {
+    @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full
+           text-xs font-semibold tracking-wide;
+  }
 }
 
 @layer utilities {
@@ -166,6 +230,74 @@
   }
   .animate-slide-up {
     animation: slideUp 0.35s ease-out both;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    background: linear-gradient(120deg, #2563EB 0%, #6D5CF0 50%, #06B6D4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-light {
+    background: linear-gradient(120deg, #93C5FD 0%, #C4B5FD 50%, #67E8F9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Aurora backdrop layer (position: absolute inside a relative parent) */
+  .aurora-layer {
+    background:
+      radial-gradient(38rem 30rem at 8% -10%, rgba(56,189,248,0.28), transparent 60%),
+      radial-gradient(34rem 30rem at 100% 0%, rgba(109,92,240,0.30), transparent 55%),
+      radial-gradient(40rem 34rem at 50% 118%, rgba(37,99,235,0.24), transparent 60%);
+    filter: blur(6px);
+  }
+
+  /* Subtle dotted / grid texture for dark sections */
+  .bg-dots {
+    background-image: radial-gradient(rgba(255,255,255,0.10) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(15,23,42,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,23,42,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Shimmer sweep overlay (put inside a relative, overflow-hidden element) */
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    animation: shimmer 2.4s ease-in-out infinite;
+  }
+
+  /* Scroll-reveal: initial state; .is-visible triggers the transition */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Marquee track (duplicate children so -50% loops seamlessly) */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 28s linear infinite;
+  }
+  .marquee-mask {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
   }
 
   /* Truncate with tooltip hint */
@@ -279,6 +411,18 @@
   .auth-card-three i {
     height: 8px;
     opacity: 0.85;
+  }
+}
+
+/* ── Respect reduced motion ─────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .marquee-track,
+  .animate-floaty,
+  .animate-aurora-shift,
+  .shimmer::after {
+    animation: none !important;
   }
 }
 

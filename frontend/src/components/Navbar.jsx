@@ -106,20 +106,20 @@ export default function Navbar() {
   return (
     <>
       {/* ── Top header bar ─────────────────────────────────── */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-border shadow-sm">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-9 h-9 bg-navy-900 rounded-lg flex items-center justify-center shrink-0 shadow-sm shadow-blue-500/20">
+          <Link to="/" className="flex items-center gap-2 shrink-0 group">
+            <div className="w-9 h-9 bg-brand-gradient rounded-lg flex items-center justify-center shrink-0 shadow-glow transition-transform duration-200 group-hover:scale-105">
               <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
-                <path d="M5 7h10M5 11h10M5 15h6" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"/>
-                <circle cx="18" cy="10" r="3" fill="#2563EB" opacity="0.85"/>
-                <path d="M18 8.5v3M16.5 10h3" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
+                <path d="M5 7h10M5 11h10M5 15h6" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="18" cy="10" r="3" fill="white" opacity="0.9"/>
+                <path d="M18 8.5v3M16.5 10h3" stroke="#2563EB" strokeWidth="1.2" strokeLinecap="round"/>
               </svg>
             </div>
-            <span className="font-bold text-navy-900 text-base lg:text-lg whitespace-nowrap">
-              CareerOS<span className="text-accent">AI</span>
+            <span className="font-display font-bold text-navy-900 text-base lg:text-lg whitespace-nowrap">
+              CareerOS<span className="text-gradient">AI</span>
             </span>
           </Link>
 
@@ -209,7 +209,7 @@ export default function Navbar() {
                 Logout
               </button>
             ) : (
-              <Link to="/login" className="btn-primary text-xs xl:text-sm px-3 xl:px-4 py-2 whitespace-nowrap">
+              <Link to="/login" className="btn-gradient text-xs xl:text-sm px-4 xl:px-5 py-2 whitespace-nowrap">
                 Login
               </Link>
             )}
@@ -293,7 +293,7 @@ export default function Navbar() {
                     Logout
                   </button>
                 ) : (
-                  <Link to="/login" onClick={() => setOpen(false)} className="btn-primary text-sm w-full justify-center">
+                  <Link to="/login" onClick={() => setOpen(false)} className="btn-gradient text-sm w-full justify-center">
                     Login
                   </Link>
                 )}
