@@ -18,69 +18,45 @@ function authHeaders() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-export async function generateContent(payload) {
-  const response = await fetch(`${BASE_URL}/api/generate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-    body: JSON.stringify(payload),
-  });
+// Single source of truth for every request: attaches nothing extra beyond the
+// given fetchOptions, but centralizes 401 handling (session expiry) and safe
+// JSON parsing so a non-JSON body (HTML 500, empty 204, cold-start 502) can't
+// throw a SyntaxError over the real error.
+async function core(path, fetchOptions, fallbackMessage = 'Request failed.') {
+  const response = await fetch(`${BASE_URL}${path}`, fetchOptions);
 
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
-    throw new Error(data.error || 'Something went wrong. Please try again.');
-  }
-
-  return data.data;
-}
-
-export async function matchJob(payload) {
-  const response = await fetch(`${BASE_URL}/api/match`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-    body: JSON.stringify(payload),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
-    throw new Error(data.error || 'Something went wrong. Please try again.');
-  }
-
-  return data.data;
-}
-
-async function post(path, payload) {
-  const response = await fetch(`${BASE_URL}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-    body: JSON.stringify(payload),
-  });
-  const data = await response.json();
-  if (!response.ok || !data.success) throw new Error(data.error || 'Request failed.');
-  return data.data;
-}
-
-async function request(path, options = {}) {
-  const response = await fetch(`${BASE_URL}${path}`, { ...options, headers: { ...authHeaders(), ...(options.headers || {}) } });
-  const data = await response.json();
   if (response.status === 401) {
     localStorage.removeItem('careeros_token');
     window.dispatchEvent(new Event('careeros:auth-expired'));
   }
-  if (!response.ok || !data.success) throw new Error(data.error || 'Request failed.');
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.success) {
+    throw new Error(data.error || fallbackMessage);
+  }
   return data.data;
 }
 
+const jsonHeaders = () => ({ 'Content-Type': 'application/json', ...authHeaders() });
+
+export async function generateContent(payload) {
+  return core('/api/generate', { method: 'POST', headers: jsonHeaders(), body: JSON.stringify(payload) }, 'Something went wrong. Please try again.');
+}
+
+export async function matchJob(payload) {
+  return core('/api/match', { method: 'POST', headers: jsonHeaders(), body: JSON.stringify(payload) }, 'Something went wrong. Please try again.');
+}
+
+async function post(path, payload) {
+  return core(path, { method: 'POST', headers: jsonHeaders(), body: JSON.stringify(payload) });
+}
+
+async function request(path, options = {}) {
+  return core(path, { ...options, headers: { ...authHeaders(), ...(options.headers || {}) } });
+}
+
 async function upload(path, formData) {
-  const response = await fetch(`${BASE_URL}${path}`, {
-    method: 'POST',
-    headers: { ...authHeaders() },
-    body: formData,
-  });
-  const data = await response.json();
-  if (!response.ok || !data.success) throw new Error(data.error || 'Upload failed.');
-  return data.data;
+  return core(path, { method: 'POST', headers: { ...authHeaders() }, body: formData });
 }
 
 export const careerApi = {
