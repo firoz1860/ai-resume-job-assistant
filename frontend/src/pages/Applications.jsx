@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
+import PageHeader from '../components/PageHeader.jsx';
 import { applicationsApi } from '../services/api.js';
 
 const empty = {
@@ -228,9 +229,9 @@ function nextAction(item) {
 
 function StatCard({ label, value }) {
   return (
-    <div className="card p-4">
-      <p className="text-xs text-muted uppercase font-semibold">{label}</p>
-      <p className="text-2xl font-bold text-ink mt-1">{value}</p>
+    <div className="card-gradient p-4">
+      <p className="text-xs text-muted uppercase font-semibold tracking-wide">{label}</p>
+      <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-brand-gradient mt-1 font-display">{value}</p>
     </div>
   );
 }
@@ -390,16 +391,15 @@ export default function Applications() {
       <Navbar />
       <main className="flex-1 py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-ink mb-1.5">Application Intelligence Tracker</h1>
-              <p className="text-sm text-muted">Track roles, contacts, resume changes, prep, reminders, and outcomes from one workspace.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full lg:w-auto">
-              <button onClick={() => window.print()} className="btn-secondary text-sm justify-center">Export PDF</button>
-              <button onClick={load} className="btn-secondary text-sm justify-center">Refresh</button>
-            </div>
-          </div>
+          <PageHeader
+            icon="match"
+            eyebrow="Pipeline"
+            title="Application Intelligence Tracker"
+            subtitle="Track roles, contacts, resume changes, prep, reminders, and outcomes from one workspace."
+          >
+            <button onClick={() => window.print()} className="btn-secondary text-sm bg-white/10 border-white/20 text-white hover:bg-white/20">Export PDF</button>
+            <button onClick={load} className="btn-secondary text-sm bg-white/10 border-white/20 text-white hover:bg-white/20">Refresh</button>
+          </PageHeader>
 
           {error && <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>}
 
@@ -461,7 +461,7 @@ export default function Applications() {
                 <textarea name="resumeBefore" value={form.resumeBefore} onChange={set} rows={2} placeholder="Original resume bullet" className="form-textarea" />
                 <textarea name="resumeAfter" value={form.resumeAfter} onChange={set} rows={2} placeholder="Tailored resume bullet" className="form-textarea" />
                 <textarea name="generatedContent" value={form.generatedContent} onChange={set} rows={4} placeholder="Generated cover letter, recruiter message, email, or why-company answer" className="form-textarea" />
-                <button className="btn-primary w-full justify-center" disabled={saving}>{saving ? 'Saving...' : editingId ? 'Update Application' : 'Add Application'}</button>
+                <button className="btn-gradient w-full justify-center" disabled={saving}>{saving ? 'Saving...' : editingId ? 'Update Application' : 'Add Application'}</button>
               </form>
             </section>
 
