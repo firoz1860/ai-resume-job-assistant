@@ -1,5 +1,18 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
+export const API_BASE_URL = BASE_URL;
+
+// Fire-and-forget health ping. Called once on app load so a cold-started
+// backend (e.g. Render free tier) begins waking while the user is still on
+// the landing/login screen — cutting perceived auth latency on first request.
+export function warmup() {
+  try {
+    fetch(`${BASE_URL}/health`, { method: 'GET', cache: 'no-store', keepalive: true }).catch(() => {});
+  } catch {
+    // ignore — warm-up is best-effort only
+  }
+}
+
 function authHeaders() {
   const token = localStorage.getItem('careeros_token');
   return token ? { Authorization: `Bearer ${token}` } : {};

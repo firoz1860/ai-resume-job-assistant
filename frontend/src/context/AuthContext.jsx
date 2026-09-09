@@ -3,15 +3,39 @@ import { authApi } from '../services/api.js';
 
 const AuthContext = createContext(null);
 
+const TOKEN_KEY = 'careeros_token';
+const USER_KEY = 'careeros_user';
+
+function readStoredUser() {
+  try {
+    return JSON.parse(localStorage.getItem(USER_KEY) || 'null');
+  } catch {
+    return null;
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => localStorage.getItem('careeros_token'));
-  const [loading, setLoading] = useState(Boolean(token));
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
+  // Rehydrate the last-known user synchronously so returning visitors are
+  // authenticated instantly — no full-screen spinner while /me round-trips
+  // (which can be very slow on a cold-started backend).
+  const [user, setUser] = useState(() => (localStorage.getItem(TOKEN_KEY) ? readStoredUser() : null));
+  // Only block the UI when we have a token but NO cached user to render yet.
+  const [loading, setLoading] = useState(() => Boolean(localStorage.getItem(TOKEN_KEY)) && !readStoredUser());
 
   const applyAuth = (data) => {
-    localStorage.setItem('careeros_token', data.token);
+    localStorage.setItem(TOKEN_KEY, data.token);
+    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
     setToken(data.token);
     setUser(data.user);
+    setLoading(false);
+  };
+
+  const clearAuth = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    setToken(null);
+    setUser(null);
   };
 
   const login = async (payload) => {
@@ -31,23 +55,23 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try { await authApi.logout(); } catch {}
-    localStorage.removeItem('careeros_token');
-    setToken(null);
-    setUser(null);
+    clearAuth();
   };
 
+  // Validate/refresh the session in the background. With a cached user already
+  // rendered, this never blocks the UI; it only corrects state if the token is
+  // stale (401 clears it) or the user record changed server-side.
   const fetchMe = async () => {
-    if (!localStorage.getItem('careeros_token')) {
+    if (!localStorage.getItem(TOKEN_KEY)) {
       setLoading(false);
       return;
     }
     try {
       const data = await authApi.me();
       setUser(data.user);
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
     } catch {
-      localStorage.removeItem('careeros_token');
-      setToken(null);
-      setUser(null);
+      clearAuth();
     } finally {
       setLoading(false);
     }
@@ -57,15 +81,17 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const handleAuthExpired = () => {
-      setToken(null);
-      setUser(null);
+      clearAuth();
       setLoading(false);
     };
     window.addEventListener('careeros:auth-expired', handleAuthExpired);
     return () => window.removeEventListener('careeros:auth-expired', handleAuthExpired);
   }, []);
 
-  const value = useMemo(() => ({ user, token, loading, isAuthenticated: Boolean(user && token), login, guestLogin, signup, logout, fetchMe }), [user, token, loading]);
+  const value = useMemo(
+    () => ({ user, token, loading, isAuthenticated: Boolean(user && token), login, guestLogin, signup, logout, fetchMe }),
+    [user, token, loading]
+  );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
