@@ -27,34 +27,48 @@ export default function useVoiceInterview() {
 
   const submitAnswer = async (transcript, speakingTimeSeconds) => {
     setState('evaluating'); setError('');
-    const data = await voiceInterviewApi.answer({ sessionId: session.sessionId, transcript, speakingTimeSeconds });
-    setFeedback(data);
-    setHistory((items) => {
-      const nextItems = [...items];
-      const currentIndex = nextItems.length - 1;
-      nextItems[currentIndex] = {
-        ...nextItems[currentIndex],
-        transcript,
-        feedback: data.feedback,
-        betterAnswer: data.betterAnswer,
-        mistakes: data.mistakes || [],
-        score: data.score,
-      };
-      nextItems.push({ id: `${session.sessionId}-${nextItems.length}`, question: data.nextQuestion, transcript: '', feedback: null, score: null });
-      return nextItems;
-    });
-    setSession((current) => ({ ...current, question: data.nextQuestion, timeRemaining: data.timeRemaining }));
-    setState('feedback');
-    return data;
+    try {
+      const data = await voiceInterviewApi.answer({ sessionId: session.sessionId, transcript, speakingTimeSeconds });
+      setFeedback(data);
+      setHistory((items) => {
+        const nextItems = [...items];
+        const currentIndex = nextItems.length - 1;
+        nextItems[currentIndex] = {
+          ...nextItems[currentIndex],
+          transcript,
+          feedback: data.feedback,
+          betterAnswer: data.betterAnswer,
+          mistakes: data.mistakes || [],
+          score: data.score,
+        };
+        nextItems.push({ id: `${session.sessionId}-${nextItems.length}`, question: data.nextQuestion, transcript: '', feedback: null, score: null });
+        return nextItems;
+      });
+      setSession((current) => ({ ...current, question: data.nextQuestion, timeRemaining: data.timeRemaining }));
+      setState('feedback');
+      return data;
+    } catch (err) {
+      // Don't leave the UI stuck on 'evaluating'; let the user retry the answer.
+      setState('waiting_for_answer');
+      setError(err.message || 'Unable to evaluate answer. Please try again.');
+      return null;
+    }
   };
 
   const end = async () => {
     if (!session?.sessionId) return null;
+    const previousState = state;
     setState('evaluating');
-    const data = await voiceInterviewApi.end({ sessionId: session.sessionId });
-    setReport(data.report);
-    setState('completed');
-    return data.report;
+    try {
+      const data = await voiceInterviewApi.end({ sessionId: session.sessionId });
+      setReport(data.report);
+      setState('completed');
+      return data.report;
+    } catch (err) {
+      setState(previousState);
+      setError(err.message || 'Unable to finish the interview. Please try again.');
+      return null;
+    }
   };
 
   return { state, setState, session, setSession, feedback, report, history, error, setError, start, submitAnswer, end };

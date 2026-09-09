@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export default function useSpeechRecognition() {
   const Recognition = typeof window !== 'undefined' ? window.SpeechRecognition || window.webkitSpeechRecognition : null;
@@ -14,6 +14,8 @@ export default function useSpeechRecognition() {
       setError('Speech recognition is not supported in this browser.');
       return;
     }
+    // Stop any previous recognizer so two instances don't run concurrently.
+    try { recognitionRef.current?.stop(); } catch { /* already stopped */ }
     const recognition = new Recognition();
     recognition.lang = 'en-US';
     recognition.continuous = false;
@@ -38,6 +40,19 @@ export default function useSpeechRecognition() {
 
   const stopListening = useCallback(() => recognitionRef.current?.stop(), []);
   const resetTranscript = useCallback(() => { setTranscript(''); setInterimTranscript(''); setError(''); }, []);
+
+  // On unmount, detach handlers (so they don't setState after unmount) and stop.
+  useEffect(() => () => {
+    const recognition = recognitionRef.current;
+    if (recognition) {
+      recognition.onresult = null;
+      recognition.onend = null;
+      recognition.onerror = null;
+      recognition.onstart = null;
+      try { recognition.stop(); } catch { /* already stopped */ }
+    }
+    recognitionRef.current = null;
+  }, []);
 
   return { startListening, stopListening, resetTranscript, setTranscript, transcript, interimTranscript, isListening, error, isSupported };
 }

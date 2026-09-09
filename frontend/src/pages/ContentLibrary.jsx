@@ -26,14 +26,23 @@ export default function ContentLibrary() {
   }, []);
 
   const copy = async (item) => {
-    await navigator.clipboard.writeText(item.content || '');
-    setCopiedId(item.id);
-    window.setTimeout(() => setCopiedId(''), 1200);
+    try {
+      await navigator.clipboard.writeText(item.content || '');
+      setCopiedId(item.id);
+      window.setTimeout(() => setCopiedId(''), 1200);
+    } catch {
+      setError('Could not copy to clipboard. Copy manually instead.');
+    }
   };
 
   const remove = async (id) => {
-    await contentApi.remove(id);
-    setItems((current) => current.filter((item) => item.id !== id));
+    setError('');
+    try {
+      await contentApi.remove(id);
+      setItems((current) => current.filter((item) => item.id !== id));
+    } catch (err) {
+      setError(err.message || 'Unable to delete this item.');
+    }
   };
 
   return (

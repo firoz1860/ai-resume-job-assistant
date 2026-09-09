@@ -1,5 +1,6 @@
 import { dbState } from '../config/db.js';
 import GeneratedContent from '../models/GeneratedContent.js';
+import { isValidMongoId } from '../utils/validateId.js';
 
 function normalizeGeneratedContent(item) {
   const data = item?.toObject ? item.toObject() : item;
@@ -20,7 +21,7 @@ export async function listGeneratedContent(req, res) {
 }
 
 export async function deleteGeneratedContent(req, res) {
-  if (!dbState.isConnected) {
+  if (!dbState.isConnected || !isValidMongoId(req.params.id)) {
     return res.status(404).json({ success: false, error: 'Generated content not found.' });
   }
 

@@ -6,6 +6,7 @@ import { buildInterviewFeedbackPrompt } from '../prompts/interviewFeedbackPrompt
 import { buildInterviewReportPrompt } from '../prompts/interviewReportPrompt.js';
 import { generateContent } from '../services/aiService.js';
 import { parseAIJson } from '../utils/parseAIJson.js';
+import { isValidMongoId } from '../utils/validateId.js';
 
 const memorySessions = [];
 const memoryMessages = [];
@@ -48,6 +49,14 @@ async function updateSession(sessionId, patch) {
 async function findSession(sessionId, userId) {
   if (dbState.isConnected) return InterviewSession.findOne({ _id: sessionId, userId, mode: { $ne: 'voice' } });
   return memorySessions.find((session) => String(session._id) === String(sessionId) && String(session.userId) === String(userId));
+}
+
+// Atomic increment so concurrent answers on the same session don't lose counts.
+async function incQuestionsAsked(sessionId) {
+  if (dbState.isConnected) return InterviewSession.findByIdAndUpdate(sessionId, { $inc: { questionsAsked: 1 } }, { new: true });
+  const index = memorySessions.findIndex((session) => String(session._id) === String(sessionId));
+  if (index >= 0) memorySessions[index].questionsAsked = (memorySessions[index].questionsAsked || 0) + 1;
+  return memorySessions[index];
 }
 
 async function listSessions(userId) {
@@ -178,7 +187,7 @@ export async function answerInterview(req, res, next) {
       mistakes: feedback.mistakes || [],
       nextQuestion: feedback.nextQuestion,
     });
-    await updateSession(sessionId, { questionsAsked: (session.questionsAsked || 0) + 1 });
+    await incQuestionsAsked(sessionId);
 
     res.json({ success: true, message: 'Answer evaluated.', data: { ...feedback, timeRemaining: timeRemaining(session) } });
   } catch (err) {
@@ -221,6 +230,9 @@ export async function interviewHistory(req, res, next) {
 
 export async function interviewDetail(req, res, next) {
   try {
+    if (dbState.isConnected && !isValidMongoId(req.params.id)) {
+      return res.status(404).json({ success: false, error: 'Interview session not found.' });
+    }
     const session = await findSession(req.params.id, req.user._id);
     if (!session) return res.status(404).json({ success: false, error: 'Interview session not found.' });
     const messages = await getMessages(req.params.id);

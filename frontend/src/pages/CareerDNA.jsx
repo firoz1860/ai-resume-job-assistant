@@ -28,7 +28,7 @@ export default function CareerDNA() {
         </form>
         {result && <div className="card p-5 sm:p-6 space-y-5">
           <div><p className="text-xs text-muted uppercase font-semibold">Career Strength</p><p className="text-5xl font-extrabold text-accent">{result.careerStrengthScore}</p></div>
-          {['bestFitRoles', 'strengths', 'weakAreas', 'missingSkills', 'resumeImprovements', 'projectImprovements', 'actionPlan'].map((key) => <div key={key}><p className="text-xs text-muted uppercase font-semibold mb-2">{key.replace(/([A-Z])/g, ' $1')}</p><div className="flex flex-col gap-2">{result[key].map((item) => <span key={item} className="bg-surface border border-border rounded-lg px-3 py-2 text-sm">{item}</span>)}</div></div>)}
+          {['bestFitRoles', 'strengths', 'weakAreas', 'missingSkills', 'resumeImprovements', 'projectImprovements', 'actionPlan'].map((key) => <div key={key}><p className="text-xs text-muted uppercase font-semibold mb-2">{key.replace(/([A-Z])/g, ' $1')}</p><div className="flex flex-col gap-2">{(result[key] || []).map((item, index) => <span key={`${key}-${index}`} className="bg-surface border border-border rounded-lg px-3 py-2 text-sm">{item}</span>)}</div></div>)}
         </div>}
       </div>
     </div></main><Footer /></div>

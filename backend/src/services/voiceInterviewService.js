@@ -33,6 +33,24 @@ export async function updateVoiceSession(sessionId, patch) {
   return memoryVoiceSessions[index];
 }
 
+// Atomically record an answer: increment the counter and append the transcript
+// in one write so concurrent answers can't clobber each other.
+export async function recordVoiceAnswer(sessionId, transcript) {
+  if (dbState.isConnected) {
+    return InterviewSession.findByIdAndUpdate(
+      sessionId,
+      { $inc: { questionsAsked: 1 }, $push: { transcripts: transcript } },
+      { new: true }
+    );
+  }
+  const index = memoryVoiceSessions.findIndex((session) => String(session._id) === String(sessionId));
+  if (index >= 0) {
+    memoryVoiceSessions[index].questionsAsked = (memoryVoiceSessions[index].questionsAsked || 0) + 1;
+    memoryVoiceSessions[index].transcripts = [...(memoryVoiceSessions[index].transcripts || []), transcript];
+  }
+  return memoryVoiceSessions[index];
+}
+
 export async function findVoiceSession(sessionId, userId) {
   if (dbState.isConnected) return InterviewSession.findOne({ _id: sessionId, userId, mode: 'voice' });
   return memoryVoiceSessions.find((session) => String(session._id) === String(sessionId) && String(session.userId) === String(userId));
@@ -98,7 +116,7 @@ export function calculateAudioMetrics(transcript = '', speakingTimeSeconds = 0) 
 }
 
 export function fallbackVoiceReport(messages) {
-  const scores = messages.map((message) => message.score).filter(Boolean);
+  const scores = messages.map((message) => message.score).filter((score) => typeof score === 'number');
   const avg = scores.length ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 6;
   return {
     overallScore: avg * 10,
