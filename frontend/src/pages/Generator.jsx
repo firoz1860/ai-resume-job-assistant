@@ -6,6 +6,7 @@ import ResultCard from '../components/ResultCard.jsx';
 import Loader from '../components/Loader.jsx';
 import EmptyState from '../components/EmptyState.jsx';
 import PageHeader from '../components/PageHeader.jsx';
+import { Icon } from '../components/Reveal.jsx';
 import { generateContent } from '../services/api.js';
 
 const RATE_LIMIT_COOLDOWN = 30; // seconds to show countdown on 429
@@ -103,7 +104,7 @@ export default function Generator() {
             icon="doc"
             eyebrow="AI content"
             title="Content Generator"
-            subtitle="Fill in your details, choose content type and tone, then generate tailored, ready-to-send content."
+            subtitle="Fill in your details, choose a content type and tone, then generate a tailored draft you can review, copy, and save."
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6 items-start">
@@ -131,9 +132,12 @@ export default function Generator() {
               </div>
 
               {!result && !isLoading && (
-                <div className="mt-4 p-4 bg-accent/5 border border-accent/15 rounded-xl">
-                  <p className="text-xs font-semibold text-accent mb-2">Pro tip</p>
-                  <p className="text-xs text-muted leading-relaxed">
+                <div className="mt-4 p-4 bg-forest-50 border border-border rounded-card">
+                  <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-forest-700 mb-2">
+                    <Icon name="bolt" className="w-3.5 h-3.5" />
+                    Pro tip
+                  </p>
+                  <p className="text-xs text-sage-600 leading-relaxed">
                     Paste the actual job description for much better results. The AI uses it to tailor the language and highlight the most relevant parts of your background.
                   </p>
                 </div>

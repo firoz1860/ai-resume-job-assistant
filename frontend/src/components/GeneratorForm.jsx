@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Icon } from './Reveal.jsx';
 import { CONTENT_TYPES, TONES, CONTENT_TYPE_DESCRIPTIONS } from '../utils/constants.js';
 
 const initialState = {
@@ -57,7 +58,13 @@ export default function GeneratorForm({ onSubmit, isLoading }) {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      {/* Content type + tone */}
+      {/* What to generate */}
+      <div>
+        <p className="eyebrow-pill mb-3">
+          <Icon name="doc" className="w-3.5 h-3.5 text-forest-700" />
+          What to generate
+        </p>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field id="contentType" label="Content Type" required>
           <select name="contentType" id="contentType" value={form.contentType} onChange={handleChange} className="form-select">
@@ -141,13 +148,14 @@ export default function GeneratorForm({ onSubmit, isLoading }) {
         </Field>
       </div>
 
-      <Field id="jobDescription" label="Job Description">
+      <Field id="jobDescription" label="Job Description (source)">
         <textarea
           id="jobDescription" name="jobDescription" rows={3}
           value={form.jobDescription} onChange={handleChange}
           placeholder="Paste the job description here for better tailoring..."
           className="form-textarea"
         />
+        <p className="mt-1 text-xs text-sage-500">Pasting the real posting helps tailor the draft to this role.</p>
       </Field>
 
       <button
@@ -157,20 +165,19 @@ export default function GeneratorForm({ onSubmit, isLoading }) {
       >
         {isLoading ? (
           <>
-            <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
-            Generating...
+            <Icon name="history" className="w-4 h-4 animate-spin" />
+            Generating draft...
           </>
         ) : (
           <>
-            Generate Content
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
+            <Icon name="sparkle" className="w-4 h-4" />
+            Generate Draft
           </>
         )}
       </button>
+      <p className="text-xs text-sage-500 text-center">
+        Creates a draft you can review, edit, copy, and save — nothing is submitted anywhere.
+      </p>
     </form>
   );
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import AuthVisual from '../components/AuthVisual.jsx';
+import Wordmark from '../components/marketing/Wordmark.jsx';
 
 export default function Login() {
   const { login, guestLogin } = useAuth();
@@ -41,51 +42,45 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:grid lg:grid-cols-2 bg-surface">
-      {/* Visual panel — hidden on mobile, left side on desktop */}
-      <div className="hidden lg:flex">
-        <AuthVisual mode="login" />
-      </div>
+    <div className="flex min-h-screen flex-col bg-ivory lg:grid lg:grid-cols-2">
+      <AuthVisual mode="login" />
 
-      {/* Form panel */}
-      <div className="flex-1 flex items-center justify-center px-4 py-10 sm:py-16">
+      <div className="flex flex-1 items-center justify-center px-4 py-10 sm:py-16">
         <div className="w-full max-w-md">
-          {/* Mobile logo */}
-          <div className="flex items-center gap-2.5 mb-8 lg:hidden">
-            <div className="w-9 h-9 bg-navy-900 rounded-lg flex items-center justify-center">
-              <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
-                <path d="M5 7h10M5 11h10M5 15h6" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"/>
-                <circle cx="18" cy="10" r="3" fill="#2563EB" opacity="0.85"/>
-                <path d="M18 8.5v3M16.5 10h3" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <span className="font-bold text-navy-900 text-lg">CareerOS<span className="text-accent">AI</span></span>
-          </div>
+          <Link to="/" aria-label="CareerOS AI home" className="mb-8 inline-block lg:hidden">
+            <Wordmark size="nav" />
+          </Link>
 
-          <div className="card p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-ink mb-1">Welcome back</h2>
-            <p className="text-sm text-muted mb-6">Continue to your career dashboard.</p>
+          <div className="panel p-6 sm:p-8">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-ink">Welcome back</h2>
+            <p className="mt-1 text-sm text-sage-600">Sign in to your career workspace.</p>
 
-            <form onSubmit={submit} className="space-y-3">
+            <form onSubmit={submit} className="mt-6 space-y-4">
               {location.state?.accountCreated && (
-                <p className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
-                  Account created. Login with the same credentials to continue.
+                <p className="rounded-xl border border-forest-200 bg-forest-50 p-3 text-sm text-forest-700">
+                  Account created. Sign in with the same credentials to continue.
                 </p>
               )}
-              <input name="email" type="email" value={form.email} onChange={set} placeholder="Email address" className="form-input" autoComplete="email" required />
-              <input name="password" type="password" value={form.password} onChange={set} placeholder="Password" className="form-input" autoComplete="current-password" required />
-              {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
+              <div>
+                <label htmlFor="login-email" className="form-label">Email address</label>
+                <input id="login-email" name="email" type="email" value={form.email} onChange={set} placeholder="you@example.com" className="form-input" autoComplete="email" required />
+              </div>
+              <div>
+                <label htmlFor="login-password" className="form-label">Password</label>
+                <input id="login-password" name="password" type="password" value={form.password} onChange={set} placeholder="Your password" className="form-input" autoComplete="current-password" required />
+              </div>
+              {error && <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}
               <button type="submit" className="btn-primary w-full justify-center py-3" disabled={loading}>
-                {loading ? 'Logging in…' : 'Login'}
+                {loading ? 'Signing in…' : 'Sign in'}
               </button>
               <button type="button" onClick={continueAsGuest} className="btn-secondary w-full justify-center py-3" disabled={loading}>
-                Continue as Guest
+                Continue as guest
               </button>
             </form>
 
-            <p className="text-sm text-muted mt-5 text-center">
+            <p className="mt-6 text-center text-sm text-sage-600">
               No account?{' '}
-              <Link to="/signup" className="text-accent font-semibold hover:underline">Create one free</Link>
+              <Link to="/signup" className="font-semibold text-forest-700 hover:underline">Create your workspace</Link>
             </p>
           </div>
         </div>

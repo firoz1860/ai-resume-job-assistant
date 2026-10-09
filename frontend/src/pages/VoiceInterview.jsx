@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
+import { Icon } from '../components/Reveal.jsx';
 import VoiceInterviewSetup from '../components/voiceInterview/VoiceInterviewSetup.jsx';
 import VoiceInterviewRoom from '../components/voiceInterview/VoiceInterviewRoom.jsx';
 import VoiceInterviewReport from '../components/voiceInterview/VoiceInterviewReport.jsx';
@@ -148,20 +149,24 @@ export default function VoiceInterview() {
     <main className="flex-1 py-8 md:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
-          <div><h1 className="text-2xl sm:text-3xl font-bold text-ink">AI Voice Interview Room</h1><p className="text-sm text-muted mt-1">Speak answers, get feedback, and continue for a 20-minute real interview.</p></div>
+          <div>
+            <span className="eyebrow-pill mb-2"><Icon name="mic" className="w-3.5 h-3.5" />Voice interview</span>
+            <h1 className="text-2xl sm:text-3xl font-bold text-ink">AI Voice Interview Room</h1>
+            <p className="text-sm text-sage-600 mt-1">Speak your answers, get instant feedback, and work through a 20-minute real interview.</p>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full sm:w-auto">
-            <button onClick={() => unlockSpeech(true)} className="btn-primary">Enable Voice</button>
+            <button onClick={() => unlockSpeech(true)} className="btn-primary">Enable voice</button>
             <button onClick={toggleMute} className="btn-secondary">{muted ? 'Unmute AI' : 'Mute AI'}</button>
           </div>
         </div>
         <div className="mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className={`rounded-lg border px-3 py-2 text-xs ${speech.isSupported ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'}`}>Speaker: {speech.isSupported ? 'Supported' : 'Not supported'}</div>
-          <div className={`rounded-lg border px-3 py-2 text-xs ${muted ? 'bg-slate-50 border-slate-200 text-slate-700' : speech.isUnlocked ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>Voice: {muted ? 'Muted' : speech.isUnlocked ? 'Enabled' : 'Click Enable Voice'}</div>
-          <div className={`rounded-lg border px-3 py-2 text-xs ${recognition.isSupported ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'}`}>Microphone: {recognition.isSupported ? 'Supported' : 'Use Chrome or Edge'}</div>
+          <div className={`flex items-center gap-2 rounded-card border px-3 py-2 text-xs font-medium ${speech.isSupported ? 'bg-forest-50 border-forest-100 text-forest-700' : 'bg-red-50 border-red-200 text-red-700'}`}><Icon name="bolt" className="w-3.5 h-3.5 shrink-0" />Speaker: {speech.isSupported ? 'Supported' : 'Not supported'}</div>
+          <div className={`flex items-center gap-2 rounded-card border px-3 py-2 text-xs font-medium ${muted ? 'bg-surface border-border text-sage-600' : speech.isUnlocked ? 'bg-forest-50 border-forest-100 text-forest-700' : 'bg-amber-50 border-amber-200 text-amber-700'}`}><Icon name="sparkle" className="w-3.5 h-3.5 shrink-0" />Voice: {muted ? 'Muted' : speech.isUnlocked ? 'Enabled' : 'Click Enable voice'}</div>
+          <div className={`flex items-center gap-2 rounded-card border px-3 py-2 text-xs font-medium ${recognition.isSupported ? 'bg-forest-50 border-forest-100 text-forest-700' : 'bg-red-50 border-red-200 text-red-700'}`}><Icon name="mic" className="w-3.5 h-3.5 shrink-0" />Microphone: {recognition.isSupported ? 'Supported' : 'Use Chrome or Edge'}</div>
         </div>
         <VoicePermissionModal isSupported={recognition.isSupported} />
-        {voice.error && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{voice.error}</div>}
-        {speech.error && <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">{speech.error} Use the Replay AI Voice button or check browser sound permissions.</div>}
+        {voice.error && <div role="alert" className="mb-4 p-3 bg-red-50 border border-red-200 rounded-card text-sm text-red-700">{voice.error}</div>}
+        {speech.error && <div role="alert" className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-card text-sm text-amber-800">{speech.error} Use the Replay AI voice button or check browser sound permissions.</div>}
         {voice.state === 'setup' || voice.state === 'starting' ? <VoiceInterviewSetup form={form} setForm={setForm} onStart={start} loading={voice.state === 'starting'} /> : null}
         {voice.session && voice.state !== 'completed' ? <VoiceInterviewRoom secondsLeft={timer.secondsLeft} state={voice.state} session={voice.session} subtitle={subtitle} transcript={recognition.transcript} interimTranscript={recognition.interimTranscript} setTranscript={recognition.setTranscript} recognitionError={recognition.error} isListening={recognition.isListening} isSpeaking={speech.isSpeaking} feedback={voice.feedback} history={voice.history} onReplay={replay} onAnswerNow={answerNow} onStartListening={() => { voice.setState('listening'); recognition.startListening(); }} onStopListening={() => { recognition.stopListening(); voice.setState('waiting_for_answer'); }} onReset={recognition.resetTranscript} onSubmit={submit} onSkip={skip} onEnd={end} /> : null}
         {voice.state === 'completed' ? <VoiceInterviewReport report={voice.report} /> : null}

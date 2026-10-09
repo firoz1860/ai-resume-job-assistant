@@ -1,37 +1,30 @@
 import { Icon } from './Reveal.jsx';
 
 /**
- * PageHeader — premium gradient banner used across authenticated pages
- * for a consistent, professional header. Optional icon (icon-set name),
- * eyebrow, title, subtitle, and an actions area (children, right-aligned).
+ * PageHeader — the standard header for authenticated workspace pages.
+ *
+ * Light and restrained to match the workspace (dense, readable) rather than
+ * the marketing surface. Same props as before (icon, eyebrow, title,
+ * subtitle, children) so pages don't need to change how they call it.
  */
 export default function PageHeader({ icon, eyebrow, title, subtitle, children }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-navy-900 text-white p-6 sm:p-8 mb-8 shadow-soft">
-      <div className="absolute inset-0 aurora-layer opacity-70" />
-      <div className="absolute inset-0 bg-dots opacity-30" />
-      <div className="absolute -right-10 -top-10 w-52 h-52 bg-brand-gradient opacity-25 blur-3xl rounded-full" />
-
-      <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
-        <div className="flex items-start gap-4 min-w-0">
-          {icon && (
-            <span className="w-12 h-12 rounded-xl glass grid place-items-center shrink-0">
-              <Icon name={icon} className="w-6 h-6 text-white" />
-            </span>
+    <div className="mb-8 flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex min-w-0 items-start gap-3.5">
+        {icon && (
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-forest-50 text-forest-700">
+            <Icon name={icon} className="h-5 w-5" />
+          </span>
+        )}
+        <div className="min-w-0">
+          {eyebrow && (
+            <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-forest-500">{eyebrow}</p>
           )}
-          <div className="min-w-0">
-            {eyebrow && (
-              <span className="eyebrow-pill bg-white/10 text-white/80 mb-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                {eyebrow}
-              </span>
-            )}
-            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">{title}</h1>
-            {subtitle && <p className="text-white/70 text-sm sm:text-base mt-1.5 leading-relaxed">{subtitle}</p>}
-          </div>
+          <h1 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">{title}</h1>
+          {subtitle && <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-sage-600">{subtitle}</p>}
         </div>
-        {children && <div className="flex flex-wrap items-center gap-2 shrink-0">{children}</div>}
       </div>
+      {children && <div className="flex flex-wrap items-center gap-2 sm:shrink-0">{children}</div>}
     </div>
   );
 }

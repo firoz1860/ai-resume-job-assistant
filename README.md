@@ -247,7 +247,16 @@ Frontend environment:
 
 ```env
 VITE_API_BASE_URL=http://localhost:5000
+# Optional — enables the 3D Spline hero on the homepage. Leave blank to use
+# the built-in HTML fallback (no Spline runtime is loaded when blank).
+VITE_SPLINE_SCENE_URL=
 ```
+
+To enable the Spline hero, publish a scene in the Spline editor and set
+`VITE_SPLINE_SCENE_URL` to its runtime URL, e.g.
+`https://prod.spline.design/XXXXXXXX/scene.splinecode`. The homepage reserves
+the hero's dimensions and shows a polished HTML composition while the scene
+loads or if it fails, so the page is always usable.
 
 ## Testing And Verification
 
