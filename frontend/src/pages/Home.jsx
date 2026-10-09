@@ -2,345 +2,276 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar.jsx';
 import Hero from '../components/Hero.jsx';
 import Footer from '../components/Footer.jsx';
-import { Reveal, AnimatedCounter, Icon } from '../components/Reveal.jsx';
+import { Reveal, Icon } from '../components/Reveal.jsx';
+import LogoMorph from '../components/marketing/LogoMorph.jsx';
+import ScrollStack from '../components/marketing/ScrollStack.jsx';
 
-const modules = [
-  ['Career Intelligence', 'Readiness score, proof gaps, timeline, and next actions from saved career data.', 'chart'],
-  ['Application Tracker', 'Kanban pipeline with follow-ups, recruiter CRM, resume diff, and status history.', 'match'],
-  ['Voice Interview Room', '20-minute speaking interview with transcript, score, feedback, and final report.', 'mic'],
-  ['Resume Tailor', 'Generate role-specific summaries, messages, cover letters, and profile content.', 'doc'],
-  ['Job Match Analyzer', 'Compare your profile with job descriptions and find missing keywords.', 'target'],
-  ['Skill Roadmap', 'Turn target roles into weekly learning plans and proof projects.', 'route'],
-];
-
-const workflow = [
-  ['01', 'Build profile', 'Save skills, projects, resume text, target role, links, and preferences.'],
-  ['02', 'Analyze job', 'Paste a job description and get match score, gaps, and ATS keywords.'],
-  ['03', 'Generate assets', 'Create cover letters, recruiter messages, summaries, and follow-ups.'],
-  ['04', 'Track pipeline', 'Move roles through saved, applied, interview, rejected, and offer stages.'],
-  ['05', 'Practice interview', 'Speak answers aloud and get scored feedback with replayable insights.'],
-  ['06', 'Improve weekly', 'Use readiness, roadmap, and weak-area drills to close gaps.'],
-];
-
-const trust = [
-  ['Secure profile', 'JWT-protected account and private user-specific data.', 'shield'],
-  ['Saved history', 'MongoDB stores applications, interviews, content, roadmaps, and reports.', 'history'],
-  ['Private AI key', 'AI API keys stay on the backend and are never exposed to the browser.', 'key'],
-  ['Input-grounded AI', 'Outputs are tailored from profile, job description, and saved career evidence.', 'sparkle'],
-];
-
-const outcomes = [
-  ['Better resume targeting', 'Turn generic bullets into role-specific proof.'],
-  ['Stronger interview answers', 'Practice with feedback, scores, and better answer examples.'],
-  ['Organized applications', 'Never lose job links, contacts, notes, follow-ups, or generated content.'],
-  ['Clear skill gaps', 'Know what to learn and what project proves it.'],
-  ['Follow-up discipline', 'Track due dates and generate professional messages.'],
-];
-
-const useCases = [
-  ['Fresher', 'Build proof from projects, skills, and interview practice.'],
-  ['Student', 'Prepare internships with resume content, GitHub proof, and mock interviews.'],
-  ['Career switcher', 'Translate existing experience into target-role language.'],
-  ['Internship seeker', 'Track many applications and follow-ups without losing context.'],
-  ['Junior developer', 'Improve project explanations, system tradeoffs, and job match.'],
-];
-
-const careerModes = [
-  ['Launch Mode', 'For students and freshers starting from zero applications.', ['Profile setup', 'Resume summary', 'First 20 applications'], 'rocket'],
-  ['Interview Mode', 'For candidates with calls coming up who need focused practice.', ['Voice interview', 'Weakness replay', 'Company prep'], 'mic'],
-  ['Pipeline Mode', 'For active job seekers managing many companies and contacts.', ['Kanban tracker', 'Follow-up CRM', 'Success analytics'], 'chart'],
-];
-
-const stats = [
-  ['10', '+', 'Integrated career tools'],
-  ['6', '', 'Guided workflow steps'],
-  ['20', 'min', 'AI voice interview'],
-  ['100', '%', 'Private, grounded AI'],
-];
-
-const testimonials = [
-  ['CareerOS finally made my job search feel organized. I stopped losing track of applications and follow-ups.', 'Aisha K.', 'Frontend Developer'],
-  ['The voice interview practice with scored feedback is the closest thing to a real mock I have used.', 'Daniel R.', 'CS Student'],
-  ['Tailoring my resume to each job description used to take an hour. Now it takes minutes and reads better.', 'Priya S.', 'Career Switcher'],
-];
-
-const brands = ['ATS-ready', 'React', 'Node.js', 'MongoDB', 'Gemini AI', 'JWT Secure', 'Vercel', 'Render'];
-
-function SectionHeader({ eyebrow, title, subtitle, light = false }) {
+/* ── Section heading ──────────────────────────────────────── */
+function SectionHead({ eyebrow, title, subtitle }) {
   return (
-    <Reveal className="text-center mb-12 max-w-2xl mx-auto">
-      {eyebrow && (
-        <span className={`eyebrow-pill mb-3 ${light ? 'bg-white/10 text-white/80' : 'bg-accent/10 text-accent'}`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${light ? 'bg-cyan-400' : 'bg-accent'}`} />
-          {eyebrow}
-        </span>
-      )}
-      <h2 className={`font-display text-3xl sm:text-4xl font-bold tracking-tight mb-3 ${light ? 'text-white' : 'text-ink'}`}>{title}</h2>
-      {subtitle && <p className={`${light ? 'text-white/60' : 'text-muted'} text-base sm:text-lg leading-relaxed`}>{subtitle}</p>}
+    <Reveal className="max-w-2xl">
+      <p className="eyebrow-pill mb-3">
+        <span className="h-1.5 w-1.5 rounded-full bg-forest" />
+        {eyebrow}
+      </p>
+      <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">{title}</h2>
+      {subtitle && <p className="mt-3 text-lg leading-relaxed text-sage-600">{subtitle}</p>}
     </Reveal>
   );
 }
 
-function MiniPreview() {
+/* ── Small interface illustrations for the stacking cards ───── */
+function VaultVisual() {
   return (
-    <Reveal className="card p-4 sm:p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-4">
-        <div className="space-y-3">
-          <div className="bg-navy-900 text-white rounded-xl p-4 relative overflow-hidden">
-            <div className="absolute -right-6 -top-6 w-24 h-24 bg-brand-gradient opacity-40 blur-2xl rounded-full" />
-            <p className="text-xs text-white/60 relative">Next action</p>
-            <p className="font-bold mt-1 relative">Tailor resume for Backend Developer</p>
+    <div className="w-full max-w-xs space-y-2.5">
+      {['Profile', 'Projects', 'Resume text', 'Skills & links'].map((r, i) => (
+        <div key={r} className="flex items-center justify-between rounded-card border border-border bg-white px-3.5 py-2.5 text-sm">
+          <span className="font-medium text-ink">{r}</span>
+          <span className={`badge ${i < 3 ? 'bg-lime text-forest-800' : 'bg-ivory text-sage-600'}`}>{i < 3 ? 'Saved' : 'Add'}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+function RoleVisual() {
+  return (
+    <div className="w-full max-w-xs rounded-card border border-border bg-white p-4">
+      <p className="text-sm font-semibold text-ink">Backend Engineer</p>
+      <div className="mt-3 space-y-2 text-xs">
+        {[['Node.js', true], ['PostgreSQL', true], ['Kafka', false], ['Docker', true]].map(([skill, have]) => (
+          <div key={skill} className="flex items-center gap-2">
+            <span className={`grid h-4 w-4 place-items-center rounded-full ${have ? 'bg-lime text-forest-800' : 'border border-border text-sage-600'}`}>
+              {have ? '✓' : '+'}
+            </span>
+            <span className={have ? 'text-ink' : 'text-sage-600'}>{skill}</span>
           </div>
-          {[['Readiness', '78%'], ['Voice score', '8/10'], ['Follow-ups due', '3']].map(([label, val]) => (
-            <div key={label} className="bg-surface border border-border rounded-xl p-3 flex items-center justify-between text-sm font-semibold text-ink">
-              <span className="text-muted font-medium">{label}</span>
-              <span>{val}</span>
-            </div>
-          ))}
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {[['Career Intelligence', 82], ['Application Tracker', 74], ['Interview Replay', 90], ['Resume Diff', 62]].map(([item, pct]) => (
-            <div key={item} className="bg-surface border border-border rounded-xl p-4 min-h-28">
-              <p className="text-sm font-bold text-ink">{item}</p>
-              <div className="h-2 bg-white rounded-full overflow-hidden mt-4">
-                <div className="h-full bg-brand-gradient rounded-full" style={{ width: `${pct}%` }} />
-              </div>
-              <p className="text-xs text-muted mt-3">Dynamic from your saved data</p>
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
-    </Reveal>
+      <p className="mt-3 border-t border-border pt-2 text-xs text-sage-600">1 skill missing evidence</p>
+    </div>
   );
 }
+function PipelineVisual() {
+  const cols = [['Saved', 2], ['Applied', 4], ['Interview', 2], ['Offer', 1]];
+  return (
+    <div className="grid w-full max-w-sm grid-cols-4 gap-2">
+      {cols.map(([label, n]) => (
+        <div key={label} className="rounded-card border border-border bg-white p-2">
+          <p className="text-[11px] font-semibold text-sage-600">{label}</p>
+          <div className="mt-2 space-y-1.5">
+            {Array.from({ length: n }).map((_, i) => (
+              <div key={i} className="h-5 rounded bg-ivory" />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+function PracticeVisual() {
+  return (
+    <div className="w-full max-w-xs rounded-card border border-border bg-white p-4">
+      <div className="flex items-center gap-2">
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-forest text-white"><Icon name="mic" className="h-4 w-4" /></span>
+        <span className="text-sm font-semibold text-ink">Interview feedback</span>
+      </div>
+      <p className="mt-3 text-sm text-ink">“Strong structure. Add one concrete metric to your impact answer.”</p>
+      <div className="mt-3 flex items-center justify-between rounded-lg bg-ivory px-3 py-2 text-xs">
+        <span className="text-sage-600">Last score</span>
+        <span className="font-semibold text-ink">7 / 10</span>
+      </div>
+    </div>
+  );
+}
+
+const STACK_ITEMS = [
+  {
+    step: 'Step 01',
+    title: 'Build your career foundation',
+    body: 'Keep your profile, projects, and resume information in one place so everything you write later is grounded in real evidence.',
+    capabilities: ['Profile, skills, and project records', 'Paste or upload resume text', 'Searchable Career Vault'],
+    cta: { label: 'Set up your profile', to: '/profile' },
+    visual: <VaultVisual />,
+  },
+  {
+    step: 'Step 02',
+    title: 'Prepare for the role',
+    body: 'Paste a job description to see which of your skills match, where the evidence is thin, and what to tailor before you apply.',
+    capabilities: ['Requirement breakdown', 'Matching evidence from your profile', 'Resume tailoring suggestions'],
+    cta: { label: 'Analyze a role', to: '/job-analyzer' },
+    visual: <RoleVisual />,
+  },
+  {
+    step: 'Step 03',
+    title: 'Keep every application moving',
+    body: 'Track each role through clear stages, store recruiter details, and never miss a follow-up date again.',
+    capabilities: ['Saved → Applied → Interview → Offer', 'Recruiter contacts and notes', 'Follow-up reminders'],
+    cta: { label: 'Open applications', to: '/applications' },
+    visual: <PipelineVisual />,
+  },
+  {
+    step: 'Step 04',
+    title: 'Practice, reflect, improve',
+    body: 'Rehearse with text or voice interviews, review the transcript and feedback, and turn weak spots into a learning plan.',
+    capabilities: ['Text and voice interview practice', 'Transcript and scored feedback', 'Skill roadmap from your gaps'],
+    cta: { label: 'Practice an interview', to: '/voice-interview' },
+    visual: <PracticeVisual />,
+  },
+];
+
+const WORKFLOW = [
+  ['Build profile', 'Save skills, projects, resume text, and target roles.', 'Everything downstream reads from here.'],
+  ['Analyze role', 'Paste a job description to see matches and gaps.', 'Pulls evidence straight from your profile.'],
+  ['Prepare materials', 'Draft tailored summaries, messages, and cover letters.', 'Grounded in the role and your saved data.'],
+  ['Track application', 'Move the role through your pipeline with notes.', 'Carries the materials you prepared.'],
+  ['Practice and improve', 'Rehearse interviews and close skill gaps.', 'Feeds a roadmap you can act on weekly.'],
+];
+
+const MODES = [
+  {
+    title: 'Starting your search',
+    body: 'Turn scattered notes into a profile, then tailor your first applications with confidence.',
+    points: ['Set up profile and resume', 'Analyze your first roles', 'Track early applications'],
+    icon: 'rocket',
+  },
+  {
+    title: 'Preparing for interviews',
+    body: 'Rehearse with text or voice practice and review feedback before the real conversation.',
+    points: ['Voice and text practice', 'Transcript and feedback', 'Focus on weak areas'],
+    icon: 'mic',
+  },
+  {
+    title: 'Managing an active pipeline',
+    body: 'Keep many roles organized with stages, recruiter contacts, and timely follow-ups.',
+    points: ['Pipeline stages', 'Recruiter CRM', 'Follow-up reminders'],
+    icon: 'chart',
+  },
+];
+
+const FAQ = [
+  ['What information should I add?', 'Start with your profile: skills, projects, experience, target roles, and resume text. The more you save, the more grounded your analyses and drafts become.'],
+  ['Can I tailor materials for different jobs?', 'Yes. Paste a job description and generate role-specific summaries, messages, and cover letters that draw on your saved profile and the role’s requirements.'],
+  ['How does interview practice work?', 'You can practice with a text interview or a spoken voice interview. You answer questions, see a transcript, and get scored feedback you can review afterwards.'],
+  ['Can I review previous content?', 'Yes. Generated content, applications, interview sessions, and reports are saved to your account so you can revisit and reuse them.'],
+  ['What happens when an AI request fails?', 'You see a clear error and your input is kept so you can try again. A failed request is never shown as a result, and sample numbers are never presented as your account data.'],
+  ['What resume formats are supported?', 'You can paste resume text directly, or upload a resume file to be parsed into your profile. If a file can’t be read, paste the text instead.'],
+];
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <Navbar />
+      <LogoMorph />
       <main className="flex-1">
         <Hero />
 
-        {/* ── Trust marquee ─────────────────────────────── */}
-        <div className="bg-white border-y border-border py-6">
-          <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted mb-4">Built on a modern, secure stack</p>
-          <div className="marquee-mask overflow-hidden">
-            <div className="marquee-track gap-4">
-              {[...brands, ...brands].map((b, idx) => (
-                <span key={`${b}-${idx}`} className="shrink-0 px-5 py-2 rounded-full border border-border bg-surface text-sm font-semibold text-muted">
-                  {b}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ── Stats band ────────────────────────────────── */}
-        <section className="bg-navy-900 text-white relative overflow-hidden">
-          <div className="absolute inset-0 aurora-layer opacity-70" />
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map(([num, suffix, label], i) => (
-                <Reveal key={label} delay={i * 90} className="text-center">
-                  <p className="font-display text-4xl sm:text-5xl font-bold text-gradient-light">
-                    <AnimatedCounter value={num} suffix={suffix} />
-                  </p>
-                  <p className="text-white/60 text-sm mt-2">{label}</p>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Product preview ───────────────────────────── */}
-        <section className="py-16 md:py-24 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <SectionHeader
-              eyebrow="Product preview"
-              title="A real career dashboard, not just a text generator"
-              subtitle="CareerOS AI connects your profile, jobs, applications, interviews, and roadmap into one job-search operating system."
+        {/* ── C. Product walkthrough ─────────────────────── */}
+        <section id="product" className="scroll-mt-24 bg-white py-16 md:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <SectionHead
+              eyebrow="Product walkthrough"
+              title="A workspace that shows you what to do next"
+              subtitle="This is an illustrative view of CareerOS AI. Your own dashboard is built from the profile, roles, and practice you save."
             />
-            <MiniPreview />
-          </div>
-        </section>
-
-        {/* ── Modules ───────────────────────────────────── */}
-        <section className="py-16 md:py-24 bg-surface">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <SectionHeader
-              eyebrow="Modules"
-              title="Everything your job search needs"
-              subtitle="Each module supports a real candidate workflow from first profile setup to interview improvement."
-            />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {modules.map(([title, description, icon], i) => (
-                <Reveal key={title} delay={i * 80}>
-                  <div className="card-gradient p-6 h-full group">
-                    <div className="w-12 h-12 rounded-xl bg-brand-gradient text-white flex items-center justify-center mb-4 shadow-glow transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
-                      <Icon name={icon} className="w-6 h-6" />
-                    </div>
-                    <h3 className="font-bold text-ink mb-2">{title}</h3>
-                    <p className="text-sm text-muted leading-relaxed">{description}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Workflow ──────────────────────────────────── */}
-        <section className="py-16 md:py-24 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <SectionHeader
-              eyebrow="Workflow"
-              title="How CareerOS works"
-              subtitle="A structured job-search loop that keeps improving with every saved profile, job, application, and interview."
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {workflow.map(([step, title, description], i) => (
-                <Reveal key={step} delay={i * 70}>
-                  <div className="relative border border-border rounded-2xl p-6 bg-white hover:shadow-soft transition-shadow h-full overflow-hidden">
-                    <span className="font-display text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-accent/30 to-violet-500/20">{step}</span>
-                    <h3 className="font-bold text-ink mt-3 mb-2">{title}</h3>
-                    <p className="text-sm text-muted leading-relaxed">{description}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Career modes ──────────────────────────────── */}
-        <section className="py-16 md:py-24 bg-surface">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <SectionHeader
-              eyebrow="Career modes"
-              title="Three focused ways to use CareerOS AI"
-              subtitle="Choose a mode based on your current job-search stage."
-            />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {careerModes.map(([title, description, bullets, icon], i) => (
-                <Reveal key={title} delay={i * 100}>
-                  <div className="card-gradient p-7 h-full">
-                    <div className="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-4">
-                      <Icon name={icon} className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-xl font-bold text-ink font-display">{title}</h3>
-                    <p className="text-sm text-muted mt-2 mb-5">{description}</p>
-                    <div className="space-y-2">
-                      {bullets.map((item) => (
-                        <div key={item} className="flex items-center gap-2.5 bg-surface border border-border rounded-lg p-3 text-sm font-semibold text-ink">
-                          <span className="w-5 h-5 rounded-full bg-accent/10 text-accent grid place-items-center shrink-0">
-                            <Icon name="check" className="w-3 h-3" />
-                          </span>
-                          {item}
-                        </div>
-                      ))}
+            <Reveal className="mt-10">
+              <div className="panel overflow-hidden">
+                <div className="flex items-center gap-2 border-b border-border bg-ivory px-4 py-3">
+                  <span className="h-2.5 w-2.5 rounded-full bg-border" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-border" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-border" />
+                  <span className="ml-2 text-xs font-medium text-sage-600">Example workspace — sample data</span>
+                </div>
+                <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-3">
+                  <div className="rounded-card border border-border bg-forest p-5 text-white lg:col-span-1">
+                    <p className="text-xs text-white/70">Do this next</p>
+                    <p className="mt-1 font-semibold">Send a follow-up to Northwind, then practice one system-design answer.</p>
+                    <div className="mt-4 space-y-2 text-sm">
+                      <div className="flex items-center justify-between rounded-lg bg-white/10 px-3 py-2"><span>Follow-ups due</span><span className="font-semibold">2</span></div>
+                      <div className="flex items-center justify-between rounded-lg bg-white/10 px-3 py-2"><span>Applications</span><span className="font-semibold">12</span></div>
                     </div>
                   </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Testimonials ──────────────────────────────── */}
-        <section className="py-16 md:py-24 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <SectionHeader
-              eyebrow="Loved by job seekers"
-              title="Momentum you can feel"
-              subtitle="Candidates use CareerOS to stay organized, prepared, and consistently improving."
-            />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {testimonials.map(([quote, name, role], i) => (
-                <Reveal key={name} delay={i * 90}>
-                  <figure className="card p-6 h-full flex flex-col">
-                    <div className="flex gap-0.5 text-amber-400 mb-3" aria-hidden="true">
-                      {'★★★★★'.split('').map((s, idx) => <span key={idx}>{s}</span>)}
+                  <div className="rounded-card border border-border p-5">
+                    <p className="text-sm font-semibold text-ink">Application pipeline</p>
+                    <div className="mt-4"><PipelineVisual /></div>
+                  </div>
+                  <div className="space-y-5">
+                    <div className="rounded-card border border-border p-5">
+                      <p className="text-sm font-semibold text-ink">Resume feedback</p>
+                      <p className="mt-2 text-sm text-sage-600">8 of 11 target skills have evidence. 3 to add for Backend Engineer.</p>
                     </div>
-                    <blockquote className="text-ink text-sm leading-relaxed flex-1">“{quote}”</blockquote>
-                    <figcaption className="mt-4 flex items-center gap-3">
-                      <span className="w-10 h-10 rounded-full bg-brand-gradient text-white grid place-items-center font-bold">{name.charAt(0)}</span>
-                      <span>
-                        <span className="block text-sm font-semibold text-ink">{name}</span>
-                        <span className="block text-xs text-muted">{role}</span>
-                      </span>
-                    </figcaption>
-                  </figure>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Trust + Outcomes ──────────────────────────── */}
-        <section className="py-16 md:py-24 bg-surface">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-              <div>
-                <SectionHeader
-                  eyebrow="Trust"
-                  title="Built like a secure career workspace"
-                  subtitle="Your profile and application history are treated as private career data."
-                />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {trust.map(([title, description, icon], i) => (
-                    <Reveal key={title} delay={i * 70}>
-                      <div className="card p-5 h-full">
-                        <span className="w-10 h-10 rounded-lg bg-accent/10 text-accent grid place-items-center mb-3">
-                          <Icon name={icon} className="w-5 h-5" />
-                        </span>
-                        <h3 className="font-bold text-ink mb-2">{title}</h3>
-                        <p className="text-sm text-muted">{description}</p>
-                      </div>
-                    </Reveal>
-                  ))}
+                    <div className="rounded-card border border-border p-5">
+                      <p className="text-sm font-semibold text-ink">Interview feedback</p>
+                      <p className="mt-2 text-sm text-sage-600">Last score 7/10 — add a concrete metric to your impact answer.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div>
-                <SectionHeader
-                  eyebrow="Outcomes"
-                  title="What job seekers improve"
-                  subtitle="The interface is designed around visible progress, proof, and follow-through."
-                />
-                <div className="space-y-3">
-                  {outcomes.map(([title, description], i) => (
-                    <Reveal key={title} delay={i * 60}>
-                      <div className="card p-4 flex items-start gap-3">
-                        <span className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 grid place-items-center shrink-0 mt-0.5">
-                          <Icon name="check" className="w-4 h-4" />
-                        </span>
-                        <div>
-                          <h3 className="font-bold text-ink">{title}</h3>
-                          <p className="text-sm text-muted mt-1">{description}</p>
-                        </div>
-                      </div>
-                    </Reveal>
-                  ))}
-                </div>
-              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── D. Signature scroll-stacking cards ─────────── */}
+        <section className="bg-ivory py-16 md:py-24">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6">
+            <SectionHead
+              eyebrow="How the pieces connect"
+              title="Four steps, one connected workspace"
+              subtitle="Each stage builds on the last, so your profile, applications, and practice stay in sync."
+            />
+            <div className="mt-10">
+              <ScrollStack items={STACK_ITEMS} />
             </div>
           </div>
         </section>
 
-        {/* ── Use cases ─────────────────────────────────── */}
-        <section className="py-16 md:py-24 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <SectionHeader
-              eyebrow="Use cases"
-              title="Designed for candidates, students, and freshers"
-              subtitle="Different job seekers need different proof. CareerOS adapts to where you are."
+        {/* ── E. Simple workflow ─────────────────────────── */}
+        <section id="how-it-works" className="scroll-mt-24 bg-white py-16 md:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <SectionHead
+              eyebrow="How it works"
+              title="A loop that keeps improving"
+              subtitle="Information carries from one step to the next, so you’re never starting from a blank page."
             />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              {useCases.map(([title, description], i) => (
-                <Reveal key={title} delay={i * 70}>
-                  <div className="card p-5 h-full hover:shadow-soft transition-shadow">
-                    <span className="w-9 h-9 rounded-lg bg-violet-500/10 text-violet-600 grid place-items-center mb-3">
-                      <Icon name="users" className="w-5 h-5" />
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {WORKFLOW.map(([title, body, carry], i) => (
+                <Reveal key={title} delay={i * 60}>
+                  <div className="flex h-full flex-col rounded-card border border-border bg-white p-5">
+                    <span className="font-display text-sm font-semibold text-forest-500">Step {i + 1}</span>
+                    <h3 className="mt-2 font-semibold text-ink">{title}</h3>
+                    <p className="mt-2 text-sm text-sage-600">{body}</p>
+                    <p className="mt-auto pt-3 text-xs text-forest-600">{carry}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── F. Audience modes ──────────────────────────── */}
+        <section className="bg-ivory py-16 md:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <SectionHead
+              eyebrow="Ways to use it"
+              title="Wherever you are in the search"
+              subtitle="The same workspace adapts to what you need right now."
+            />
+            <div className="mt-10 grid gap-5 lg:grid-cols-3">
+              {MODES.map((mode, i) => (
+                <Reveal key={mode.title} delay={i * 80}>
+                  <div className="card-gradient h-full p-7">
+                    <span className="grid h-11 w-11 place-items-center rounded-xl bg-lime text-forest-800">
+                      <Icon name={mode.icon} className="h-5 w-5" />
                     </span>
-                    <h3 className="font-bold text-ink mb-2">{title}</h3>
-                    <p className="text-sm text-muted">{description}</p>
+                    <h3 className="mt-4 font-display text-xl font-bold text-ink">{mode.title}</h3>
+                    <p className="mt-2 text-sm text-sage-600">{mode.body}</p>
+                    <ul className="mt-5 space-y-2">
+                      {mode.points.map((p) => (
+                        <li key={p} className="flex items-center gap-2.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-ink">
+                          <span className="grid h-5 w-5 place-items-center rounded-full bg-forest-50 text-forest-700"><Icon name="check" className="h-3 w-3" /></span>
+                          {p}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </Reveal>
               ))}
@@ -348,29 +279,64 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Final CTA ─────────────────────────────────── */}
-        <section className="relative overflow-hidden bg-navy-900 text-white">
-          <div className="absolute inset-0 aurora-layer animate-aurora-shift" />
-          <div className="absolute inset-0 bg-dots opacity-40" />
-          <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-20 text-center">
-            <Reveal>
-              <span className="eyebrow-pill bg-white/10 text-white/80 mb-4">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                Start now
-              </span>
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 tracking-tight">
-                Turn your job search into a system
+        {/* ── G. Trust + FAQ ─────────────────────────────── */}
+        <section id="faq" className="scroll-mt-24 bg-white py-16 md:py-24">
+          <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr]">
+            <div>
+              <SectionHead
+                eyebrow="Trust"
+                title="Treated as private career data"
+                subtitle="A few plain-language protections, no vague promises."
+              />
+              <div className="mt-8 space-y-3">
+                {[
+                  ['Your account, your data', 'Your profile, applications, and history live in your signed-in account.'],
+                  ['Keys stay on the server', 'AI API keys are used by the backend and are never exposed to the browser.'],
+                  ['Grounded in what you save', 'Analyses and drafts are built from your profile and the job description you provide.'],
+                ].map(([t, d]) => (
+                  <div key={t} className="flex items-start gap-3 rounded-card border border-border p-4">
+                    <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-forest-50 text-forest-700"><Icon name="shield" className="h-4 w-4" /></span>
+                    <div>
+                      <h3 className="font-semibold text-ink">{t}</h3>
+                      <p className="mt-1 text-sm text-sage-600">{d}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <SectionHead eyebrow="FAQ" title="Questions, answered plainly" />
+              <div className="mt-8 divide-y divide-border rounded-card border border-border bg-white">
+                {FAQ.map(([q, a]) => (
+                  <details key={q} className="group px-5">
+                    <summary className="flex cursor-pointer list-none items-center justify-between py-4 text-sm font-semibold text-ink marker:hidden">
+                      {q}
+                      <span className="ml-3 text-sage-600 transition-transform group-open:rotate-45">+</span>
+                    </summary>
+                    <p className="pb-4 text-sm leading-relaxed text-sage-600">{a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── H. Closing CTA ─────────────────────────────── */}
+        <section className="bg-ivory pb-20 pt-4">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <Reveal className="relative overflow-hidden rounded-panel bg-forest px-6 py-14 text-center sm:px-10">
+              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-lime/30 blur-2xl" aria-hidden="true" />
+              <h2 className="relative font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Bring your job search into one place
               </h2>
-              <p className="text-white/70 mb-9 text-lg max-w-2xl mx-auto">
-                Build your profile, track applications, practice interviews, and let CareerOS show the next best action.
+              <p className="relative mx-auto mt-3 max-w-xl text-white/75">
+                Create your workspace, add your profile, and let CareerOS show you the next move.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-lg mx-auto">
-                <Link to="/dashboard" className="btn-gradient text-base flex-1">
-                  Open Dashboard
-                  <Icon name="rocket" className="w-4 h-4" />
-                </Link>
-                <Link to="/applications" className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl glass text-white font-semibold text-base hover:bg-white/15 transition-colors flex-1">
-                  Track Applications
+              <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                <Link to="/signup" className="btn-lime text-base">Create your workspace</Link>
+                <Link to="/login" className="inline-flex items-center justify-center rounded-xl border border-white/25 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-white/10">
+                  Sign in
                 </Link>
               </div>
             </Reveal>

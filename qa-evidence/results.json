@@ -1,0 +1,2715 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\node_modules\\@playwright\\test\\cli.js",
+      "test"
+    ],
+    "configFile": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\playwright.config.js",
+    "rootDir": "C:/Users/firoz ahmad/ai-resume-job-assistant/frontend/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/firoz ahmad/ai-resume-job-assistant/qa-evidence/test-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "C:/Users/firoz ahmad/ai-resume-job-assistant/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/firoz ahmad/ai-resume-job-assistant/qa-evidence/test-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile",
+        "name": "mobile",
+        "testDir": "C:/Users/firoz ahmad/ai-resume-job-assistant/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "../qa-evidence/playwright-report",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../qa-evidence/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": {
+      "command": "npm run preview",
+      "url": "http://localhost:4173",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "interactions.spec.js",
+      "file": "interactions.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "desktop interactions",
+          "file": "interactions.spec.js",
+          "line": 11,
+          "column": 6,
+          "specs": [
+            {
+              "title": "stacked-card CTAs stay visible and clickable when focused",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4325,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:06:13.036Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-5a0f5648be6443362e0a",
+              "file": "interactions.spec.js",
+              "line": 14,
+              "column": 3
+            },
+            {
+              "title": "reduced motion: hero paused, no overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2269,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:06:17.515Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-ca32d1a0ab6b3dc574fb",
+              "file": "interactions.spec.js",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "home: navigate away and back keeps the hero",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2208,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:06:19.811Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-e54c79939b5bf9e481fa",
+              "file": "interactions.spec.js",
+              "line": 52,
+              "column": 3
+            },
+            {
+              "title": "home extra widths: no horizontal overflow (360 / 768 / 1024 / 1440x600)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7257,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:06:22.041Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-b17c1ed860a5d402533f",
+              "file": "interactions.spec.js",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "[fixture] dashboard states: loaded / genuine-zero / empty / failed",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5400,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:06:29.319Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-4922a8e0d89e1e22b226",
+              "file": "interactions.spec.js",
+              "line": 77,
+              "column": 3
+            },
+            {
+              "title": "stacked-card CTAs stay visible and clickable when focused",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "desktop only",
+                      "location": {
+                        "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                        "line": 12,
+                        "column": 44
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 2,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:07:47.409Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "description": "desktop only",
+                          "location": {
+                            "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                            "line": 12,
+                            "column": 44
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-6737ef6d9fa8a0b55caa",
+              "file": "interactions.spec.js",
+              "line": 14,
+              "column": 3
+            },
+            {
+              "title": "reduced motion: hero paused, no overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "desktop only",
+                      "location": {
+                        "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                        "line": 12,
+                        "column": 44
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 0,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:07:47.444Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "description": "desktop only",
+                          "location": {
+                            "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                            "line": 12,
+                            "column": 44
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-3562a69f730047797bcf",
+              "file": "interactions.spec.js",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "home: navigate away and back keeps the hero",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "desktop only",
+                      "location": {
+                        "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                        "line": 12,
+                        "column": 44
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 0,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:07:47.453Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "description": "desktop only",
+                          "location": {
+                            "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                            "line": 12,
+                            "column": 44
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-3a2b836932f2051674c8",
+              "file": "interactions.spec.js",
+              "line": 52,
+              "column": 3
+            },
+            {
+              "title": "home extra widths: no horizontal overflow (360 / 768 / 1024 / 1440x600)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "desktop only",
+                      "location": {
+                        "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                        "line": 12,
+                        "column": 44
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 0,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:07:47.467Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "description": "desktop only",
+                          "location": {
+                            "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                            "line": 12,
+                            "column": 44
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-82202002ef0d0dc57d3e",
+              "file": "interactions.spec.js",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "[fixture] dashboard states: loaded / genuine-zero / empty / failed",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "desktop only",
+                      "location": {
+                        "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                        "line": 12,
+                        "column": 44
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 0,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:07:47.476Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "description": "desktop only",
+                          "location": {
+                            "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                            "line": 12,
+                            "column": 44
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-fc7e8913dd062b1121fc",
+              "file": "interactions.spec.js",
+              "line": 77,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "mobile interactions",
+          "file": "interactions.spec.js",
+          "line": 115,
+          "column": 6,
+          "specs": [
+            {
+              "title": "[fixture] mobile drawer: opens, contains focus, Escape closes and restores focus",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "mobile only",
+                      "location": {
+                        "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                        "line": 116,
+                        "column": 44
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 0,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:06:34.743Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "description": "mobile only",
+                          "location": {
+                            "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                            "line": 116,
+                            "column": 44
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-50beb87c4e49aea9f4d9",
+              "file": "interactions.spec.js",
+              "line": 118,
+              "column": 3
+            },
+            {
+              "title": "[fixture] mobile drawer: opens, contains focus, Escape closes and restores focus",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1746,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:07:47.484Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-d2de3a7ab7b0ad24458d",
+              "file": "interactions.spec.js",
+              "line": 118,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "applications drawer",
+          "file": "interactions.spec.js",
+          "line": 142,
+          "column": 6,
+          "specs": [
+            {
+              "title": "[fixture] add drawer opens; a failed save shows an error",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3815,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:06:34.753Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-78c1d8e2bc61272d9b26",
+              "file": "interactions.spec.js",
+              "line": 145,
+              "column": 3
+            },
+            {
+              "title": "[fixture] add drawer opens; a failed save shows an error",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "desktop only",
+                      "location": {
+                        "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                        "line": 143,
+                        "column": 44
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 1,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:07:49.344Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "description": "desktop only",
+                          "location": {
+                            "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\interactions.spec.js",
+                            "line": 143,
+                            "column": 44
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "0332c50d76e4d567f08a-abdd7d2710c094b6bb5c",
+              "file": "interactions.spec.js",
+              "line": 145,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "screenshots.spec.js",
+      "file": "screenshots.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "screenshot home",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1863,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:38.600Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "home-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-home-desktop\\attachments\\home-desktop-4f050507a764a08979e7553c58d81cc1c05b9231.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-c99f5729a714ff3b8d46",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot login",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1368,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:40.473Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "login-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-login-desktop\\attachments\\login-desktop-60669cb452e721dd39410905d6d9fec78ab8ab2c.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-13feadaedd9f7549f855",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot signup",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1379,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:41.851Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "signup-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-signup-desktop\\attachments\\signup-desktop-b587d400fdebf6dbcb9545e260a165da20bbe12b.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-252cf5fe52bc4213c788",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot about",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1433,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:43.242Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "about-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-about-desktop\\attachments\\about-desktop-d88e88783c87f1fdb6c16ad9028944da53bd7639.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-66b9f7922333b676d78f",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot matcher",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1363,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:44.688Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "matcher-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-matcher-desktop\\attachments\\matcher-desktop-7f93cedc315dd751c99fa5a7b02cd9169a452c72.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-93875f054cb17dc5bdc4",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot notfound",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1330,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:46.061Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "notfound-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-notfound-desktop\\attachments\\notfound-desktop-848aa7ba09cdd58f2b68c10da897cb39588ce82b.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-94c5126bde4266992a2d",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot dashboard",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1426,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:47.402Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "dashboard-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-dashboard-desktop\\attachments\\dashboard-desktop-8af5bdbf3b9a334c21c18f62f57d4b1ae9e0cfc2.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-c1f4e4769dc285c4c587",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot profile",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1423,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:48.838Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "profile-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-profile-desktop\\attachments\\profile-desktop-f42d496068d952fa4d5acdeb6467313f3b08925d.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-bfd7b94985509362fff1",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot career-intelligence",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1319,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:50.272Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "career-intelligence-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-career-intelligence-desktop\\attachments\\career-intelligence-desktop-869506a6affeb51fb3f630f67c445d4e6d0fbc91.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-6f83c4c4f0916f305c34",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot career-dna",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1344,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:51.601Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "career-dna-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-career-dna-desktop\\attachments\\career-dna-desktop-3bea1bb0182da88c7d3d8d7e2b15a36abcdb3dc2.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-c632bc0dd8692ab5c3a4",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot career-vault",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1391,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:52.953Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "career-vault-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-career-vault-desktop\\attachments\\career-vault-desktop-15f93f4254f787cdae2ab9e5c09123ca10286a11.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-0daa91b4b7b226f95990",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot resume-builder",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1427,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:54.356Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "resume-builder-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-resume-builder-desktop\\attachments\\resume-builder-desktop-c16ee88c5749afec72fbfdd8871f8fb8dc6fac15.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-b47ea3cc53123155f6b2",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot generator",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1433,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:55.792Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "generator-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-generator-desktop\\attachments\\generator-desktop-c251cbd4c5379bcc11288f8872d01a645127d07a.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-57955f350e438d26fcd8",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot content-library",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1346,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:57.234Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "content-library-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-content-library-desktop\\attachments\\content-library-desktop-c28394fb0c0b4386ab166b838e9d6fa058486dca.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-4e603a3b2b925e2a76ed",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot job-analyzer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1404,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:06:58.589Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "job-analyzer-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-job-analyzer-desktop\\attachments\\job-analyzer-desktop-46c1dab668a4860483d9e52d17643c0967ccdbe9.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-71c48d654ddb49145455",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot applications",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1417,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:00.002Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "applications-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-applications-desktop\\attachments\\applications-desktop-6c50bd3821287e3c129044f946ebbfdd5a3612bc.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-85d23d86870e831265a0",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot interview-room",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1385,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:01.429Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "interview-room-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-interview-room-desktop\\attachments\\interview-room-desktop-8b785d6af877bb9323b4e204ce320961f4e1e92c.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-3ca4794189a58c588315",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot voice-interview",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1461,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:02.824Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "voice-interview-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-voice-interview-desktop\\attachments\\voice-interview-desktop-3a087d1fc40c677bdccaacc66a348c25b0194f4d.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-75e6936ed7253e44f3b8",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot interview-history",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1313,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:04.295Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "interview-history-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-interview-history-desktop\\attachments\\interview-history-desktop-356d9f5e4260625451f0aa2d9d38552a9916db30.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-c5d545b3316545586a50",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot voice-interview-history",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1341,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:05.616Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "voice-interview-history-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-voice-interview-history-desktop\\attachments\\voice-interview-history-desktop-342b1bd3c1c1f202e92892d9463f8b7fb9118997.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-5c775c92a6238d624a6e",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot roadmap",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1356,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:06.966Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "roadmap-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-roadmap-desktop\\attachments\\roadmap-desktop-5f970f1543253b31a7b0756bc00fc63c2f685408.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-81746120aba8129a5f8a",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot admin",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1356,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:08.331Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "admin-desktop",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-admin-desktop\\attachments\\admin-desktop-c14823597aa691fc35e7c60b55e72fae07037ce0.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-0806ebf153fd21c92ac8",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot home",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2667,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:49.368Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "home-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-home-mobile\\attachments\\home-mobile-c8e1d1b4ff2d8fb0a30cd5ec9ec0624a68499778.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-39d7a6b5f01b0971839d",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot login",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1396,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:52.047Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "login-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-login-mobile\\attachments\\login-mobile-5b4b3a0254fd21f291e4ca9bc4f3dcc8650ce6a2.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-62406ba4d2d9383e66e5",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot signup",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1393,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:53.459Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "signup-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-signup-mobile\\attachments\\signup-mobile-1e6c6abaeb7e0f6b9dcea2f774aff7e6f5c027de.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-b28c3346da7ff9615273",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot about",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1647,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:54.863Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "about-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-about-mobile\\attachments\\about-mobile-220d6c16a6841fa43e9010d3b436529639c639f4.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-ebcd70cbd449ca59c47b",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot matcher",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1523,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:56.518Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "matcher-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-matcher-mobile\\attachments\\matcher-mobile-f80c7ae69874f84075504ee80ad0fcf821e81793.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-c78e8fd2534aa6d4230b",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "screenshot notfound",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1510,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:58.053Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "notfound-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots-screenshot-notfound-mobile\\attachments\\notfound-mobile-ad743d3f5c3f0010bc63691fdf31f26c452a696a.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-0b499930681fad2d3c46",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot dashboard",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1577,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:07:59.573Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "dashboard-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-dashboard-mobile\\attachments\\dashboard-mobile-a7a7145884e96932aa4906579282329b5f1aefbc.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-696d3f5ed1d1b773cdc7",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot profile",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1620,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:01.158Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "profile-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-profile-mobile\\attachments\\profile-mobile-e5424f2a3f5f9190e9b36c96215c40fc87757b2b.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-89caf4397c671bb1ba5e",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot career-intelligence",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1370,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:02.789Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "career-intelligence-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-career-intelligence-mobile\\attachments\\career-intelligence-mobile-716118e6284d7ac07df2407a63bdb2b5015845a2.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-791e20703d773db88212",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot career-dna",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1437,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:04.170Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "career-dna-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-career-dna-mobile\\attachments\\career-dna-mobile-c9e58f80581ad1820f5d103f970b898d96f72779.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-f0c2df20717ad9c0e325",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot career-vault",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1457,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:05.615Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "career-vault-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-career-vault-mobile\\attachments\\career-vault-mobile-a791de3b6138302b29fb97e887c362d36675e67c.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-072be8924fa5fc5d3718",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot resume-builder",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1588,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:07.080Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "resume-builder-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-resume-builder-mobile\\attachments\\resume-builder-mobile-5d1d32dc2e215013ea55343c6e2ad6fd5b761019.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-8508c9cc765251f160e8",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot generator",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1561,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:08.676Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "generator-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-generator-mobile\\attachments\\generator-mobile-99841ab93d3a8c6db5ec1cf91d7db2cf7099eadb.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-ba9b8c0585bb28ad8f91",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot content-library",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1407,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:10.247Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "content-library-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-content-library-mobile\\attachments\\content-library-mobile-d939c4170cc68ca50d95f2b23a0c716f126034b8.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-7eaa7bdc46acbb24222b",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot job-analyzer",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1464,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:11.666Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "job-analyzer-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-job-analyzer-mobile\\attachments\\job-analyzer-mobile-1e7368182c53bb1c9a3bbdf8f74920dec30ad80c.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-b3134ed2617d62cec340",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot applications",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1877,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:13.142Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "applications-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-applications-mobile\\attachments\\applications-mobile-35d551b157a569145ee50edf27f0a510f4940e43.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-c0a8e4eb6909b9399fca",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot interview-room",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1454,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:15.031Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "interview-room-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-interview-room-mobile\\attachments\\interview-room-mobile-56d229718cd5803fc9bfb42b457e2e0101981b7f.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-3092e22db756eb0a5a8d",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot voice-interview",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1482,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:16.495Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "voice-interview-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-voice-interview-mobile\\attachments\\voice-interview-mobile-d037373586cabc1acd8c56677bf43c461c7fa5e9.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-bc670ac55ea3cbf9d973",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot interview-history",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1398,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:17.985Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "interview-history-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-interview-history-mobile\\attachments\\interview-history-mobile-f354b2854bb86e47746fdf890122539f98f91d3d.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-5e34f3685d93514c2380",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot voice-interview-history",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1383,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:19.391Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "voice-interview-history-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-voice-interview-history-mobile\\attachments\\voice-interview-history-mobile-1e2f2f981b2b54a554838fed32e7405b572b117a.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-d941a9648e652ce095ae",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot roadmap",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1448,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:20.783Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "roadmap-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-roadmap-mobile\\attachments\\roadmap-mobile-e4868329a3c4a2d26277c90e5f540097fab6324f.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-8e9585c5af97e1308baa",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        },
+        {
+          "title": "[fixture] screenshot admin",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile",
+              "projectName": "mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1443,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T14:08:22.240Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "admin-mobile",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\qa-evidence\\test-output\\screenshots--fixture-screenshot-admin-mobile\\attachments\\admin-mobile-207136798cbc2989766079e204a323ff0aea6d9f.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "53bacfe0c91763a7148e-d781957855e2fff86481",
+          "file": "screenshots.spec.js",
+          "line": 10,
+          "column": 3
+        }
+      ]
+    },
+    {
+      "title": "tour.spec.js",
+      "file": "tour.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "tour video",
+          "file": "tour.spec.js",
+          "line": 10,
+          "column": 6,
+          "specs": [
+            {
+              "title": "desktop: hero + logo morph, card stack + release, reverse scroll",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 32832,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:07:09.717Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b2c2fdcb1f16ddba5eea-8b8486f213fbc050fc49",
+              "file": "tour.spec.js",
+              "line": 22,
+              "column": 3
+            },
+            {
+              "title": "[fixture] mobile: navigation drawer",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop",
+                  "projectName": "desktop",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3437,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:07:42.580Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b2c2fdcb1f16ddba5eea-ca28f6cf3e6b3db51f3d",
+              "file": "tour.spec.js",
+              "line": 39,
+              "column": 3
+            },
+            {
+              "title": "desktop: hero + logo morph, card stack + release, reverse scroll",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "run once",
+                      "location": {
+                        "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\tour.spec.js",
+                        "line": 11,
+                        "column": 44
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 0,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:08:23.710Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "description": "run once",
+                          "location": {
+                            "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\tour.spec.js",
+                            "line": 11,
+                            "column": 44
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b2c2fdcb1f16ddba5eea-6ce56db6ce70cd13b26c",
+              "file": "tour.spec.js",
+              "line": 22,
+              "column": 3
+            },
+            {
+              "title": "[fixture] mobile: navigation drawer",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "run once",
+                      "location": {
+                        "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\tour.spec.js",
+                        "line": 11,
+                        "column": 44
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "mobile",
+                  "projectName": "mobile",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 0,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T14:08:23.718Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "description": "run once",
+                          "location": {
+                            "file": "C:\\Users\\firoz ahmad\\ai-resume-job-assistant\\frontend\\e2e\\tour.spec.js",
+                            "line": 11,
+                            "column": 44
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b2c2fdcb1f16ddba5eea-d0d51742c6d7d44b3183",
+              "file": "tour.spec.js",
+              "line": 39,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-09T14:06:10.965Z",
+    "duration": 133239.203,
+    "expected": 53,
+    "skipped": 9,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

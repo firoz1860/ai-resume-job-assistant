@@ -249,6 +249,10 @@ Frontend environment:
 VITE_API_BASE_URL=http://localhost:5000
 ```
 
+The homepage hero is an original, code-built illustration (HTML + CSS
+perspective + SVG) — no 3D runtime or external scene is required, so it renders
+immediately and works without WebGL.
+
 ## Testing And Verification
 
 Backend tests:

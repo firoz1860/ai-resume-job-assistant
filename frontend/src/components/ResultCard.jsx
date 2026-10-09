@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Icon } from './Reveal.jsx';
 
 export default function ResultCard({ content, contentType, onRegenerate, isLoading }) {
   const [copied, setCopied] = useState(false);
@@ -15,30 +16,30 @@ export default function ResultCard({ content, contentType, onRegenerate, isLoadi
   };
 
   return (
-    <div className="card flex flex-col h-full animate-slide-up">
+    <div className="flex flex-col h-full animate-slide-up">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-        <div>
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-border">
+        <div className="min-w-0">
+          <span className="eyebrow-pill mb-1.5">
+            <Icon name="doc" className="w-3.5 h-3.5 text-forest-700" />
+            Draft
+          </span>
           <h3 className="font-semibold text-ink text-sm">{contentType}</h3>
-          <p className="text-muted text-xs mt-0.5">{content.length} characters</p>
+          <p className="text-sage-500 text-xs mt-0.5">{content.length} characters · not sent anywhere</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-white hover:bg-surface text-ink text-xs font-medium transition-colors"
+            className="btn-secondary text-xs px-3 py-1.5 min-h-0"
           >
             {copied ? (
               <>
-                <svg className="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
-                </svg>
-                Copied!
+                <Icon name="check" className="w-3.5 h-3.5 text-forest-600" />
+                Copied
               </>
             ) : (
               <>
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                </svg>
+                <Icon name="doc" className="w-3.5 h-3.5" />
                 Copy
               </>
             )}
@@ -46,11 +47,9 @@ export default function ResultCard({ content, contentType, onRegenerate, isLoadi
           <button
             onClick={onRegenerate}
             disabled={isLoading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-white text-xs font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary text-xs px-3 py-1.5 min-h-0"
           >
-            <svg className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
+            <Icon name="history" className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
             Regenerate
           </button>
         </div>
@@ -58,7 +57,7 @@ export default function ResultCard({ content, contentType, onRegenerate, isLoadi
 
       {/* Content */}
       <div className="flex-1 p-5 overflow-auto">
-        <pre className="whitespace-pre-wrap font-sans text-sm text-ink leading-relaxed">{content}</pre>
+        <pre className="whitespace-pre-wrap break-words font-sans text-sm text-ink leading-relaxed">{content}</pre>
       </div>
     </div>
   );

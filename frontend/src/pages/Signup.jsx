@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import AuthVisual from '../components/AuthVisual.jsx';
+import Wordmark from '../components/marketing/Wordmark.jsx';
 
 export default function Signup() {
   const { signup } = useAuth();
@@ -29,44 +30,41 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:grid lg:grid-cols-2 bg-surface">
-      {/* Visual panel — hidden on mobile, left side on desktop */}
-      <div className="hidden lg:flex">
-        <AuthVisual mode="signup" />
-      </div>
+    <div className="flex min-h-screen flex-col bg-ivory lg:grid lg:grid-cols-2">
+      <AuthVisual mode="signup" />
 
-      {/* Form panel */}
-      <div className="flex-1 flex items-center justify-center px-4 py-10 sm:py-16">
+      <div className="flex flex-1 items-center justify-center px-4 py-10 sm:py-16">
         <div className="w-full max-w-md">
-          {/* Mobile logo */}
-          <div className="flex items-center gap-2.5 mb-8 lg:hidden">
-            <div className="w-9 h-9 bg-navy-900 rounded-lg flex items-center justify-center">
-              <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
-                <path d="M5 7h10M5 11h10M5 15h6" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"/>
-                <circle cx="18" cy="10" r="3" fill="#2563EB" opacity="0.85"/>
-                <path d="M18 8.5v3M16.5 10h3" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <span className="font-bold text-navy-900 text-lg">CareerOS<span className="text-accent">AI</span></span>
-          </div>
+          <Link to="/" aria-label="CareerOS AI home" className="mb-8 inline-block lg:hidden">
+            <Wordmark size="nav" />
+          </Link>
 
-          <div className="card p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-ink mb-1">Create your account</h2>
-            <p className="text-sm text-muted mb-6">Your private AI career workspace — free to start.</p>
+          <div className="panel p-6 sm:p-8">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-ink">Create your workspace</h2>
+            <p className="mt-1 text-sm text-sage-600">One private place for your whole job search.</p>
 
-            <form onSubmit={submit} className="space-y-3">
-              <input name="name" value={form.name} onChange={set} placeholder="Full name" className="form-input" autoComplete="name" required />
-              <input name="email" type="email" value={form.email} onChange={set} placeholder="Email address" className="form-input" autoComplete="email" required />
-              <input name="password" type="password" value={form.password} onChange={set} placeholder="Password (min 6 chars)" className="form-input" autoComplete="new-password" required minLength={6} />
-              {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
+            <form onSubmit={submit} className="mt-6 space-y-4">
+              <div>
+                <label htmlFor="signup-name" className="form-label">Full name</label>
+                <input id="signup-name" name="name" value={form.name} onChange={set} placeholder="Your name" className="form-input" autoComplete="name" required />
+              </div>
+              <div>
+                <label htmlFor="signup-email" className="form-label">Email address</label>
+                <input id="signup-email" name="email" type="email" value={form.email} onChange={set} placeholder="you@example.com" className="form-input" autoComplete="email" required />
+              </div>
+              <div>
+                <label htmlFor="signup-password" className="form-label">Password</label>
+                <input id="signup-password" name="password" type="password" value={form.password} onChange={set} placeholder="At least 6 characters" className="form-input" autoComplete="new-password" required minLength={6} />
+              </div>
+              {error && <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}
               <button type="submit" className="btn-primary w-full justify-center py-3" disabled={loading}>
-                {loading ? 'Creating account…' : 'Sign up free'}
+                {loading ? 'Creating workspace…' : 'Create workspace'}
               </button>
             </form>
 
-            <p className="text-sm text-muted mt-5 text-center">
+            <p className="mt-6 text-center text-sm text-sage-600">
               Already have an account?{' '}
-              <Link to="/login" className="text-accent font-semibold hover:underline">Login</Link>
+              <Link to="/login" className="font-semibold text-forest-700 hover:underline">Sign in</Link>
             </p>
           </div>
         </div>

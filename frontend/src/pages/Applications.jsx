@@ -1,7 +1,10 @@
+import useDialogFocus from '../hooks/useDialogFocus.js';
 import { useEffect, useMemo, useState } from 'react';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import PageHeader from '../components/PageHeader.jsx';
+import Loader from '../components/Loader.jsx';
+import { Icon, Reveal } from '../components/Reveal.jsx';
 import { applicationsApi } from '../services/api.js';
 
 const empty = {
@@ -50,12 +53,14 @@ const dateFields = {
     { name: 'followUpDate', label: 'Response deadline', help: 'Optional date to respond or negotiate.' },
   ],
 };
+// Restrained stage chips — Saved=sage/ivory, Applied=forest-50, Interview=lime
+// (dark text), Rejected=red, Offer=solid forest.
 const statusStyles = {
-  Saved: 'bg-slate-100 text-slate-700 border-slate-200',
-  Applied: 'bg-blue-50 text-blue-700 border-blue-200',
-  Interview: 'bg-amber-50 text-amber-700 border-amber-200',
+  Saved: 'bg-surface text-sage-600 border-border',
+  Applied: 'bg-forest-50 text-forest-700 border-forest-100',
+  Interview: 'bg-lime text-forest-800 border-lime-400',
   Rejected: 'bg-red-50 text-red-700 border-red-200',
-  Offer: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  Offer: 'bg-forest text-white border-forest-700',
 };
 
 const templates = {
@@ -229,9 +234,9 @@ function nextAction(item) {
 
 function StatCard({ label, value }) {
   return (
-    <div className="card-gradient p-4">
-      <p className="text-xs text-muted uppercase font-semibold tracking-wide">{label}</p>
-      <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-brand-gradient mt-1 font-display">{value}</p>
+    <div className="card p-4">
+      <p className="text-xs text-sage-600 uppercase font-semibold tracking-wide">{label}</p>
+      <p className="text-2xl font-bold text-ink mt-1 font-display">{value}</p>
     </div>
   );
 }
@@ -249,6 +254,11 @@ export default function Applications() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  // Presentational-only: controls visibility of the Add/Edit form drawer.
+  // No API, data, or business logic depends on this flag.
+  const [formOpen, setFormOpen] = useState(false);
+  const formDialogRef = useDialogFocus(formOpen);
+  const detailDialogRef = useDialogFocus(Boolean(selected) && !formOpen);
 
   const set = (e) => {
     const { name, value } = e.target;
@@ -271,6 +281,18 @@ export default function Applications() {
   };
 
   useEffect(() => { load(); }, []);
+
+  // Presentational-only: close any open drawer on Escape.
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setFormOpen(false);
+        setSelected(null);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const analytics = useMemo(() => successAnalytics(items), [items]);
   const filteredItems = useMemo(() => {
@@ -309,6 +331,7 @@ export default function Applications() {
       if (editingId) await applicationsApi.update(editingId, payload);
       else await applicationsApi.create(payload);
       resetForm();
+      setFormOpen(false);
       await load();
     } catch (err) {
       setError(err.message || 'Unable to save application.');
@@ -397,209 +420,375 @@ export default function Applications() {
             title="Application Intelligence Tracker"
             subtitle="Track roles, contacts, resume changes, prep, reminders, and outcomes from one workspace."
           >
-            <button onClick={() => window.print()} className="btn-secondary text-sm bg-white/10 border-white/20 text-white hover:bg-white/20">Export PDF</button>
-            <button onClick={load} className="btn-secondary text-sm bg-white/10 border-white/20 text-white hover:bg-white/20">Refresh</button>
+            <button onClick={() => { resetForm(); setFormOpen(true); }} className="btn-lime text-sm">
+              <Icon name="sparkle" className="w-4 h-4" />
+              Add Application
+            </button>
+            <button onClick={() => window.print()} className="btn-secondary text-sm bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30">Export PDF</button>
+            <button onClick={load} className="btn-secondary text-sm bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30">Refresh</button>
           </PageHeader>
 
-          {error && <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>}
+          {error && (
+            <div className="mb-5 p-4 bg-red-50 border border-red-200 rounded-card flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3" role="alert">
+              <p className="text-sm text-red-700 font-medium">{error}</p>
+              <button onClick={load} className="btn-secondary text-sm px-4 py-2 shrink-0">Retry</button>
+            </div>
+          )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
+          <Reveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
             {Object.entries(stats).map(([label, value]) => <StatCard key={label} label={label} value={value} />)}
+          </Reveal>
+
+          <Reveal delay={60} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+            <div className="card p-4"><p className="text-xs text-sage-600 uppercase font-semibold tracking-wide">Response Rate</p><p className="text-2xl font-bold text-ink mt-1">{analytics.responseRate}%</p></div>
+            <div className="card p-4"><p className="text-xs text-sage-600 uppercase font-semibold tracking-wide">Offer Rate</p><p className="text-2xl font-bold text-ink mt-1">{analytics.offerRate}%</p></div>
+            <div className="card p-4"><p className="text-xs text-sage-600 uppercase font-semibold tracking-wide">Rejection Pattern</p><p className="text-sm font-semibold text-ink mt-1 leading-relaxed">{rejectionPattern(items)}</p></div>
+            <div className="card p-4"><p className="text-xs text-sage-600 uppercase font-semibold tracking-wide">Quick Capture</p><p className="text-sm font-semibold text-ink mt-1 leading-relaxed">Open Add Application and paste a job post to auto-fill role, company, and link.</p></div>
+          </Reveal>
+
+          <div className="card p-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
+              <div>
+                <label htmlFor="pipeline-search" className="sr-only">Search applications</label>
+                <input id="pipeline-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search company, role, notes, recruiter..." className="form-input" />
+              </div>
+              <div>
+                <label htmlFor="pipeline-filter" className="sr-only">Filter by stage</label>
+                <select id="pipeline-filter" value={activeStatus} onChange={(e) => setActiveStatus(e.target.value)} className="form-select md:w-48">
+                  <option>All</option>
+                  {statuses.map((status) => <option key={status}>{status}</option>)}
+                </select>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-            <div className="card p-4"><p className="text-xs text-muted uppercase font-semibold">Response Rate</p><p className="text-2xl font-bold text-ink">{analytics.responseRate}%</p></div>
-            <div className="card p-4"><p className="text-xs text-muted uppercase font-semibold">Offer Rate</p><p className="text-2xl font-bold text-ink">{analytics.offerRate}%</p></div>
-            <div className="card p-4"><p className="text-xs text-muted uppercase font-semibold">Rejection Pattern</p><p className="text-sm font-semibold text-ink mt-1">{rejectionPattern(items)}</p></div>
-            <div className="card p-4"><p className="text-xs text-muted uppercase font-semibold">Chrome Extension Ready</p><p className="text-sm font-semibold text-ink mt-1">Paste job text now. Extension can later fill this same form.</p></div>
-          </div>
+          {loading && (
+            <div className="card">
+              <Loader message="Loading applications..." />
+            </div>
+          )}
 
-          <div className="grid grid-cols-1 xl:grid-cols-[0.85fr_1.4fr] gap-6 items-start">
-            <section className="space-y-5 xl:sticky xl:top-24">
-              <div className="card p-5 sm:p-6">
-                <h2 className="font-bold text-ink mb-2">Job Link Import</h2>
-                <p className="text-xs text-muted mb-3">Paste a job link or job post. It fills role, company, link, and JD where possible.</p>
-                <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={4} className="form-textarea" placeholder="Paste role, company, job link, and job description..." />
-                <button type="button" onClick={importJob} className="btn-secondary w-full justify-center mt-3">Import Into Form</button>
-              </div>
+          {!loading && !error && items.length === 0 && (
+            <div className="card p-10 sm:p-14 text-center">
+              <span className="w-14 h-14 rounded-2xl bg-forest-50 border border-forest-100 grid place-items-center mx-auto mb-4">
+                <Icon name="match" className="w-7 h-7 text-forest-700" />
+              </span>
+              <h2 className="font-bold text-ink text-lg">No applications yet</h2>
+              <p className="text-sm text-sage-600 mt-1 max-w-sm mx-auto">Add your first role to build your pipeline across Saved, Applied, Interview, Rejected, and Offer.</p>
+              <button onClick={() => { resetForm(); setFormOpen(true); }} className="btn-primary mt-5">Add your first application</button>
+            </div>
+          )}
 
-              <form onSubmit={save} className="card p-5 sm:p-6 space-y-3">
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div>
-                    <h2 className="font-bold text-ink">{editingId ? 'Edit Application' : 'Add Application'}</h2>
-                    <p className="text-xs text-muted mt-1">Company and role are required.</p>
-                  </div>
-                  {editingId && <button type="button" onClick={resetForm} className="text-xs font-semibold text-accent">Cancel</button>}
-                </div>
+          {!loading && !error && items.length > 0 && filteredItems.length === 0 && (
+            <div className="card p-10 text-center">
+              <h2 className="font-bold text-ink">No applications match your filters</h2>
+              <p className="text-sm text-sage-600 mt-1">Try a different search term or clear the stage filter.</p>
+              <button onClick={() => { setQuery(''); setActiveStatus('All'); }} className="btn-secondary mt-4">Clear filters</button>
+            </div>
+          )}
 
-                <input name="companyName" value={form.companyName} onChange={set} placeholder="Company name" className="form-input" required />
-                <input name="role" value={form.role} onChange={set} placeholder="Role" className="form-input" required />
-                <input name="jobLink" value={form.jobLink} onChange={set} placeholder="Job link" className="form-input" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <select name="status" value={form.status} onChange={set} className="form-select">{statuses.map((status) => <option key={status}>{status}</option>)}</select>
-                  <select name="priority" value={form.priority} onChange={set} className="form-select">{['Low', 'Medium', 'High'].map((value) => <option key={value}>{value}</option>)}</select>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {visibleDateFields(form.status).map((field) => (
-                    <label key={field.name} className="block">
-                      <span className="text-xs font-semibold text-muted">{field.label}</span>
-                      <input type="date" name={field.name} value={form[field.name]} onChange={set} className="form-input mt-1" />
-                      <span className="block text-[11px] text-muted mt-1">{field.help}</span>
-                    </label>
-                  ))}
-                </div>
-                <input name="source" value={form.source} onChange={set} placeholder="Source: LinkedIn, Naukri, Referral, Company site" className="form-input" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input name="recruiterName" value={form.recruiterName} onChange={set} placeholder="Recruiter/contact name" className="form-input" />
-                  <input name="recruiterEmail" value={form.recruiterEmail} onChange={set} placeholder="Recruiter email" className="form-input" />
-                </div>
-                <input name="recruiterLinkedIn" value={form.recruiterLinkedIn} onChange={set} placeholder="Recruiter LinkedIn URL" className="form-input" />
-                <textarea name="jobDescription" value={form.jobDescription} onChange={set} rows={4} placeholder="Job description" className="form-textarea" />
-                <textarea name="notes" value={form.notes} onChange={set} rows={3} placeholder="Notes, interview round, salary details..." className="form-textarea" />
-                <textarea name="companyResearch" value={form.companyResearch} onChange={set} rows={3} placeholder="Company research brief" className="form-textarea" />
-                <textarea name="projectEvidence" value={form.projectEvidence} onChange={set} rows={3} placeholder="Project evidence: problem, stack, impact, links" className="form-textarea" />
-                <textarea name="resumeBefore" value={form.resumeBefore} onChange={set} rows={2} placeholder="Original resume bullet" className="form-textarea" />
-                <textarea name="resumeAfter" value={form.resumeAfter} onChange={set} rows={2} placeholder="Tailored resume bullet" className="form-textarea" />
-                <textarea name="generatedContent" value={form.generatedContent} onChange={set} rows={4} placeholder="Generated cover letter, recruiter message, email, or why-company answer" className="form-textarea" />
-                <button className="btn-gradient w-full justify-center" disabled={saving}>{saving ? 'Saving...' : editingId ? 'Update Application' : 'Add Application'}</button>
-              </form>
-            </section>
-
-            <section className="space-y-5">
-              <div className="card p-4">
-                <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
-                  <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search company, role, notes, recruiter..." className="form-input" />
-                  <select value={activeStatus} onChange={(e) => setActiveStatus(e.target.value)} className="form-select md:w-48">
-                    <option>All</option>
-                    {statuses.map((status) => <option key={status}>{status}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              {loading && <div className="card p-8 text-sm text-muted">Loading applications...</div>}
-              {!loading && filteredItems.length === 0 && <div className="card p-8 text-center"><p className="font-semibold text-ink">No applications found</p><p className="text-sm text-muted mt-1">Add your first application or clear filters.</p></div>}
-
-              {!loading && filteredItems.length > 0 && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {statuses.map((status) => {
-                    const statusItems = filteredItems.filter((item) => item.status === status);
-                    return (
-                      <div key={status} className="card p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <h2 className="font-bold text-ink">{status}</h2>
-                          <span className={`text-xs font-bold border rounded-full px-2.5 py-1 ${statusStyles[status]}`}>{statusItems.length}</span>
-                        </div>
-                        <div className="space-y-3 min-h-20">
-                          {statusItems.length === 0 && <p className="text-sm text-muted bg-surface border border-border rounded-lg p-3">No applications in this stage.</p>}
-                          {statusItems.map((item) => (
-                            <article key={item.id} className="bg-surface border border-border rounded-lg p-4 hover:border-accent/30 transition-colors">
-                              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                                <div className="min-w-0">
-                                  <div className="flex items-center gap-2 min-w-0">
-                                    <p className="font-semibold text-ink truncate">{item.companyName}</p>
-                                    {isFollowUpDue(item) && <span className="text-[10px] font-bold bg-amber-100 text-amber-700 rounded-full px-2 py-0.5 shrink-0">Due</span>}
-                                    {item.priority === 'High' && <span className="text-[10px] font-bold bg-red-100 text-red-700 rounded-full px-2 py-0.5 shrink-0">High</span>}
-                                  </div>
-                                  <p className="text-sm text-muted truncate">{item.role}</p>
-                                  <p className="text-xs text-muted mt-1">{item.source || 'No source'} | {nextAction(item)}</p>
+          {!loading && filteredItems.length > 0 && (
+            <div className="-mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto table-scroll pb-2">
+              <div className="flex gap-4" role="list" aria-label="Application pipeline">
+                {statuses.map((status) => {
+                  const statusItems = filteredItems.filter((item) => item.status === status);
+                  return (
+                    <div key={status} role="listitem" className="card p-4 w-[280px] shrink-0 xl:w-auto xl:flex-1 xl:min-w-0 self-start">
+                      <div className="flex items-center justify-between mb-3">
+                        <h2 className="font-bold text-ink">{status}</h2>
+                        <span className={`text-xs font-bold border rounded-full px-2.5 py-1 ${statusStyles[status]}`}>{statusItems.length}</span>
+                      </div>
+                      <div className="space-y-3 min-h-20">
+                        {statusItems.length === 0 && <p className="text-sm text-sage-600 bg-surface border border-border rounded-card p-3">No applications in this stage.</p>}
+                        {statusItems.map((item) => (
+                          <article key={item.id} className="bg-white border border-border rounded-card p-4 hover:border-forest-300 hover:shadow-card transition-all">
+                            <div className="flex flex-col gap-3">
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2 min-w-0">
+                                  <p className="font-semibold text-ink truncate">{item.companyName}</p>
+                                  {isFollowUpDue(item) && <span className="text-[10px] font-bold bg-lime text-forest-800 rounded-full px-2 py-0.5 shrink-0">Due</span>}
+                                  {item.priority === 'High' && <span className="text-[10px] font-bold bg-forest-50 text-forest-700 border border-forest-100 rounded-full px-2 py-0.5 shrink-0">High</span>}
                                 </div>
-                  <select value={item.status} onChange={(e) => moveStatus(item, e.target.value)} className="text-xs border border-border rounded-lg px-2 py-1 bg-white w-full sm:w-auto sm:max-w-32">
+                                <p className="text-sm text-sage-600 truncate">{item.role}</p>
+                                <p className="text-xs text-sage-500 mt-1">{item.source || 'No source'} | {nextAction(item)}</p>
+                              </div>
+                              <div>
+                                <label htmlFor={`status-${item.id}`} className="sr-only">Change stage for {item.companyName}</label>
+                                <select id={`status-${item.id}`} value={item.status} onChange={(e) => moveStatus(item, e.target.value)} className="text-xs border border-border rounded-lg px-2 py-1.5 bg-white w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-forest/30">
                                   {statuses.map((option) => <option key={option}>{option}</option>)}
                                 </select>
                               </div>
+                            </div>
 
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 text-xs text-muted">
-                                {dateSummary(item).map((entry) => (
-                                  <p key={entry.label}>{entry.label}: <span className="text-ink">{formatDate(entry.value)}</span></p>
-                                ))}
-                              </div>
+                            <div className="grid grid-cols-1 gap-1 mt-3 text-xs text-sage-600">
+                              {dateSummary(item).map((entry) => (
+                                <p key={entry.label}>{entry.label}: <span className="text-ink font-medium">{formatDate(entry.value)}</span></p>
+                              ))}
+                            </div>
 
-                              <div className="flex flex-wrap gap-2 mt-4">
-                                {item.jobLink && <a href={item.jobLink} target="_blank" rel="noreferrer" className="text-xs font-semibold text-accent">Open Job</a>}
-                                <button onClick={() => setSelected(item)} className="text-xs font-semibold text-ink">View Intelligence</button>
-                                <button onClick={() => edit(item)} className="text-xs font-semibold text-ink">Edit</button>
-                                <button onClick={() => generateFollowUp(item)} className="text-xs font-semibold text-accent">Follow-up</button>
-                                <button onClick={() => remove(item.id)} className="text-xs font-semibold text-red-600">Delete</button>
-                              </div>
-                            </article>
-                          ))}
-                        </div>
+                            <div className="flex flex-wrap gap-x-3 gap-y-2 mt-4 pt-3 border-t border-border">
+                              {item.jobLink && <a href={item.jobLink} target="_blank" rel="noreferrer" className="text-xs font-semibold text-forest-700 hover:underline">Open Job</a>}
+                              <button onClick={() => setSelected(item)} className="text-xs font-semibold text-ink hover:underline">View Intelligence</button>
+                              <button onClick={() => { edit(item); setSelected(null); setFormOpen(true); }} className="text-xs font-semibold text-ink hover:underline">Edit</button>
+                              <button onClick={() => generateFollowUp(item)} className="text-xs font-semibold text-forest-700 hover:underline">Follow-up</button>
+                              <button onClick={() => remove(item.id)} className="text-xs font-semibold text-red-600 hover:underline">Delete</button>
+                            </div>
+                          </article>
+                        ))}
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
-              {followUp && (
-                <div className="card p-5">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
-                    <div><h2 className="font-bold text-ink">Follow-up Message</h2><p className="text-xs text-muted">{followUp.application.companyName} - {followUp.application.role}</p></div>
-                    <button onClick={() => copyText(followUp.message)} className="btn-secondary text-sm px-4 py-2">{copied ? 'Copied' : 'Copy'}</button>
-                  </div>
-                  <div className="whitespace-pre-wrap text-sm bg-surface border border-border rounded-lg p-4 leading-relaxed">{followUp.message}</div>
-                </div>
-              )}
-            </section>
-          </div>
+          {followUp && (
+            <div className="card p-5 mt-6">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+                <div><h2 className="font-bold text-ink">Follow-up Message</h2><p className="text-xs text-sage-600">{followUp.application.companyName} - {followUp.application.role}</p></div>
+                <button onClick={() => copyText(followUp.message)} className="btn-secondary text-sm px-4 py-2">{copied ? 'Copied' : 'Copy'}</button>
+              </div>
+              <div className="whitespace-pre-wrap text-sm bg-surface border border-border rounded-card p-4 leading-relaxed">{followUp.message}</div>
+            </div>
+          )}
         </div>
       </main>
 
-      {selected && (
-        <div className="fixed inset-0 z-[70] bg-navy-900/35 backdrop-blur-sm flex justify-end" onMouseDown={() => setSelected(null)}>
-          <aside className="w-full sm:max-w-2xl lg:max-w-3xl bg-white h-full shadow-card-hover overflow-y-auto overflow-x-hidden" onMouseDown={(event) => event.stopPropagation()}>
-            <div className="sticky top-0 bg-white border-b border-border p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-              <div className="min-w-0"><p className="text-xs font-bold text-accent uppercase tracking-wide">Application Intelligence</p><h2 className="text-xl font-bold text-ink mt-1 truncate">{selected.companyName}</h2><p className="text-sm text-muted truncate">{selected.role}</p></div>
-              <button onClick={() => setSelected(null)} className="btn-secondary text-sm px-3 py-2 w-full sm:w-auto shrink-0">Close</button>
+      {formOpen && (
+        <div className="fixed inset-0 z-[80] bg-forest-900/40 backdrop-blur-sm flex justify-end" onMouseDown={() => setFormOpen(false)}>
+          <aside
+            role="dialog"
+            aria-modal="true"
+            ref={formDialogRef}
+            tabIndex={-1}
+            aria-label={editingId ? 'Edit application' : 'Add application'}
+            className="w-full sm:max-w-xl bg-white h-full shadow-card-hover overflow-y-auto overflow-x-hidden"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white border-b border-border p-4 sm:p-5 flex items-start justify-between gap-3 z-10">
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-forest-700 uppercase tracking-wide">Application</p>
+                <h2 className="text-xl font-bold text-ink mt-1">{editingId ? 'Edit Application' : 'Add Application'}</h2>
+                <p className="text-sm text-sage-600">Company and role are required.</p>
+              </div>
+              <button type="button" onClick={() => setFormOpen(false)} className="btn-secondary text-sm px-3 py-2 shrink-0" aria-label="Close form">Close</button>
             </div>
+
             <div className="p-4 sm:p-5 space-y-5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-                <StatCard label="Proof Score" value={`${selectedProof.score}%`} />
-                <StatCard label="Priority" value={selected.priority || 'Medium'} />
-                <StatCard label="Status" value={selected.status} />
-                <StatCard label="Next" value={isFollowUpDue(selected) ? 'Due' : 'Ready'} />
+              <div className="card p-4 sm:p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon name="doc" className="w-5 h-5 text-forest-700" />
+                  <h3 className="font-bold text-ink">Job Link Import</h3>
+                </div>
+                <p className="text-xs text-sage-600 mb-3">Paste a job link or job post. It fills role, company, link, and JD where possible.</p>
+                <label htmlFor="import-text" className="sr-only">Job post to import</label>
+                <textarea id="import-text" value={importText} onChange={(e) => setImportText(e.target.value)} rows={4} className="form-textarea" placeholder="Paste role, company, job link, and job description..." />
+                <button type="button" onClick={importJob} className="btn-secondary w-full justify-center mt-3">Import Into Form</button>
               </div>
 
-              <section className="card p-4">
-                <h3 className="font-bold text-ink mb-3">Application Timeline</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
-                  {timeline(selected).map((step) => <div key={step.label} className={`border rounded-lg p-3 ${step.done ? 'bg-accent/10 border-accent/20' : 'bg-surface border-border'}`}><p className="text-sm font-semibold text-ink">{step.label}</p><p className="text-xs text-muted mt-1">{formatDate(step.date)}</p></div>)}
+              <form onSubmit={save} className="space-y-5">
+                {error && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
+                <section className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-sage-600">Basics</h3>
+                  <div>
+                    <label htmlFor="companyName" className="form-label">Company name</label>
+                    <input id="companyName" autoFocus name="companyName" value={form.companyName} onChange={set} placeholder="Company name" className="form-input" required />
+                  </div>
+                  <div>
+                    <label htmlFor="role" className="form-label">Role</label>
+                    <input id="role" name="role" value={form.role} onChange={set} placeholder="Role" className="form-input" required />
+                  </div>
+                  <div>
+                    <label htmlFor="jobLink" className="form-label">Job link</label>
+                    <input id="jobLink" name="jobLink" value={form.jobLink} onChange={set} placeholder="https://..." className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="source" className="form-label">Source</label>
+                    <input id="source" name="source" value={form.source} onChange={set} placeholder="LinkedIn, Naukri, Referral, Company site" className="form-input" />
+                  </div>
+                </section>
+
+                <section className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-sage-600">Stage &amp; dates</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label htmlFor="status" className="form-label">Stage</label>
+                      <select id="status" name="status" value={form.status} onChange={set} className="form-select">{statuses.map((status) => <option key={status}>{status}</option>)}</select>
+                    </div>
+                    <div>
+                      <label htmlFor="priority" className="form-label">Priority</label>
+                      <select id="priority" name="priority" value={form.priority} onChange={set} className="form-select">{['Low', 'Medium', 'High'].map((value) => <option key={value}>{value}</option>)}</select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {visibleDateFields(form.status).map((field) => (
+                      <label key={field.name} className="block">
+                        <span className="form-label">{field.label}</span>
+                        <input type="date" name={field.name} value={form[field.name]} onChange={set} className="form-input" />
+                        <span className="block text-[11px] text-sage-500 mt-1">{field.help}</span>
+                      </label>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-sage-600">Contacts</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label htmlFor="recruiterName" className="form-label">Recruiter / contact name</label>
+                      <input id="recruiterName" name="recruiterName" value={form.recruiterName} onChange={set} placeholder="Recruiter/contact name" className="form-input" />
+                    </div>
+                    <div>
+                      <label htmlFor="recruiterEmail" className="form-label">Recruiter email</label>
+                      <input id="recruiterEmail" name="recruiterEmail" value={form.recruiterEmail} onChange={set} placeholder="Recruiter email" className="form-input" />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="recruiterLinkedIn" className="form-label">Recruiter LinkedIn URL</label>
+                    <input id="recruiterLinkedIn" name="recruiterLinkedIn" value={form.recruiterLinkedIn} onChange={set} placeholder="Recruiter LinkedIn URL" className="form-input" />
+                  </div>
+                </section>
+
+                <section className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wide text-sage-600">Content &amp; evidence</h3>
+                  <div>
+                    <label htmlFor="jobDescription" className="form-label">Job description</label>
+                    <textarea id="jobDescription" name="jobDescription" value={form.jobDescription} onChange={set} rows={4} placeholder="Job description" className="form-textarea" />
+                  </div>
+                  <div>
+                    <label htmlFor="notes" className="form-label">Notes</label>
+                    <textarea id="notes" name="notes" value={form.notes} onChange={set} rows={3} placeholder="Notes, interview round, salary details..." className="form-textarea" />
+                  </div>
+                  <div>
+                    <label htmlFor="companyResearch" className="form-label">Company research brief</label>
+                    <textarea id="companyResearch" name="companyResearch" value={form.companyResearch} onChange={set} rows={3} placeholder="Company research brief" className="form-textarea" />
+                  </div>
+                  <div>
+                    <label htmlFor="projectEvidence" className="form-label">Project evidence</label>
+                    <textarea id="projectEvidence" name="projectEvidence" value={form.projectEvidence} onChange={set} rows={3} placeholder="Project evidence: problem, stack, impact, links" className="form-textarea" />
+                  </div>
+                  <div>
+                    <label htmlFor="resumeBefore" className="form-label">Original resume bullet</label>
+                    <textarea id="resumeBefore" name="resumeBefore" value={form.resumeBefore} onChange={set} rows={2} placeholder="Original resume bullet" className="form-textarea" />
+                  </div>
+                  <div>
+                    <label htmlFor="resumeAfter" className="form-label">Tailored resume bullet</label>
+                    <textarea id="resumeAfter" name="resumeAfter" value={form.resumeAfter} onChange={set} rows={2} placeholder="Tailored resume bullet" className="form-textarea" />
+                  </div>
+                  <div>
+                    <label htmlFor="generatedContent" className="form-label">Generated content</label>
+                    <textarea id="generatedContent" name="generatedContent" value={form.generatedContent} onChange={set} rows={4} placeholder="Generated cover letter, recruiter message, email, or why-company answer" className="form-textarea" />
+                  </div>
+                </section>
+
+                <div className="flex flex-col sm:flex-row gap-3 pt-1">
+                  {editingId && <button type="button" onClick={resetForm} className="btn-secondary justify-center sm:flex-1">Cancel edit</button>}
+                  <button className="btn-primary justify-center sm:flex-1" disabled={saving}>{saving ? 'Saving...' : editingId ? 'Update Application' : 'Add Application'}</button>
+                </div>
+              </form>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {selected && (
+        <div className="fixed inset-0 z-[70] bg-forest-900/40 backdrop-blur-sm flex justify-end" onMouseDown={() => setSelected(null)}>
+          <aside
+            role="dialog"
+            aria-modal="true"
+            ref={detailDialogRef}
+            tabIndex={-1}
+            aria-label={`Application intelligence for ${selected.companyName}`}
+            className="w-full sm:max-w-2xl lg:max-w-3xl bg-white h-full shadow-card-hover overflow-y-auto overflow-x-hidden"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white border-b border-border p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 z-10">
+              <div className="min-w-0"><p className="text-xs font-bold text-forest-700 uppercase tracking-wide">Application Intelligence</p><h2 className="text-xl font-bold text-ink mt-1 truncate">{selected.companyName}</h2><p className="text-sm text-sage-600 truncate">{selected.role}</p></div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`text-xs font-bold border rounded-full px-2.5 py-1 ${statusStyles[selected.status]}`}>{selected.status}</span>
+                <button onClick={() => setSelected(null)} className="btn-secondary text-sm px-3 py-2" aria-label="Close details">Close</button>
+              </div>
+            </div>
+
+            <div className="p-4 sm:p-5 space-y-8">
+              {/* ── Overview ─────────────────────────────── */}
+              <section className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Icon name="chart" className="w-5 h-5 text-forest-700" />
+                  <h3 className="font-bold text-ink text-lg">Overview</h3>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <StatCard label="Proof Score" value={`${selectedProof.score}%`} />
+                  <StatCard label="Priority" value={selected.priority || 'Medium'} />
+                  <StatCard label="Status" value={selected.status} />
+                  <StatCard label="Next" value={isFollowUpDue(selected) ? 'Due' : 'Ready'} />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="card p-4"><h4 className="font-bold text-ink mb-3">Company Research Brief</h4>{companyBrief(selected).map((line) => <p key={line} className="text-sm bg-surface border border-border rounded-card p-3 mb-2 last:mb-0">{line}</p>)}</div>
+                  <div className="card p-4"><h4 className="font-bold text-ink mb-3">AI Why This Company</h4><p className="text-sm bg-surface border border-border rounded-card p-3">I am interested in {selected.companyName || 'this company'} because the {selected.role || 'role'} aligns with my skills and gives me a chance to contribute through practical project experience while learning from the team.</p></div>
+                </div>
+                <div className="card p-4"><h4 className="font-bold text-ink mb-3">Job Search Strategy Board</h4><div className="grid grid-cols-1 sm:grid-cols-2 gap-2">{['Apply to 3 high-fit jobs', 'Send 2 referral messages', 'Tailor one resume bullet', 'Practice one weak interview area'].map((line) => <p key={line} className="text-sm bg-surface border border-border rounded-card p-3">{line}</p>)}</div></div>
+              </section>
+
+              {/* ── Contacts ─────────────────────────────── */}
+              <section className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Icon name="users" className="w-5 h-5 text-forest-700" />
+                  <h3 className="font-bold text-ink text-lg">Contacts</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="card p-4"><h4 className="font-bold text-ink mb-3">Referral CRM</h4><p className="text-sm text-sage-600">Contact: <span className="text-ink font-semibold">{selected.recruiterName || 'Not set'}</span></p><p className="text-sm text-sage-600">Email: <span className="text-ink font-semibold break-all">{selected.recruiterEmail || 'Not set'}</span></p><p className="text-sm text-sage-600">LinkedIn: <span className="text-ink font-semibold break-all">{selected.recruiterLinkedIn || 'Not set'}</span></p><p className="text-sm text-sage-600">Last contact: <span className="text-ink font-semibold">{formatDate(selected.lastContactDate)}</span></p></div>
+                  <div className="card p-4"><h4 className="font-bold text-ink mb-3">LinkedIn Optimizer</h4><p className="text-sm bg-surface border border-border rounded-card p-3">Headline: {selected.role || 'Developer'} | Building projects with measurable impact | Open to opportunities</p><p className="text-sm bg-surface border border-border rounded-card p-3 mt-2">DM: Hi, I am exploring {selected.role || 'developer'} roles at {selected.companyName || 'your company'} and would value any guidance.</p></div>
+                </div>
+                <div className="card p-4">
+                  <h4 className="font-bold text-ink mb-3">Email Template Center</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {Object.entries(templates).map(([name, text]) => <button key={name} onClick={() => copyText(text)} className="text-left bg-surface border border-border rounded-card p-3 text-sm hover:border-forest-300 transition-colors"><span className="block font-semibold text-ink capitalize">{name.replace(/([A-Z])/g, ' $1')}</span><span className="block text-sage-600 mt-1">{text}</span></button>)}
+                  </div>
                 </div>
               </section>
 
-              <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="card p-4"><h3 className="font-bold text-ink mb-3">Resume Tailoring Diff</h3><p className="text-xs text-muted uppercase">Before</p><p className="text-sm bg-surface border border-border rounded-lg p-3 mb-3">{selectedDiff.before}</p><p className="text-xs text-muted uppercase">After</p><p className="text-sm bg-surface border border-border rounded-lg p-3">{selectedDiff.after}</p><p className="text-xs text-accent font-semibold mt-3">{selectedDiff.impact}</p></div>
-                <div className="card p-4"><h3 className="font-bold text-ink mb-3">Resume Proof Score</h3>{selectedProof.checks.map(([label, done]) => <div key={label} className="flex justify-between text-sm border-b border-border py-2 last:border-0"><span>{label}</span><span className={done ? 'text-emerald-600 font-semibold' : 'text-amber-600 font-semibold'}>{done ? 'Done' : 'Missing'}</span></div>)}</div>
+              {/* ── Resume Changes ───────────────────────── */}
+              <section className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Icon name="doc" className="w-5 h-5 text-forest-700" />
+                  <h3 className="font-bold text-ink text-lg">Resume Changes</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="card p-4"><h4 className="font-bold text-ink mb-3">Resume Tailoring Diff</h4><p className="text-xs text-sage-600 uppercase font-semibold">Before</p><p className="text-sm bg-surface border border-border rounded-card p-3 mb-3 mt-1">{selectedDiff.before}</p><p className="text-xs text-sage-600 uppercase font-semibold">After</p><p className="text-sm bg-surface border border-border rounded-card p-3 mt-1">{selectedDiff.after}</p><p className="text-xs text-forest-700 font-semibold mt-3">{selectedDiff.impact}</p></div>
+                  <div className="card p-4"><h4 className="font-bold text-ink mb-3">Resume Proof Score</h4>{selectedProof.checks.map(([label, done]) => <div key={label} className="flex justify-between items-center text-sm border-b border-border py-2 last:border-0"><span>{label}</span><span className={done ? 'text-forest-700 font-semibold' : 'text-sage-400 font-semibold'}>{done ? 'Done' : 'Missing'}</span></div>)}</div>
+                </div>
+                <div className="card p-4"><h4 className="font-bold text-ink mb-3">Project Evidence Locker</h4><div className="text-sm bg-surface border border-border rounded-card p-3 whitespace-pre-wrap min-h-28">{selected.projectEvidence || 'Add problem, architecture, tech stack, challenges, metrics, GitHub link, and live link.'}</div></div>
               </section>
 
-              <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="card p-4"><h3 className="font-bold text-ink mb-3">Company Research Brief</h3>{companyBrief(selected).map((line) => <p key={line} className="text-sm bg-surface border border-border rounded-lg p-3 mb-2">{line}</p>)}</div>
-                <div className="card p-4"><h3 className="font-bold text-ink mb-3">Interview Prep From This Job</h3>{interviewPrep(selected).map((line) => <p key={line} className="text-sm bg-surface border border-border rounded-lg p-3 mb-2">{line}</p>)}</div>
-              </section>
-
-              <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="card p-4"><h3 className="font-bold text-ink mb-3">Referral CRM</h3><p className="text-sm text-muted">Contact: <span className="text-ink font-semibold">{selected.recruiterName || 'Not set'}</span></p><p className="text-sm text-muted">Email: <span className="text-ink font-semibold">{selected.recruiterEmail || 'Not set'}</span></p><p className="text-sm text-muted">LinkedIn: <span className="text-ink font-semibold break-all">{selected.recruiterLinkedIn || 'Not set'}</span></p><p className="text-sm text-muted">Last contact: <span className="text-ink font-semibold">{formatDate(selected.lastContactDate)}</span></p></div>
-                <div className="card p-4"><h3 className="font-bold text-ink mb-3">AI Why This Company</h3><p className="text-sm bg-surface border border-border rounded-lg p-3">I am interested in {selected.companyName || 'this company'} because the {selected.role || 'role'} aligns with my skills and gives me a chance to contribute through practical project experience while learning from the team.</p></div>
-              </section>
-
-              <section className="card p-4">
-                <h3 className="font-bold text-ink mb-3">Email Template Center</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {Object.entries(templates).map(([name, text]) => <button key={name} onClick={() => copyText(text)} className="text-left bg-surface border border-border rounded-lg p-3 text-sm hover:border-accent/30"><span className="block font-semibold text-ink capitalize">{name.replace(/([A-Z])/g, ' $1')}</span><span className="block text-muted mt-1">{text}</span></button>)}
+              {/* ── Preparation ──────────────────────────── */}
+              <section className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Icon name="mic" className="w-5 h-5 text-forest-700" />
+                  <h3 className="font-bold text-ink text-lg">Preparation</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="card p-4"><h4 className="font-bold text-ink mb-3">Interview Prep From This Job</h4>{interviewPrep(selected).map((line) => <p key={line} className="text-sm bg-surface border border-border rounded-card p-3 mb-2 last:mb-0">{line}</p>)}</div>
+                  <div className="card p-4"><h4 className="font-bold text-ink mb-3">Real Interview Simulation Mode</h4><div className="flex flex-wrap gap-2">{['Strict interviewer', 'Fresher friendly', 'System design', 'Project deep dive', 'HR salary round'].map((mode) => <span key={mode} className="text-xs font-semibold bg-surface border border-border rounded-lg px-2.5 py-1">{mode}</span>)}</div></div>
                 </div>
               </section>
 
-              <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="card p-4"><h3 className="font-bold text-ink mb-3">LinkedIn Optimizer</h3><p className="text-sm bg-surface border border-border rounded-lg p-3">Headline: {selected.role || 'Developer'} | Building projects with measurable impact | Open to opportunities</p><p className="text-sm bg-surface border border-border rounded-lg p-3 mt-2">DM: Hi, I am exploring {selected.role || 'developer'} roles at {selected.companyName || 'your company'} and would value any guidance.</p></div>
-                <div className="card p-4"><h3 className="font-bold text-ink mb-3">Real Interview Simulation Mode</h3><div className="flex flex-wrap gap-2">{['Strict interviewer', 'Fresher friendly', 'System design', 'Project deep dive', 'HR salary round'].map((mode) => <span key={mode} className="text-xs font-semibold bg-surface border border-border rounded-lg px-2.5 py-1">{mode}</span>)}</div></div>
+              {/* ── Timeline ─────────────────────────────── */}
+              <section className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Icon name="history" className="w-5 h-5 text-forest-700" />
+                  <h3 className="font-bold text-ink text-lg">Timeline</h3>
+                </div>
+                <div className="card p-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+                    {timeline(selected).map((step) => <div key={step.label} className={`border rounded-card p-3 ${step.done ? 'bg-forest-50 border-forest-100' : 'bg-surface border-border'}`}><p className="text-sm font-semibold text-ink">{step.label}</p><p className="text-xs text-sage-600 mt-1">{formatDate(step.date)}</p></div>)}
+                  </div>
+                </div>
               </section>
 
-              <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="card p-4"><h3 className="font-bold text-ink mb-3">Job Search Strategy Board</h3>{['Apply to 3 high-fit jobs', 'Send 2 referral messages', 'Tailor one resume bullet', 'Practice one weak interview area'].map((line) => <p key={line} className="text-sm bg-surface border border-border rounded-lg p-3 mb-2">{line}</p>)}</div>
-                <div className="card p-4"><h3 className="font-bold text-ink mb-3">Project Evidence Locker</h3><div className="text-sm bg-surface border border-border rounded-lg p-3 whitespace-pre-wrap min-h-28">{selected.projectEvidence || 'Add problem, architecture, tech stack, challenges, metrics, GitHub link, and live link.'}</div></div>
-              </section>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button onClick={() => edit(selected)} className="btn-secondary justify-center">Edit</button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-border">
+                <button onClick={() => { edit(selected); setSelected(null); setFormOpen(true); }} className="btn-secondary justify-center">Edit</button>
                 <button onClick={() => generateFollowUp(selected)} className="btn-primary justify-center">Generate Follow-up</button>
               </div>
             </div>

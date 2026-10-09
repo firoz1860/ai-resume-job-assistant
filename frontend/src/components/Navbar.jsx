@@ -1,333 +1,310 @@
-import { useEffect, useRef, useState } from 'react';
+import useDialogFocus from '../hooks/useDialogFocus.js';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import CommandPalette from './CommandPalette.jsx';
+import Wordmark from './marketing/Wordmark.jsx';
+import { Icon } from './Reveal.jsx';
+
+// ── Workspace navigation model ───────────────────────────────────────────
+const NAV_GROUPS = [
+  {
+    label: 'Overview',
+    items: [
+      { label: 'Dashboard', to: '/dashboard', icon: 'chart' },
+      { label: 'Career Intelligence', to: '/career-intelligence', icon: 'sparkle' },
+    ],
+  },
+  {
+    label: 'Prepare',
+    items: [
+      { label: 'Profile', to: '/profile', icon: 'users' },
+      { label: 'Career DNA', to: '/career-dna', icon: 'sparkle' },
+      { label: 'Career Vault', to: '/career-vault', icon: 'shield' },
+      { label: 'Resume Builder', to: '/resume-builder', icon: 'doc' },
+      { label: 'Generator', to: '/generator', icon: 'bolt' },
+      { label: 'Content Library', to: '/content-library', icon: 'history' },
+    ],
+  },
+  {
+    label: 'Applications',
+    items: [
+      { label: 'Job Analyzer', to: '/job-analyzer', icon: 'target' },
+      { label: 'Matcher', to: '/matcher', icon: 'match' },
+      { label: 'Applications', to: '/applications', icon: 'route' },
+    ],
+  },
+  {
+    label: 'Practice',
+    items: [
+      { label: 'Text Interview', to: '/interview-room', icon: 'users' },
+      { label: 'Voice Interview', to: '/voice-interview', icon: 'mic' },
+      { label: 'Interview History', to: '/interview-history', icon: 'history' },
+      { label: 'Voice History', to: '/voice-interview-history', icon: 'history' },
+      { label: 'Roadmap', to: '/roadmap', icon: 'route' },
+    ],
+  },
+];
+
+const SECONDARY = [
+  { label: 'Admin', to: '/admin', icon: 'shield' },
+  { label: 'About', to: '/about', icon: 'doc' },
+];
+
+const ALL_APP_ITEMS = [...NAV_GROUPS.flatMap((g) => g.items), { label: 'Admin', to: '/admin' }];
+
+const BOTTOM_TABS = [
+  { label: 'Home', to: '/dashboard', icon: 'chart' },
+  { label: 'Intel', to: '/career-intelligence', icon: 'sparkle' },
+  { label: 'Vault', to: '/career-vault', icon: 'shield' },
+  { label: 'Voice', to: '/voice-interview', icon: 'mic' },
+  { label: 'Jobs', to: '/applications', icon: 'route' },
+];
+
+const isActive = (pathname, to) => pathname === to || pathname.startsWith(`${to}/`);
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
-  const [toolsOpen, setToolsOpen] = useState(false);
-  const [commandOpen, setCommandOpen] = useState(false);
-  const toolsRef = useRef(null);
-  const toolsBtnRef = useRef(null);
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
 
-  const primaryLinks = [
-    { label: 'Home', to: '/' },
-    { label: 'Dashboard', to: '/dashboard' },
-    { label: 'Intelligence', to: '/career-intelligence' },
-    { label: 'Vault', to: '/career-vault' },
-    { label: 'Generator', to: '/generator' },
-    { label: 'Voice', to: '/voice-interview' },
-    { label: 'Applications', to: '/applications' },
-  ];
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
+  const drawerRef = useDialogFocus(drawerOpen);
 
-  const toolLinks = [
-    { label: 'Career DNA', to: '/career-dna' },
-    { label: 'Job Analyzer', to: '/job-analyzer' },
-    { label: 'Resume Builder', to: '/resume-builder' },
-    { label: 'Admin', to: '/admin' },
-    { label: 'Content Library', to: '/content-library' },
-    { label: 'Matcher', to: '/matcher' },
-    { label: 'Text Interview', to: '/interview-room' },
-    { label: 'Interview History', to: '/interview-history' },
-    { label: 'Voice History', to: '/voice-interview-history' },
-    { label: 'Roadmap', to: '/roadmap' },
-    { label: 'Profile', to: '/profile' },
-    { label: 'About', to: '/about' },
-  ];
+  const isAuthRoute = pathname === '/login' || pathname === '/signup';
+  const isAppRoute = ALL_APP_ITEMS.some((i) => isActive(pathname, i.to));
+  const showShell = isAuthenticated && isAppRoute && !isAuthRoute;
 
-  const bottomTabs = [
-    { label: 'Home', to: '/dashboard' },
-    { label: 'AI', to: '/career-intelligence' },
-    { label: 'Vault', to: '/career-vault' },
-    { label: 'Voice', to: '/voice-interview' },
-    { label: 'Jobs', to: '/applications' },
-  ];
+  const activeItem = ALL_APP_ITEMS.find((i) => isActive(pathname, i.to));
 
-  const isToolsActive = toolLinks.some((link) => pathname === link.to);
+  // ── Body classes: reserve space for sidebar / bottom tabs ──
+  useEffect(() => {
+    document.body.classList.toggle('has-sidebar', showShell);
+    document.body.classList.toggle('has-bottom-nav', showShell);
+    return () => {
+      document.body.classList.remove('has-sidebar');
+      document.body.classList.remove('has-bottom-nav');
+    };
+  }, [showShell]);
+
+  // Close menus on route change
+  useEffect(() => {
+    setDrawerOpen(false);
+    setCommandOpen(false);
+  }, [pathname]);
+
+  // Escape closes the mobile drawer
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') setDrawerOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
 
   const handleLogout = async () => {
     await logout();
-    setOpen(false);
-    setToolsOpen(false);
+    setDrawerOpen(false);
     setCommandOpen(false);
     navigate('/login', { replace: true });
   };
 
-  // Body class so CSS applies bottom-nav padding to <main> on auth pages
-  useEffect(() => {
-    if (isAuthenticated) {
-      document.body.classList.add('has-bottom-nav');
-    } else {
-      document.body.classList.remove('has-bottom-nav');
-    }
-    return () => document.body.classList.remove('has-bottom-nav');
-  }, [isAuthenticated]);
+  // ════════════════════════════════════════════════════════════════════
+  // MARKETING NAVBAR (public routes + signed-out)
+  // ════════════════════════════════════════════════════════════════════
+  if (!showShell) {
+    const anchor = (id) => (pathname === '/' ? `#${id}` : `/#${id}`);
+    const cta = isAuthenticated
+      ? { label: 'Open dashboard', to: '/dashboard' }
+      : { label: 'Create your workspace', to: '/signup' };
 
-  // Close menus on route change
-  useEffect(() => {
-    setOpen(false);
-    setToolsOpen(false);
-    setCommandOpen(false);
-  }, [pathname]);
+    return (
+      <header className="sticky top-0 z-50 border-b border-border bg-ivory/85 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+          <Link to="/" data-brand-anchor="nav" aria-label="CareerOS AI home" className="shrink-0">
+            <Wordmark size="nav" />
+          </Link>
 
-  // Close tools dropdown on outside click / Escape
-  useEffect(() => {
-    const onPointerDown = (e) => {
-      if (toolsRef.current && !toolsRef.current.contains(e.target)) {
-        setToolsOpen(false);
-      }
-    };
-    const onKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        setOpen(false);
-        setToolsOpen(false);
-        setCommandOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', onPointerDown);
-    document.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', onPointerDown);
-      document.removeEventListener('keydown', onKeyDown);
-    };
-  }, []);
+          <nav className="hidden items-center gap-1 md:flex">
+            <a href={anchor('product')} className="rounded-lg px-3 py-2 text-sm font-medium text-sage-600 transition-colors hover:bg-white hover:text-ink">Product</a>
+            <a href={anchor('how-it-works')} className="rounded-lg px-3 py-2 text-sm font-medium text-sage-600 transition-colors hover:bg-white hover:text-ink">How it works</a>
+            <Link to="/about" className="rounded-lg px-3 py-2 text-sm font-medium text-sage-600 transition-colors hover:bg-white hover:text-ink">About</Link>
+          </nav>
 
-  // Determine if tools dropdown should open left or right to stay in viewport
-  const [toolsLeft, setToolsLeft] = useState(false);
-  useEffect(() => {
-    if (!toolsOpen || !toolsBtnRef.current) return;
-    const rect = toolsBtnRef.current.getBoundingClientRect();
-    setToolsLeft(rect.right + 256 > window.innerWidth);
-  }, [toolsOpen]);
+          <div className="flex items-center gap-2">
+            {!isAuthenticated && (
+              <Link to="/login" className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-ink transition-colors hover:bg-white sm:inline-flex">
+                Sign in
+              </Link>
+            )}
+            <Link to={cta.to} className="btn-primary px-4 py-2 text-sm">
+              {cta.label}
+            </Link>
+          </div>
+        </div>
+        <nav aria-label="Mobile navigation" className="flex flex-wrap items-center justify-center gap-1 border-t border-border px-3 py-2 md:hidden">
+          <a href={anchor('product')} className="rounded-lg px-3 py-2 text-sm">Product</a>
+          <a href={anchor('how-it-works')} className="rounded-lg px-3 py-2 text-sm">How it works</a>
+          <Link to="/about" className="rounded-lg px-3 py-2 text-sm">About</Link>
+          {!isAuthenticated && <Link to="/login" className="rounded-lg px-3 py-2 text-sm sm:hidden">Sign in</Link>}
+        </nav>
+      </header>
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════════
+  // WORKSPACE SHELL (authenticated app routes)
+  // ════════════════════════════════════════════════════════════════════
+  const SidebarNav = ({ onNavigate }) => (
+    <div className="flex h-full flex-col">
+      <div className="flex h-16 items-center px-5">
+        <Link to="/" aria-label="CareerOS AI home" onClick={onNavigate}>
+          <Wordmark size="nav" />
+        </Link>
+      </div>
+
+      <nav className="flex-1 space-y-5 overflow-y-auto px-3 pb-6">
+        {NAV_GROUPS.map((group) => (
+          <div key={group.label}>
+            <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-sage-400">
+              {group.label}
+            </p>
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const active = isActive(pathname, item.to);
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={onNavigate}
+                    aria-current={active ? 'page' : undefined}
+                    className={`group relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+                      active ? 'bg-forest-50 text-forest-700' : 'text-sage-600 hover:bg-white hover:text-ink'
+                    }`}
+                  >
+                    {active && <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-lime" />}
+                    <Icon name={item.icon} className="h-4 w-4 shrink-0" />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+
+        <div className="border-t border-border pt-4">
+          {SECONDARY.map((item) => {
+            const active = isActive(pathname, item.to);
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={onNavigate}
+                aria-current={active ? 'page' : undefined}
+                className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+                  active ? 'bg-forest-50 text-forest-700' : 'text-sage-600 hover:bg-white hover:text-ink'
+                }`}
+              >
+                <Icon name={item.icon} className="h-4 w-4 shrink-0" />
+                <span className="truncate">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </div>
+  );
 
   return (
     <>
-      {/* ── Top header bar ─────────────────────────────────── */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-border shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+      {/* ── Fixed desktop sidebar (lg+) ─────────────────────── */}
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-border bg-ivory lg:block">
+        <SidebarNav />
+      </aside>
 
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="w-9 h-9 bg-brand-gradient rounded-lg flex items-center justify-center shrink-0 shadow-glow transition-transform duration-200 group-hover:scale-105">
-              <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
-                <path d="M5 7h10M5 11h10M5 15h6" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                <circle cx="18" cy="10" r="3" fill="white" opacity="0.9"/>
-                <path d="M18 8.5v3M16.5 10h3" stroke="#2563EB" strokeWidth="1.2" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <span className="font-display font-bold text-navy-900 text-base lg:text-lg whitespace-nowrap">
-              CareerOS<span className="text-gradient">AI</span>
-            </span>
+      {/* ── Compact top bar ─────────────────────────────────── */}
+      <header className="sticky top-0 z-30 border-b border-border bg-ivory/85 backdrop-blur-xl">
+        <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="rounded-lg p-2 text-ink hover:bg-white lg:hidden"
+            aria-label="Open navigation"
+            aria-expanded={drawerOpen}
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <Link to="/" aria-label="CareerOS AI home" className="lg:hidden">
+            <Wordmark size="nav" />
           </Link>
 
-          {/* ── Desktop nav (lg = 1024px+) ─────────────────── */}
-          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 flex-1 min-w-0 mx-2 xl:mx-4">
-            {primaryLinks.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                className={`px-2 xl:px-3 py-2 rounded-lg text-xs xl:text-sm font-medium transition-colors duration-150 whitespace-nowrap ${
-                  pathname === l.to
-                    ? 'bg-accent/10 text-accent'
-                    : 'text-muted hover:text-ink hover:bg-surface'
-                }`}
-              >
-                {l.label}
-              </Link>
-            ))}
+          <p className="hidden min-w-0 truncate text-sm font-semibold text-ink lg:block">
+            {activeItem?.label || 'Workspace'}
+          </p>
 
-            {/* Tools dropdown */}
-            <div ref={toolsRef} className="relative shrink-0">
-              <button
-                ref={toolsBtnRef}
-                onClick={() => setToolsOpen((v) => !v)}
-                className={`px-2 xl:px-3 py-2 rounded-lg text-xs xl:text-sm font-medium transition-colors whitespace-nowrap flex items-center gap-1 ${
-                  isToolsActive || toolsOpen
-                    ? 'bg-accent/10 text-accent'
-                    : 'text-muted hover:text-ink hover:bg-surface'
-                }`}
-              >
-                Tools
-                <svg className={`w-3 h-3 transition-transform ${toolsOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
-                </svg>
-              </button>
-
-              {toolsOpen && (
-                <div
-                  className={`absolute top-full mt-2 w-56 bg-white border border-border rounded-xl shadow-card-hover p-2 animate-fade-in z-[200] ${
-                    toolsLeft ? 'left-0' : 'right-0'
-                  }`}
-                  style={{ maxHeight: 'calc(100vh - 5rem)', overflowY: 'auto' }}
-                >
-                  <div className="flex items-center justify-between px-3 py-2 border-b border-border mb-1">
-                    <p className="text-xs font-bold text-muted uppercase tracking-wide">Tools</p>
-                    <button
-                      type="button"
-                      onClick={() => setToolsOpen(false)}
-                      className="w-6 h-6 rounded-md text-muted hover:text-ink hover:bg-surface text-sm leading-none"
-                      aria-label="Close tools menu"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-0.5">
-                    {toolLinks.map((l) => (
-                      <Link
-                        key={l.to}
-                        to={l.to}
-                        onClick={() => setToolsOpen(false)}
-                        className={`px-2.5 py-2 rounded-lg text-xs font-medium transition-colors ${
-                          pathname === l.to ? 'bg-accent/10 text-accent' : 'text-ink hover:bg-surface'
-                        }`}
-                      >
-                        {l.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </nav>
-
-          {/* ── Desktop right actions ───────────────────────── */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-2 shrink-0">
-            {isAuthenticated && (
-              <button
-                onClick={() => setCommandOpen(true)}
-                className="inline-flex items-center gap-1.5 px-2 xl:px-3 py-2 rounded-lg border border-border bg-surface text-xs font-semibold text-muted hover:text-ink hover:bg-white transition-colors whitespace-nowrap"
-              >
-                Search
-                <span className="hidden xl:inline border border-border bg-white rounded px-1 py-0.5 text-[10px]">⌘K</span>
-              </button>
-            )}
-            {isAuthenticated ? (
-              <button onClick={handleLogout} className="btn-secondary text-xs xl:text-sm px-3 xl:px-4 py-2 whitespace-nowrap">
-                Logout
-              </button>
-            ) : (
-              <Link to="/login" className="btn-gradient text-xs xl:text-sm px-4 xl:px-5 py-2 whitespace-nowrap">
-                Login
-              </Link>
-            )}
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              onClick={() => setCommandOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-xs font-semibold text-sage-600 transition-colors hover:text-ink"
+            >
+              Search
+              <span className="hidden rounded border border-border bg-ivory px-1 py-0.5 text-[10px] sm:inline">⌘K</span>
+            </button>
+            <span className="hidden text-sm text-sage-600 xl:inline">
+              {user?.name ? `Hi, ${user.name.split(' ')[0]}` : ''}
+            </span>
+            <button onClick={handleLogout} className="btn-secondary px-3 py-2 text-sm">
+              Log out
+            </button>
           </div>
-
-          {/* ── Mobile hamburger (hidden lg+) ──────────────── */}
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className="lg:hidden p-2 rounded-lg text-ink hover:text-accent hover:bg-surface transition-colors shrink-0 ml-2"
-            aria-label="Toggle menu"
-            aria-expanded={open}
-          >
-            {open ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/>
-              </svg>
-            )}
-          </button>
         </div>
-
-        {/* ── Mobile slide-down menu (hidden lg+) ────────────── */}
-        {open && (
-          <div
-            className="lg:hidden border-t border-border bg-white animate-fade-in"
-            style={{ maxHeight: 'calc(100dvh - 4rem)', overflowY: 'auto' }}
-          >
-            <nav className="max-w-7xl mx-auto px-4 py-4 pb-6 space-y-4">
-              {isAuthenticated && (
-                <button
-                  onClick={() => { setCommandOpen(true); setOpen(false); }}
-                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-surface text-left text-sm font-semibold text-muted flex items-center justify-between"
-                >
-                  <span>Search actions</span>
-                  <span className="border border-border bg-white rounded px-1.5 py-0.5 text-[10px]">⌘K</span>
-                </button>
-              )}
-
-              <div>
-                <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-2 px-1">Main</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
-                  {primaryLinks.map((l) => (
-                    <Link
-                      key={l.to}
-                      to={l.to}
-                      onClick={() => setOpen(false)}
-                      className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                        pathname === l.to ? 'bg-accent/10 text-accent' : 'text-ink hover:bg-surface'
-                      }`}
-                    >
-                      {l.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-2 px-1">Tools</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
-                  {toolLinks.map((l) => (
-                    <Link
-                      key={l.to}
-                      to={l.to}
-                      onClick={() => setOpen(false)}
-                      className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                        pathname === l.to ? 'bg-accent/10 text-accent' : 'text-ink hover:bg-surface'
-                      }`}
-                    >
-                      {l.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-border">
-                {isAuthenticated ? (
-                  <button onClick={handleLogout} className="btn-secondary text-sm w-full justify-center">
-                    Logout
-                  </button>
-                ) : (
-                  <Link to="/login" onClick={() => setOpen(false)} className="btn-gradient text-sm w-full justify-center">
-                    Login
-                  </Link>
-                )}
-              </div>
-            </nav>
-          </div>
-        )}
       </header>
 
-      {/* ── Mobile bottom tab bar (hidden lg+, only when authenticated) ── */}
-      {/* IMPORTANT: rendered as a sibling of <header>, NOT inside it.     */}
-      {/* Placing fixed children inside a sticky ancestor breaks fixed      */}
-      {/* positioning in some browsers and DevTools responsive mode.        */}
-      {isAuthenticated && (
-        <nav
-          className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-border"
-          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
-          aria-label="Mobile navigation"
-        >
-          <div className="grid grid-cols-5 px-1 py-1">
-            {bottomTabs.map(({ label, to }) => (
+      {/* ── Mobile drawer ───────────────────────────────────── */}
+      {drawerOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden" ref={drawerRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label="Navigation">
+          <div className="absolute inset-0 bg-ink/40" onClick={() => setDrawerOpen(false)} />
+          <div className="absolute inset-y-0 left-0 w-72 max-w-[85%] overflow-y-auto bg-ivory shadow-lift">
+            <button
+              onClick={() => setDrawerOpen(false)}
+              className="absolute right-3 top-4 rounded-lg p-2 text-sage-600 hover:bg-white"
+              aria-label="Close navigation"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <SidebarNav onNavigate={() => setDrawerOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* ── Mobile bottom tab bar (sibling of header, not nested) ── */}
+      <nav
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-ivory/95 backdrop-blur-xl lg:hidden"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        aria-label="Primary"
+      >
+        <div className="grid grid-cols-5 px-1 py-1">
+          {BOTTOM_TABS.map(({ label, to, icon }) => {
+            const active = isActive(pathname, to);
+            return (
               <Link
                 key={to}
                 to={to}
-                className={`flex flex-col items-center justify-center py-2 rounded-lg text-[11px] font-semibold transition-colors ${
-                  pathname === to ? 'text-accent bg-accent/10' : 'text-muted hover:text-ink'
+                className={`flex flex-col items-center gap-0.5 rounded-lg py-1.5 text-[11px] font-semibold transition-colors ${
+                  active ? 'text-forest-700' : 'text-sage-600 hover:text-ink'
                 }`}
               >
+                <Icon name={icon} className="h-5 w-5" />
                 {label}
               </Link>
-            ))}
-          </div>
-        </nav>
-      )}
+            );
+          })}
+        </div>
+      </nav>
 
       <CommandPalette open={commandOpen} onOpen={() => setCommandOpen(true)} onClose={() => setCommandOpen(false)} />
     </>

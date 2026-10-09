@@ -27,3 +27,10 @@ Thumbs.db
 
 # Vite cache
 .vite/
+
+# Playwright (keep committed evidence: qa-evidence/screens, video, results.json, index.html)
+frontend/test-results/
+frontend/playwright/.cache/
+qa-evidence/test-output/
+qa-evidence/playwright-report/
+.last-run.json

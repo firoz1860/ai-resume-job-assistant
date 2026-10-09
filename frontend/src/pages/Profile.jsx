@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import PageHeader from '../components/PageHeader.jsx';
+import { Icon } from '../components/Reveal.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { profileApi } from '../services/api.js';
 
@@ -31,6 +32,7 @@ const emptyProfile = {
 const sections = [
   {
     title: 'Core Career Profile',
+    icon: 'target',
     help: 'Used by Career Intelligence, job matching, roadmap, and interviews.',
     fields: [
       ['education', 'Education'],
@@ -43,6 +45,7 @@ const sections = [
   },
   {
     title: 'Contact and Online Presence',
+    icon: 'users',
     help: 'Useful for resume, recruiter messages, and application tracking.',
     fields: [
       ['phone', 'Phone'],
@@ -55,6 +58,7 @@ const sections = [
   },
   {
     title: 'Job Preferences',
+    icon: 'match',
     help: 'Helps AI create better application answers and recruiter messages.',
     fields: [
       ['preferredLocation', 'Preferred location'],
@@ -146,46 +150,84 @@ export default function Profile() {
             title="Profile"
             subtitle={user?.email || 'Your saved career data powers every AI feature.'}
           >
-            <button onClick={restoreSaved} className="btn-secondary text-sm bg-white/10 border-white/20 text-white hover:bg-white/20">Load Saved</button>
+            <button onClick={restoreSaved} className="btn-secondary text-sm bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30">Load Saved</button>
           </PageHeader>
 
-          {error && <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>}
-          {saved && <div className="mb-5 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-emerald-700">Profile saved. Form cleared for the next entry.</div>}
+          {error && (
+            <div role="alert" className="mb-5 flex gap-2 rounded-card border border-red-200 bg-red-50 p-3.5 text-sm text-red-700">
+              <Icon name="shield" className="h-4 w-4 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold">Something went wrong</p>
+                <p className="mt-0.5">{error}</p>
+              </div>
+            </div>
+          )}
+          {saved && (
+            <div role="status" className="mb-5 flex gap-2 rounded-card border border-forest-200 bg-forest-50 p-3.5 text-sm text-forest-700">
+              <Icon name="check" className="h-4 w-4 shrink-0 mt-0.5" />
+              <span>Profile saved. The form was cleared for your next entry — use <strong>Load Saved</strong> to edit what you stored.</span>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-6 items-start">
-            <aside className="card-gradient p-5 sm:p-6 lg:sticky lg:top-24">
-              <p className="text-xs font-semibold text-muted uppercase tracking-wide">Profile Completion</p>
-              <p className="text-4xl font-extrabold text-transparent bg-clip-text bg-brand-gradient mt-2 font-display">{profileCompletion}%</p>
-              <div className="h-2.5 bg-surface rounded-full overflow-hidden mt-3">
-                <div className="h-full bg-brand-gradient rounded-full transition-all duration-700" style={{ width: `${profileCompletion}%` }} />
+            <aside className="card p-5 sm:p-6 lg:sticky lg:top-24">
+              <p className="text-xs font-semibold text-sage-600 uppercase tracking-wide">Profile completion</p>
+              <p className="text-4xl font-bold text-forest-700 mt-2 font-display">{profileCompletion}%</p>
+              <div className="h-2.5 bg-surface rounded-full overflow-hidden mt-3" role="progressbar" aria-valuenow={profileCompletion} aria-valuemin={0} aria-valuemax={100}>
+                <div className="h-full bg-forest rounded-full transition-all duration-700" style={{ width: `${profileCompletion}%` }} />
               </div>
-              <p className="text-sm text-muted mt-4">Saved profile data powers Career Intelligence, job matching, voice interviews, and generated content.</p>
+              <p className="text-sm text-sage-600 mt-4 leading-relaxed">Saved profile data powers Career Intelligence, job matching, voice interviews, and generated content.</p>
               <div className="mt-5 space-y-2 text-sm">
-                <div className="flex justify-between border border-border rounded-lg p-3 bg-surface"><span className="text-muted">Target role</span><strong className="text-ink">{savedProfile.targetRole || 'Not set'}</strong></div>
-                <div className="flex justify-between border border-border rounded-lg p-3 bg-surface"><span className="text-muted">Dream company</span><strong className="text-ink">{savedProfile.dreamCompany || 'Not set'}</strong></div>
-                <div className="flex justify-between border border-border rounded-lg p-3 bg-surface"><span className="text-muted">Job type</span><strong className="text-ink">{savedProfile.jobType || 'Not set'}</strong></div>
+                {[
+                  ['Target role', savedProfile.targetRole],
+                  ['Dream company', savedProfile.dreamCompany],
+                  ['Job type', savedProfile.jobType],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex justify-between gap-3 border border-border rounded-card p-3 bg-surface">
+                    <span className="text-sage-600">{label}</span>
+                    <strong className={value ? 'text-ink text-right' : 'text-sage-500 text-right'}>{value || 'Not set'}</strong>
+                  </div>
+                ))}
               </div>
             </aside>
 
             <form onSubmit={save} className="space-y-6">
-              {loading && <div className="card p-8 text-sm text-muted">Loading profile...</div>}
+              {loading && (
+                <div className="card p-6">
+                  <div className="flex items-center gap-3 text-sm text-sage-600">
+                    <span className="relative w-5 h-5 shrink-0">
+                      <span className="absolute inset-0 rounded-full border-2 border-forest-100" />
+                      <span className="absolute inset-0 rounded-full border-2 border-forest border-t-transparent animate-spin" />
+                    </span>
+                    Loading your profile...
+                  </div>
+                </div>
+              )}
 
               {!loading && sections.map((section) => (
                 <section key={section.title} className="card p-5 sm:p-6">
-                  <div className="mb-5">
-                    <h2 className="font-bold text-ink">{section.title}</h2>
-                    <p className="text-sm text-muted mt-1">{section.help}</p>
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="w-9 h-9 rounded-card bg-forest-50 text-forest-700 grid place-items-center shrink-0">
+                      <Icon name={section.icon} className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0">
+                      <h2 className="font-semibold text-ink">{section.title}</h2>
+                      <p className="text-sm text-sage-600 mt-0.5">{section.help}</p>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {section.fields.map(([name, label]) => (
-                      <input
-                        key={name}
-                        name={name}
-                        value={profile[name] || ''}
-                        onChange={set}
-                        placeholder={label}
-                        className="form-input"
-                      />
+                      <div key={name}>
+                        <label htmlFor={`profile-${name}`} className="form-label">{label}</label>
+                        <input
+                          id={`profile-${name}`}
+                          name={name}
+                          value={profile[name] || ''}
+                          onChange={set}
+                          placeholder={label}
+                          className="form-input"
+                        />
+                      </div>
                     ))}
                   </div>
                 </section>
@@ -193,17 +235,38 @@ export default function Profile() {
 
               {!loading && (
                 <section className="card p-5 sm:p-6 space-y-4">
-                  <div>
-                    <h2 className="font-bold text-ink">Resume and Proof</h2>
-                    <p className="text-sm text-muted mt-1">Paste resume text and major achievements for better AI personalization.</p>
+                  <div className="flex items-center gap-3">
+                    <span className="w-9 h-9 rounded-card bg-forest-50 text-forest-700 grid place-items-center shrink-0">
+                      <Icon name="doc" className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0">
+                      <h2 className="font-semibold text-ink">Resume and Proof</h2>
+                      <p className="text-sm text-sage-600 mt-0.5">Paste resume text and major achievements for better AI personalization.</p>
+                    </div>
                   </div>
-                  <textarea name="resumeText" value={profile.resumeText || ''} onChange={set} rows={7} placeholder="Resume text" className="form-textarea" />
-                  <textarea name="achievements" value={profile.achievements || ''} onChange={set} rows={4} placeholder="Achievements, awards, metrics, hackathons, leadership, open-source contributions" className="form-textarea" />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button className="btn-gradient justify-center" disabled={saving}>{saving ? 'Saving...' : 'Save Profile'}</button>
-                    <button type="button" onClick={() => setProfile(emptyProfile)} className="btn-secondary justify-center">Clear Form</button>
+                  <div>
+                    <label htmlFor="profile-resumeText" className="form-label">Resume text</label>
+                    <textarea id="profile-resumeText" name="resumeText" value={profile.resumeText || ''} onChange={set} rows={7} placeholder="Paste your full resume text" className="form-textarea" />
+                  </div>
+                  <div>
+                    <label htmlFor="profile-achievements" className="form-label">Achievements</label>
+                    <textarea id="profile-achievements" name="achievements" value={profile.achievements || ''} onChange={set} rows={4} placeholder="Achievements, awards, metrics, hackathons, leadership, open-source contributions" className="form-textarea" />
                   </div>
                 </section>
+              )}
+
+              {!loading && (
+                <div className="sticky bottom-4 z-10">
+                  <div className="card p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-soft">
+                    <p className="text-sm text-sage-600">Review your entries, then save to update your career data.</p>
+                    <div className="flex gap-3 shrink-0">
+                      <button type="button" onClick={() => setProfile(emptyProfile)} className="btn-secondary">Clear Form</button>
+                      <button className="btn-primary" disabled={saving}>
+                        {saving ? 'Saving...' : (<><Icon name="check" className="h-4 w-4" />Save Profile</>)}
+                      </button>
+                    </div>
+                  </div>
+                </div>
               )}
             </form>
           </div>
