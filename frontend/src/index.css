@@ -416,9 +416,43 @@
   .animate-pop-in,
   .shimmer::after,
   .auth-orb,
-  .auth-wave span {
+  .auth-wave span,
+  .hero-float {
     animation: none !important;
   }
+  .hero-rise {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+/* ── Hero composition motion ─────────────────────────────── */
+@keyframes heroRise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+/* Entrance and float live on separate wrappers so they never animate the
+   same element's transform at once. */
+.hero-rise {
+  animation: heroRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+.hero-float {
+  animation: heroFloat var(--float-dur, 6s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0ms);
+}
+/* Paused when the hero is offscreen or the tab is hidden. */
+.hero-paused .hero-float {
+  animation-play-state: paused;
+}
+/* Pointer tilt is applied to its own wrapper and eased for a smooth settle. */
+.hero-tilt {
+  transition: transform 0.35s ease-out;
 }
 
 /* ── Print styles ────────────────────────────────────────── */

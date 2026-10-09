@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import Wordmark from './marketing/Wordmark.jsx';
-import SplineHero from './marketing/SplineHero.jsx';
 import HeroComposition from './marketing/HeroComposition.jsx';
 
 /**
@@ -9,8 +8,9 @@ import HeroComposition from './marketing/HeroComposition.jsx';
  *
  * The oversized wordmark is the morph source (data-brand-anchor="hero"); it is
  * decorative (aria-hidden) because the navbar holds the real accessible home
- * link. The product visual is a Spline scene when configured, otherwise the
- * HTML HeroComposition — no private account data is loaded here.
+ * link. The product visual is the code-built HeroComposition — an original
+ * layered illustration that renders immediately; no private account data is
+ * loaded here.
  */
 export default function Hero() {
   const { isAuthenticated } = useAuth();
@@ -68,10 +68,7 @@ export default function Hero() {
 
         {/* ── Visual column ───────────────────────────────── */}
         <div className="relative">
-          {/* Reserve height so the Spline canvas can't shift layout while loading. */}
-          <div className="relative min-h-[26rem] sm:min-h-[30rem]">
-            <SplineHero fallback={<div className="grid h-full place-items-center"><HeroComposition /></div>} />
-          </div>
+          <HeroComposition />
         </div>
       </div>
     </section>
