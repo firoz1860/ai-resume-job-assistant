@@ -1,306 +1,225 @@
 # CareerOS AI
 
-CareerOS AI is a full-stack AI career operating system for job seekers. It combines profile management, resume parsing, resume building, job matching, application tracking, interview practice, career intelligence, saved content, and searchable career memory in one coordinated workspace.
+One workspace that connects a job seeker's **resume, job research, applications, and interview practice** — so you always know the next move. Built as a React + Vite single-page app talking to an Express + MongoDB backend, with a single real AI integration (Google Gemini) for content generation and interview feedback.
 
-The purpose of the project is to reduce scattered job-search work. Instead of using separate tools for resume editing, interview notes, job tracking, follow-ups, and AI-generated messages, CareerOS AI keeps those workflows connected around the user's profile, applications, interviews, and saved career history.
+> **Status (honest):** the app is feature-complete and the production build, frontend UI suite, and backend unit tests all pass. **Live end-to-end flows against a deployed backend + MongoDB + Gemini were not re-verified in this audit** (no credentials in this environment). Authenticated screens in the gallery below are **fixture previews** (mocked API), clearly labelled. See [Verification status](#verification-status).
 
-![alt text](image.png)
-![alt text](image-1.png)
+---
 
-## What This Project Does
+## What it does
 
-- Stores a user's career profile with skills, education, projects, experience, links, preferences, and resume text
-- Generates job-specific career content using AI
-- Parses uploaded resumes from PDF, DOCX, TXT, or pasted text
-- Builds ATS-style resumes and exports them through the browser print/PDF flow
-- Saves resume versions for specific jobs
-- Tracks applications, follow-ups, recruiters, job descriptions, resume changes, and interview prep
-- Runs text and voice interview practice
-- Scores voice answers using transcript quality and audio-style metrics such as WPM, filler count, pauses, confidence, STAR score, and answer structure
-- Searches saved career memory across profile, applications, generated content, interviews, roadmaps, job analyses, and resume versions
-- Shows live dashboard and admin metrics from MongoDB
+- **Profile / Career Vault** — save skills, projects, experience, target roles; search across saved career data.
+- **Resume Builder** — parse an uploaded/pasted resume, edit fields alongside a live preview, save versions against tracked jobs, and export via the browser print dialog.
+- **Generator + Content Library** — generate role-specific drafts (cover letters, recruiter messages, summaries) with **Gemini**, then save/reuse them. Drafts are drafts — nothing is sent anywhere.
+- **Job Analyzer / Matcher** — compare your profile against a job description and see supporting skills + missing evidence as an **evidence-based profile match** (not a hiring probability).
+- **Applications** — a 5-stage pipeline (Saved → Applied → Interview → Rejected → Offer) with recruiter details, notes, follow-ups, and resume-change tracking.
+- **Interviews** — text and spoken (Web Speech API) practice with per-answer feedback and a final report (**Gemini**, with a heuristic fallback if the model call fails).
+- **Dashboard / Career Intelligence / Roadmap** — aggregated signals and a weekly plan computed from your saved records.
 
-## Why I Built It
+### What is AI vs. heuristic (no overclaiming)
 
-Most job seekers have useful information spread across resumes, job portals, emails, notes, interview practice tools, and AI chats. That makes it hard to reuse proof from old projects, track application progress, or prepare for interviews based on the exact job.
+| Feature | Backed by |
+|---|---|
+| Content Generator | **Google Gemini** (real model) |
+| Text & Voice interview questions/feedback/report | **Google Gemini** with a deterministic fallback on error |
+| Matcher, Job Analyzer, Career DNA, Career Intelligence, Career Vault, Roadmap, resume parse/diff, follow-up generation | **Local heuristics / templates** (keyword overlap, scaffolding) — *not* a language model |
+| Dashboard, Admin | Database aggregation |
 
-CareerOS AI solves this by acting as a career command center:
-
-- Profile data powers generation, matching, interview prep, and resume building
-- Applications store the job context and follow-up history
-- Interviews produce feedback that becomes searchable career memory
-- Resume versions stay linked to target roles or companies
-- Career Vault makes old work reusable instead of lost
-
-![alt text](image-2.png)
-![alt text](image-3.png)
-## Navbar Guide
-
-The app is organized around the navbar. Each page has a specific role in the job-search workflow.
-
-| Navbar Item | Route | Purpose |
-| --- | --- | --- |
-| Home | `/` | Public landing page introducing CareerOS AI and its main value |
-| Dashboard | `/dashboard` | Authenticated command center with stats, next actions, progress, due follow-ups, quick actions, and recent activity |
-| Intelligence | `/career-intelligence` | AI-powered overview of career readiness, application pipeline quality, weak areas, and recommendations |
-| Vault | `/career-vault` | Search across saved profile data, applications, generated content, interviews, job analyses, roadmaps, and resume versions |
-| Generator | `/generator` | Generate resume summaries, cover letters, cold emails, LinkedIn messages, and interview-style answers |
-| Voice Interview | `/voice-interview` | Practice aloud with AI questions, transcript capture, scoring, spoken feedback, and audio metrics |
-| Applications | `/applications` | Application Intelligence Tracker for jobs, recruiters, statuses, follow-ups, resume diff notes, and interview prep |
-
-## Tools Menu Guide
-
-The Tools dropdown contains focused modules that support the main workflow.
-
-| Tool | Route | Purpose |
-| --- | --- | --- |
-| Career DNA | `/career-dna` | Analyzes profile strength, gaps, skills, and readiness |
-| Job Analyzer | `/job-analyzer` | Compares a job description against the user's profile and extracts match signals |
-| Resume Builder | `/resume-builder` | Upload/parse resumes, edit ATS sections, approve resume diffs, save versions, and export PDF |
-| Admin | `/admin` | Live platform metrics: users, generated content, interviews, applications, resume versions, average score, common roles |
-| Content Library | `/content-library` | Saved generated content for reuse |
-| Matcher | `/matcher` | Public job/profile matching utility |
-| Text Interview | `/interview-room` | Text-based mock interview workflow |
-| Interview History | `/interview-history` | Past text interview sessions and feedback |
-| Voice History | `/voice-interview-history` | Past voice interview sessions |
-| Roadmap | `/roadmap` | AI-generated learning roadmap for target roles |
-| Profile | `/profile` | User's core career data used by the rest of the app |
-| About | `/about` | Project information and context |
-
-## How The App Works Together
-
-1. The user signs up or logs in.
-2. The user fills the Profile page or uploads a resume in Resume Builder.
-3. Profile data becomes the base context for generation, matching, intelligence, and interviews.
-4. The user adds job applications manually or by pasting job text/link into Applications.
-5. The Generator creates job-specific content from profile and job context.
-6. Resume Builder saves tailored resume versions for specific roles.
-7. Voice Interview and Text Interview produce feedback and scores.
-8. Dashboard summarizes progress and next actions.
-9. Career Vault searches across saved career memory so old proof, answers, content, and applications can be reused.
+---
 
 ## Architecture
 
-CareerOS AI is split into a React frontend and an Express backend.
+```
+frontend/ (React 18, Vite 5, React Router 6, Tailwind 3 — JSX)
+  src/services/api.js      one fetch layer; {success,data} envelope; 401 -> sign-out
+  src/context/AuthContext  JWT (Bearer) in localStorage; background /me validation
+  src/components/...       marketing (hero, scroll-stack, logo-morph) + workspace shell
+  e2e/                     Playwright suite (public, fixture-UI, gallery, regression)
 
-```text
-frontend React app
-  -> services/api.js
-  -> backend Express API
-  -> MongoDB through Mongoose models
-  -> Gemini AI service for generation and scoring
+backend/ (Node, Express 4, Mongoose; in-memory fallback when Mongo is down)
+  src/routes / controllers / services / models / middleware
+  src/services/aiService.js   Google Gemini REST (the only model call)
 ```
 
-Important architecture choices:
+Auth is **JWT in `Authorization: Bearer`** (from `localStorage`), verified by the `protect` middleware. Every user-scoped query filters by the authenticated user id (IDOR-safe). CORS is an allow-list driven by `CLIENT_URL`.
 
-- The AI API key stays only on the backend.
-- Protected data uses JWT auth.
-- MongoDB stores user-owned data.
-- Controllers are separated by product area: auth, profile, applications, generation, resume, interviews, dashboard, intelligence, vault, admin.
-- AI prompts are isolated in prompt files.
-- Shared helper logic lives in `utils/`, such as resume parsing, text analysis, job matching, prompt building, and AI JSON parsing.
-- The app includes fallback handling for database health and API errors.
+---
 
-## Tech Stack
+## Frontend <-> backend connection table
 
-| Layer | Technology |
-| --- | --- |
-| Frontend | React 18, Vite, React Router, Tailwind CSS |
-| Backend | Node.js, Express, Helmet, CORS, express-rate-limit |
-| Database | MongoDB, Mongoose |
-| Auth | JWT, bcrypt, protected middleware |
-| AI | Google Gemini API through backend service |
-| Resume Parsing | `multer`, `pdf-parse`, `mammoth` |
-| Testing | Node's built-in `node:test` |
+| Screen | Action | Frontend `api.js` | Method + path | Backend | Kind |
+|---|---|---|---|---|---|
+| Login/Signup | sign in / up / guest | `authApi.*` | POST `/api/auth/{login,signup,guest}` | authController | real |
+| (all) | session restore | `authApi.me` | GET `/api/auth/me` | authController | real |
+| Dashboard | load | `dashboardApi.stats` | GET `/api/dashboard/stats` | dashboardController | real (DB aggregate) |
+| Profile | load / save | `profileApi.get/update` | GET/PUT `/api/user/profile` | userController | real |
+| Career Intelligence | load / inspect job | `intelligenceApi.*` | GET `/api/intelligence/overview`, POST `/inspect-job` | intelligenceController | heuristic |
+| Career DNA | scan | `careerApi.analyze` | POST `/api/career/analyze` | careerController | heuristic |
+| Career Vault | search | `careerVaultApi.search` | GET `/api/career-vault/search` | careerVaultController | heuristic |
+| Resume Builder | load / parse / apply / versions / diff | `profileApi`, `resumeApi.*`, `applicationsApi.list` | GET/POST `/api/resume/*`, `/api/user/profile` | resumeController | real + heuristic parse/diff |
+| Generator | generate | `generateContent` | POST `/api/generate` | generateController -> aiService | **Gemini** |
+| Content Library | list / delete | `contentApi.*` | GET `/api/content/library`, DELETE `/api/content/:id` | contentController | real |
+| Job Analyzer | analyze | `jobAnalyzerApi.analyze` | POST `/api/job/analyze` | jobAnalyzerController | heuristic |
+| Matcher *(public)* | match | `matchJob` | POST `/api/match` | matchController | heuristic |
+| Applications | list/create/update/delete/follow-up | `applicationsApi.*` | GET/POST/PUT/DELETE `/api/applications[/:id[/follow-up]]` | applicationController | real (+ template follow-up) |
+| Text Interview | start/answer/end/history | `interviewApi.*` | POST `/api/interview/{start,answer,end}`, GET `/history` | interviewController -> aiService | **Gemini** (+fallback) |
+| Voice Interview | start/answer/end/history/detail | `voiceInterviewApi.*` | `/api/voice-interview/*` | voiceInterviewController | **Gemini** (+fallback) |
+| Roadmap | create | `roadmapApi.create` | POST `/api/roadmap/create` | roadmapController | heuristic (deterministic plan) |
+| Admin | load | `adminApi.stats` | GET `/api/admin/stats` | adminController (`requireAdmin`) | real (DB aggregate) |
 
-Backend requires Node.js `>=20.16.0` because the current `pdf-parse` package targets modern Node versions.
+---
 
-## Main Frontend Files
+## Local setup
 
-| File | Purpose |
-| --- | --- |
-| `frontend/src/App.jsx` | Route definitions and protected route wrapping |
-| `frontend/src/components/Navbar.jsx` | Main navigation, tools dropdown, mobile nav, command search trigger |
-| `frontend/src/components/CommandPalette.jsx` | Ctrl+K action search |
-| `frontend/src/components/ToastProvider.jsx` | Global toast notifications |
-| `frontend/src/context/AuthContext.jsx` | Login state and auth operations |
-| `frontend/src/services/api.js` | Central frontend API client |
-| `frontend/src/pages/Dashboard.jsx` | Main authenticated dashboard |
-| `frontend/src/pages/Applications.jsx` | Application tracker and application-specific intelligence |
-| `frontend/src/pages/ResumeBuilder.jsx` | Resume parser, builder, diff approval, versions, export |
-| `frontend/src/pages/CareerVault.jsx` | Career memory search |
-| `frontend/src/pages/VoiceInterview.jsx` | Voice interview setup and runtime |
-
-## Main Backend Files
-
-| File | Purpose |
-| --- | --- |
-| `backend/src/server.js` | Express app setup, middleware, routes, health endpoint |
-| `backend/src/routes/generateRoutes.js` | Main product API routes |
-| `backend/src/routes/authRoutes.js` | Signup, login, current user, logout |
-| `backend/src/routes/userRoutes.js` | Profile read/update |
-| `backend/src/routes/voiceInterviewRoutes.js` | Voice interview endpoints |
-| `backend/src/controllers/resumeController.js` | Resume parsing, profile application, versions, diff |
-| `backend/src/controllers/applicationController.js` | Application CRUD and follow-up generation |
-| `backend/src/controllers/careerVaultController.js` | Search across saved career memory |
-| `backend/src/controllers/dashboardController.js` | Dashboard stats and next actions |
-| `backend/src/controllers/adminController.js` | Live admin metrics |
-| `backend/src/services/aiService.js` | Gemini API integration and fallback behavior |
-| `backend/src/services/voiceInterviewService.js` | Voice session helpers, fallback scoring, audio metrics |
-| `backend/src/utils/resumeParser.js` | Resume section extraction and resume diff helpers |
-
-## Data Models
-
-| Model | Stores |
-| --- | --- |
-| `User` | Account, hashed password, auth identity |
-| `CareerProfile` | Education, skills, projects, experience, target role, links, salary, language, availability |
-| `Application` | Company, role, job link, status, dates, recruiter info, job description, resume before/after, project evidence |
-| `GeneratedContent` | AI-generated cover letters, messages, summaries, and prompts |
-| `InterviewSession` | Text or voice interview session metadata, status, report, scores |
-| `InterviewMessage` | Questions, answers, transcripts, feedback, mistakes, audio metrics |
-| `JobAnalysis` | Job description analysis result |
-| `Roadmap` | Target-role learning plan |
-| `ResumeVersion` | Saved resume sections for general or job-specific versions |
-
-## API Reference
-
-| Method | Route | Purpose |
-| --- | --- | --- |
-| `POST` | `/api/auth/signup` | Create account |
-| `POST` | `/api/auth/login` | Login |
-| `GET` | `/api/auth/me` | Get current user |
-| `POST` | `/api/auth/logout` | Logout |
-| `GET` | `/api/user/profile` | Load career profile |
-| `PUT` | `/api/user/profile` | Update career profile |
-| `POST` | `/api/generate` | Generate AI content |
-| `POST` | `/api/match` | Match profile against job data |
-| `GET` | `/api/dashboard/stats` | Dashboard stats |
-| `GET` | `/api/intelligence/overview` | Career intelligence overview |
-| `POST` | `/api/intelligence/inspect-job` | Inspect a job post |
-| `GET` | `/api/career-vault/search` | Search career memory |
-| `GET` | `/api/admin/stats` | Live platform metrics |
-| `POST` | `/api/resume/parse` | Parse uploaded/pasted resume |
-| `POST` | `/api/resume/apply-parsed` | Save parsed resume fields to profile |
-| `GET` | `/api/resume/versions` | List saved resume versions |
-| `POST` | `/api/resume/versions` | Save resume version |
-| `POST` | `/api/resume/diff` | Build resume bullet diff |
-| `POST` | `/api/career/analyze` | Career DNA analysis |
-| `POST` | `/api/job/analyze` | Job description analysis |
-| `GET` | `/api/content/library` | Saved generated content |
-| `DELETE` | `/api/content/:id` | Delete generated content |
-| `POST` | `/api/interview/start` | Start text interview |
-| `POST` | `/api/interview/answer` | Submit text interview answer |
-| `POST` | `/api/interview/end` | End text interview |
-| `GET` | `/api/interview/history` | Text interview history |
-| `GET` | `/api/interview/:id` | Text interview detail |
-| `POST` | `/api/voice-interview/start` | Start voice interview |
-| `POST` | `/api/voice-interview/answer` | Submit transcript and get feedback/metrics |
-| `POST` | `/api/voice-interview/end` | End voice interview and generate report |
-| `GET` | `/api/voice-interview/history` | Voice interview history |
-| `GET` | `/api/voice-interview/:id` | Voice interview detail |
-| `POST` | `/api/roadmap/create` | Create learning roadmap |
-| `GET` | `/api/applications` | List applications |
-| `POST` | `/api/applications` | Create application |
-| `PUT` | `/api/applications/:id` | Update application |
-| `DELETE` | `/api/applications/:id` | Delete application |
-| `POST` | `/api/applications/:id/follow-up` | Generate follow-up message |
-| `GET` | `/health` | Server and MongoDB health |
-
-## Local Setup
-
-### Backend
+**Prerequisites:** Node 18+ and a MongoDB instance (or run without one — the backend uses an in-memory fallback for local dev).
 
 ```bash
+# Backend
 cd backend
 npm install
-cp .env.example .env
-npm run dev
-```
+cp .env.example .env     # fill in the values below
+npm run dev              # http://localhost:5000
 
-Backend runs on `http://localhost:5000`.
-
-Backend environment:
-
-```env
-PORT=5000
-CLIENT_URL=http://localhost:5173
-MONGODB_URI=mongodb://localhost:27017/careeros-ai
-JWT_SECRET=replace-with-a-long-secret
-AI_API_KEY=your-gemini-key
-AI_MODEL=gemini-1.5-flash
-AI_FALLBACK_MODELS=gemini-1.5-flash
-```
-
-### Frontend
-
-```bash
+# Frontend (separate terminal)
 cd frontend
 npm install
-cp .env.example .env
-npm run dev
+cp .env.example .env     # set VITE_API_BASE_URL
+npm run dev              # http://localhost:5173
 ```
 
-Frontend runs on `http://localhost:5173`.
+### Environment variables (names only — never commit real secrets)
 
-Frontend environment:
+**backend/.env**
 
-```env
-VITE_API_BASE_URL=http://localhost:5000
-```
+| Name | Purpose |
+|---|---|
+| `MONGO_URI` | MongoDB connection string (omit to use the in-memory fallback locally) |
+| `JWT_SECRET` | Signs auth tokens. **Required in production.** |
+| `JWT_EXPIRES_IN` | Token lifetime (default `7d`) |
+| `AI_API_KEY` | Google Gemini API key. **Required** — the server refuses to start without it. |
+| `AI_MODEL` / `AI_FALLBACK_MODELS` | Gemini model id(s), default `gemini-2.0-flash` |
+| `CLIENT_URL` | **Comma-separated allowed frontend origins for CORS. Set this to the deployed frontend URL in production or the browser will be CORS-blocked.** |
 
-The homepage hero is an original, code-built illustration (HTML + CSS
-perspective + SVG) — no 3D runtime or external scene is required, so it renders
-immediately and works without WebGL.
+**frontend/.env**
 
-## Testing And Verification
+| Name | Purpose |
+|---|---|
+| `VITE_API_BASE_URL` | Backend base URL. **Must be set at build time in production** — otherwise the build falls back to `http://localhost:5000` and every request fails (the app logs a console error when this happens). |
 
-Backend tests:
+---
+
+## Testing
 
 ```bash
-cd backend
-npm test
-```
-
-Frontend production build:
-
-```bash
+# Frontend
 cd frontend
-npm run build
+npm run build            # production build
+npm run test:e2e         # Playwright (auto-starts `vite preview`)
+npm run test:e2e:gallery # Playwright + regenerate the qa-evidence gallery
+
+# Backend
+cd backend
+npm test                 # node --test (unit tests; uses test/setup.mjs dummy env)
 ```
 
-Current tests cover resume parsing and resume diff helpers. The next useful tests would be auth integration tests, application CRUD tests, protected route tests, AI fallback tests, and frontend smoke tests.
+The Playwright suite is organised into categories:
 
-## Deployment
+- **Public UI** — real production build, no mocks (home, login, signup, about, matcher, 404).
+- **Fixture-backed UI** — mocked API + injected session (`e2e/fixtures.js`); verifies **layout and UI states only**, never real auth/DB/AI.
+- **Regression** — `e2e/regression.spec.js` covers the audit fixes (defensive render, error states, role-gated admin link).
+- **Real backend / real AI** — **not run here** (no credentials). Run against a live backend by pointing `baseURL` at it and signing in with a disposable account.
 
-### Backend On Render
+---
 
-1. Create a Render Web Service from `backend/`.
-2. Build command: `npm install`
-3. Start command: `npm start`
-4. Set `PORT`, `CLIENT_URL`, `MONGODB_URI`, `JWT_SECRET`, `AI_API_KEY`, `AI_MODEL`, and `AI_FALLBACK_MODELS`.
-5. Set `CLIENT_URL` to the deployed frontend URL.
+## Verification status
 
-### Frontend On Vercel
+**Verified in this audit**
+- Frontend `npm run build` — passes.
+- Backend `npm test` — 6/6 unit tests pass.
+- Playwright suite — public UI + fixture UI + regression, desktop & mobile, no horizontal overflow, no non-API console errors.
+- Contract review — frontend paths/methods/response shapes match backend routes; JWT auth consistent both sides; IDOR-safe (every user-scoped query filters by user id).
 
-1. Import the repo.
-2. Set root directory to `frontend/`.
-3. Build command: `npm run build`
-4. Output directory: `dist`
-5. Set `VITE_API_BASE_URL` to the deployed backend URL.
+**Fixed in this audit**
+- Voice interview `submit`/`skip` no longer dereference a `null` result -> no white-screen when an answer request fails.
+- Career Intelligence: defensive guards on every nested access -> partial data renders instead of crashing.
+- Voice Interview Detail: shows an error state instead of an infinite loader on load failure.
+- Interview Room: `start`/`answer`/`end` failures now surface an inline error.
+- Resume Builder: name/email fall back to the signed-in user (the `CareerProfile` doc has neither).
+- Admin link is gated to `role === 'admin'` (backend `requireAdmin` remains the real control).
+- Removed "AI" labels from heuristic features (Roadmap, Career DNA, Career Intelligence panels).
+- `api.js` logs a clear error if a production build is pointing at localhost.
+- Backend tests made runnable without real secrets (`backend/test/setup.mjs`).
 
-## Production Hardening
+**Not verified / blockers**
+- **Live end-to-end** (signup -> login -> persist -> logout, real Generator/interview AI, Applications CRUD round-trips) — needs `MONGO_URI` + `AI_API_KEY` + a deployed backend. Not available in this environment.
+- **Real speaking (microphone) voice-interview run** — the setup/permission UI is tested; an actual spoken session needs a device with a mic.
+- **Production config to double-check before trusting the live site:** `VITE_API_BASE_URL` set on the frontend build, and `CLIENT_URL` set on the backend to the deployed frontend origin.
+- **Guest login shares a single `guest@careeros.ai` account** — all guests read/write the same data (by design; don't store anything private as a guest).
 
-- Add MongoDB indexes for `userId`, `createdAt`, `status`, `followUpDate`, and `targetRole`
-- Add integration tests for auth, profile, applications, interviews, resume versions, and protected routes
-- Add AI quota-specific UI states
-- Add more granular rate limits for auth, AI generation, resume upload, and interview routes
-- Add calendar reminders for interviews, follow-ups, and roadmap tasks
-- Add email sync for application confirmations, recruiter replies, interview invites, rejections, and offers
-- Add a browser extension for one-click job import
-- Add vector embeddings for deeper Career Vault retrieval
+This project is **not** "production-ready / fully tested" — the live-backend and real-AI paths above remain unverified here.
 
-## Current Project Status
+---
 
-CareerOS AI is now a working full-stack application with dynamic MongoDB-backed data. It does not rely on seeded demo data. The dashboard, admin metrics, vault, applications, resumes, generated content, and interviews are designed to reflect real user activity.
+## Screenshots
 
+Fixture previews use synthetic data (mocked API) and verify UI only — **not** real account data. Click any thumbnail for the full-page capture. Walkthrough videos (hero, logo-morph, card-stack, mobile nav) live in [`qa-evidence/video/`](qa-evidence/video).
+
+<details>
+<summary><b>Public</b> (real production build, no mocks)</summary>
+
+| | |
+|---|---|
+| <a href="docs/screenshots/full/home-desktop.jpg"><img src="docs/screenshots/public/home-desktop.jpg" width="300" alt="Homepage"></a><br><sub>Home</sub> | <a href="docs/screenshots/full/about-desktop.jpg"><img src="docs/screenshots/public/about-desktop.jpg" width="300" alt="About page"></a><br><sub>About</sub> |
+| <a href="docs/screenshots/full/login-desktop.jpg"><img src="docs/screenshots/public/login-desktop.jpg" width="300" alt="Login split screen"></a><br><sub>Login</sub> | <a href="docs/screenshots/full/signup-desktop.jpg"><img src="docs/screenshots/public/signup-desktop.jpg" width="300" alt="Signup split screen"></a><br><sub>Signup</sub> |
+| <a href="docs/screenshots/full/notfound-desktop.jpg"><img src="docs/screenshots/public/notfound-desktop.jpg" width="300" alt="Not Found page"></a><br><sub>Not Found</sub> | |
+
+Mobile: <a href="docs/screenshots/full/home-mobile.jpg"><img src="docs/screenshots/public/home-mobile.jpg" width="140" alt="Home (mobile)"></a> <a href="docs/screenshots/full/login-mobile.jpg"><img src="docs/screenshots/public/login-mobile.jpg" width="140" alt="Login (mobile)"></a> <a href="docs/screenshots/full/signup-mobile.jpg"><img src="docs/screenshots/public/signup-mobile.jpg" width="140" alt="Signup (mobile)"></a> <a href="docs/screenshots/full/about-mobile.jpg"><img src="docs/screenshots/public/about-mobile.jpg" width="140" alt="About (mobile)"></a>
+</details>
+
+<details>
+<summary><b>Career Workspace</b> (fixture preview)</summary>
+
+| | |
+|---|---|
+| <a href="docs/screenshots/full/dashboard-desktop.jpg"><img src="docs/screenshots/workspace/dashboard-desktop.jpg" width="300" alt="Dashboard (fixture)"></a><br><sub>Dashboard</sub> | <a href="docs/screenshots/full/career-intelligence-desktop.jpg"><img src="docs/screenshots/workspace/career-intelligence-desktop.jpg" width="300" alt="Career Intelligence (fixture)"></a><br><sub>Career Intelligence</sub> |
+| <a href="docs/screenshots/full/profile-desktop.jpg"><img src="docs/screenshots/workspace/profile-desktop.jpg" width="300" alt="Profile (fixture)"></a><br><sub>Profile</sub> | <a href="docs/screenshots/full/career-vault-desktop.jpg"><img src="docs/screenshots/workspace/career-vault-desktop.jpg" width="300" alt="Career Vault (fixture)"></a><br><sub>Career Vault</sub> |
+| <a href="docs/screenshots/full/career-dna-desktop.jpg"><img src="docs/screenshots/workspace/career-dna-desktop.jpg" width="300" alt="Career DNA (fixture)"></a><br><sub>Career DNA</sub> | <a href="docs/screenshots/full/roadmap-desktop.jpg"><img src="docs/screenshots/workspace/roadmap-desktop.jpg" width="300" alt="Roadmap (fixture)"></a><br><sub>Roadmap</sub> |
+| <a href="docs/screenshots/full/dashboard-empty-desktop.jpg"><img src="docs/screenshots/workspace/dashboard-empty-desktop.jpg" width="300" alt="Dashboard empty state (fixture)"></a><br><sub>Dashboard — empty state</sub> | <a href="docs/screenshots/full/dashboard-error-desktop.jpg"><img src="docs/screenshots/workspace/dashboard-error-desktop.jpg" width="300" alt="Dashboard error state (fixture)"></a><br><sub>Dashboard — failed load (dashes, not fake 0s)</sub> |
+| <a href="docs/screenshots/full/admin-desktop.jpg"><img src="docs/screenshots/workspace/admin-desktop.jpg" width="300" alt="Admin (fixture)"></a><br><sub>Admin</sub> | |
+
+Mobile: <a href="docs/screenshots/full/dashboard-mobile.jpg"><img src="docs/screenshots/workspace/dashboard-mobile.jpg" width="140" alt="Dashboard (mobile)"></a> <a href="docs/screenshots/full/profile-mobile.jpg"><img src="docs/screenshots/workspace/profile-mobile.jpg" width="140" alt="Profile (mobile)"></a> <a href="docs/screenshots/full/career-intelligence-mobile.jpg"><img src="docs/screenshots/workspace/career-intelligence-mobile.jpg" width="140" alt="Career Intelligence (mobile)"></a>
+</details>
+
+<details>
+<summary><b>Applications</b> (fixture preview)</summary>
+
+| | |
+|---|---|
+| <a href="docs/screenshots/full/applications-desktop.jpg"><img src="docs/screenshots/applications/applications-desktop.jpg" width="300" alt="Applications pipeline (fixture)"></a><br><sub>Pipeline</sub> | <a href="docs/screenshots/full/applications-add-drawer-desktop.jpg"><img src="docs/screenshots/applications/applications-add-drawer-desktop.jpg" width="300" alt="Add application drawer (fixture)"></a><br><sub>Add / edit drawer</sub> |
+| <a href="docs/screenshots/full/applications-detail-drawer-desktop.jpg"><img src="docs/screenshots/applications/applications-detail-drawer-desktop.jpg" width="300" alt="Application detail drawer (fixture)"></a><br><sub>Detail drawer</sub> | <a href="docs/screenshots/full/job-analyzer-desktop.jpg"><img src="docs/screenshots/applications/job-analyzer-desktop.jpg" width="300" alt="Job Analyzer (fixture)"></a><br><sub>Job Analyzer</sub> |
+| <a href="docs/screenshots/full/matcher-desktop.jpg"><img src="docs/screenshots/applications/matcher-desktop.jpg" width="300" alt="Matcher (public)"></a><br><sub>Matcher (public)</sub> | |
+
+Mobile: <a href="docs/screenshots/full/applications-mobile.jpg"><img src="docs/screenshots/applications/applications-mobile.jpg" width="140" alt="Applications (mobile)"></a> <a href="docs/screenshots/full/job-analyzer-mobile.jpg"><img src="docs/screenshots/applications/job-analyzer-mobile.jpg" width="140" alt="Job Analyzer (mobile)"></a> <a href="docs/screenshots/full/matcher-mobile.jpg"><img src="docs/screenshots/applications/matcher-mobile.jpg" width="140" alt="Matcher (mobile)"></a>
+</details>
+
+<details>
+<summary><b>Resume Tools</b> (fixture preview)</summary>
+
+| | |
+|---|---|
+| <a href="docs/screenshots/full/resume-builder-desktop.jpg"><img src="docs/screenshots/resume/resume-builder-desktop.jpg" width="300" alt="Resume Builder editor + preview (fixture)"></a><br><sub>Resume Builder (editor + live preview)</sub> | <a href="docs/screenshots/full/generator-desktop.jpg"><img src="docs/screenshots/resume/generator-desktop.jpg" width="300" alt="Generator (fixture)"></a><br><sub>Generator</sub> |
+| <a href="docs/screenshots/full/content-library-desktop.jpg"><img src="docs/screenshots/resume/content-library-desktop.jpg" width="300" alt="Content Library (fixture)"></a><br><sub>Content Library</sub> | |
+
+Mobile: <a href="docs/screenshots/full/resume-builder-mobile.jpg"><img src="docs/screenshots/resume/resume-builder-mobile.jpg" width="140" alt="Resume Builder (mobile)"></a> <a href="docs/screenshots/full/generator-mobile.jpg"><img src="docs/screenshots/resume/generator-mobile.jpg" width="140" alt="Generator (mobile)"></a> <a href="docs/screenshots/full/content-library-mobile.jpg"><img src="docs/screenshots/resume/content-library-mobile.jpg" width="140" alt="Content Library (mobile)"></a>
+</details>
+
+<details>
+<summary><b>Interviews</b> (fixture preview)</summary>
+
+| | |
+|---|---|
+| <a href="docs/screenshots/full/interview-room-desktop.jpg"><img src="docs/screenshots/interviews/interview-room-desktop.jpg" width="300" alt="Text interview setup (fixture)"></a><br><sub>Text interview — setup</sub> | <a href="docs/screenshots/full/voice-interview-desktop.jpg"><img src="docs/screenshots/interviews/voice-interview-desktop.jpg" width="300" alt="Voice interview setup (fixture)"></a><br><sub>Voice interview — setup</sub> |
+| <a href="docs/screenshots/full/interview-history-desktop.jpg"><img src="docs/screenshots/interviews/interview-history-desktop.jpg" width="300" alt="Interview history (fixture)"></a><br><sub>Interview history</sub> | <a href="docs/screenshots/full/voice-interview-history-desktop.jpg"><img src="docs/screenshots/interviews/voice-interview-history-desktop.jpg" width="300" alt="Voice interview history (fixture)"></a><br><sub>Voice interview history</sub> |
+
+Mobile: <a href="docs/screenshots/full/interview-room-mobile.jpg"><img src="docs/screenshots/interviews/interview-room-mobile.jpg" width="140" alt="Text interview (mobile)"></a> <a href="docs/screenshots/full/voice-interview-mobile.jpg"><img src="docs/screenshots/interviews/voice-interview-mobile.jpg" width="140" alt="Voice interview (mobile)"></a> <a href="docs/screenshots/full/interview-history-mobile.jpg"><img src="docs/screenshots/interviews/interview-history-mobile.jpg" width="140" alt="Interview history (mobile)"></a>
+</details>

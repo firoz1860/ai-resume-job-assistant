@@ -127,7 +127,7 @@ export default function CareerDNA() {
                       <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
                         <h2 className="font-semibold text-ink">{group.heading}</h2>
                         {group.kind === 'ai' ? (
-                          <span className="badge bg-lime text-forest-800"><Icon name="sparkle" className="h-3.5 w-3.5" />AI suggestion</span>
+                          <span className="badge bg-lime text-forest-800"><Icon name="sparkle" className="h-3.5 w-3.5" />Suggested</span>
                         ) : (
                           <span className="badge bg-forest-50 text-forest-700 border border-forest-100"><Icon name="check" className="h-3.5 w-3.5" />Calculated</span>
                         )}

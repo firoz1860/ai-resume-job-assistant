@@ -194,7 +194,7 @@ export default function Navbar() {
         ))}
 
         <div className="border-t border-border pt-4">
-          {SECONDARY.map((item) => {
+          {SECONDARY.filter((item) => item.to !== '/admin' || user?.role === 'admin').map((item) => {
             const active = isActive(pathname, item.to);
             return (
               <Link

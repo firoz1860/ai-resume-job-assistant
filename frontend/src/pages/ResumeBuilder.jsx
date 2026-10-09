@@ -4,6 +4,7 @@ import Footer from '../components/Footer.jsx';
 import { Icon } from '../components/Reveal.jsx';
 import { applicationsApi, profileApi, resumeApi } from '../services/api.js';
 import { useToast } from '../components/ToastProvider.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const empty = {
   fullName: '',
@@ -37,6 +38,7 @@ function ResumeSection({ title, children }) {
 
 export default function ResumeBuilder() {
   const { notify } = useToast();
+  const { user } = useAuth();
   const [form, setForm] = useState(empty);
   const [applications, setApplications] = useState([]);
   const [selectedApplicationId, setSelectedApplicationId] = useState('');
@@ -61,7 +63,9 @@ export default function ResumeBuilder() {
         if (!active) return;
         setForm({
           ...empty,
-          fullName: profile.name || '',
+          // CareerProfile has no name/email — those live on the auth user.
+          fullName: profile.name || user?.name || '',
+          email: profile.email || user?.email || '',
           headline: profile.targetRole || '',
           phone: profile.phone || '',
           location: profile.location || profile.preferredLocation || '',

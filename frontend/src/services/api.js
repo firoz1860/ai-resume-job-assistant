@@ -2,6 +2,17 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 export const API_BASE_URL = BASE_URL;
 
+// Guard against the classic deploy mistake: a production build with no
+// VITE_API_BASE_URL set falls back to localhost and every request fails
+// (and is mixed-content on https). Surface it loudly instead of silently.
+if (import.meta.env.PROD && /\/\/(localhost|127\.0\.0\.1)/.test(BASE_URL)) {
+  // eslint-disable-next-line no-console
+  console.error(
+    `[CareerOS] VITE_API_BASE_URL is not set for this build — API calls are going to ${BASE_URL}. ` +
+    'Set VITE_API_BASE_URL to the deployed backend URL and rebuild.'
+  );
+}
+
 // Fire-and-forget health ping. Called once on app load so a cold-started
 // backend (e.g. Render free tier) begins waking while the user is still on
 // the landing/login screen — cutting perceived auth latency on first request.
