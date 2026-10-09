@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CareerOS QA evidence</title>
+<style>
+  :root{--fg:#17251E;--muted:#56635A;--line:#DDE2D8;--forest:#153D2B;--ivory:#F5F4EE;--lime:#D4ED8A}
+  body{margin:0;font:15px/1.5 system-ui,sans-serif;color:var(--fg);background:var(--ivory)}
+  header{padding:28px 24px;border-bottom:1px solid var(--line);background:#fff}
+  h1{margin:0 0 6px;font-size:22px}
+  .note{color:var(--muted);max-width:70ch}
+  main{padding:24px;max-width:1200px;margin:0 auto}
+  h2{margin:32px 0 12px;font-size:17px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+  figure{margin:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  figure img{display:block;width:100%;height:auto;background:#fff}
+  figcaption{padding:8px 10px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);word-break:break-all}
+  video{width:100%;max-width:640px;border:1px solid var(--line);border-radius:12px;background:#000}
+  table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  td,th{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
+  .pass{color:var(--forest);font-weight:600}.fail{color:#b91c1c;font-weight:600}
+  .pill{display:inline-block;background:var(--lime);color:var(--forest);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+</style></head><body>
+<header>
+  <h1>CareerOS AI — QA evidence</h1>
+  <p class="note"><strong>Fixture notice:</strong> authenticated screens (labelled <em>[fixture]</em>) are rendered with a mocked API and an injected session. They verify <strong>layout / UI states only</strong> — not real authentication, MongoDB persistence, or live AI. Public pages are tested against the real production build with no mocks.</p>
+  <p class="note"><span class="pill">53/62 tests passed</span></p>
+</header>
+<main>
+  <h2>Tour videos</h2><p><strong>tour-desktop.webm</strong><br><video controls src="video/tour-desktop.webm"></video></p><p><strong>tour-mobile.webm</strong><br><video controls src="video/tour-mobile.webm"></video></p>
+
+  <h2>Screens — public (real build, no mocks)</h2>
+  <div class="grid">
+  <figure>
+    <a href="screens/about__desktop.png" target="_blank"><img loading="lazy" src="screens/about__desktop.png" alt="about__desktop.png"></a>
+    <figcaption>about__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/about__mobile.png" target="_blank"><img loading="lazy" src="screens/about__mobile.png" alt="about__mobile.png"></a>
+    <figcaption>about__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/home__desktop.png" target="_blank"><img loading="lazy" src="screens/home__desktop.png" alt="home__desktop.png"></a>
+    <figcaption>home__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/home__mobile.png" target="_blank"><img loading="lazy" src="screens/home__mobile.png" alt="home__mobile.png"></a>
+    <figcaption>home__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/login__desktop.png" target="_blank"><img loading="lazy" src="screens/login__desktop.png" alt="login__desktop.png"></a>
+    <figcaption>login__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/login__mobile.png" target="_blank"><img loading="lazy" src="screens/login__mobile.png" alt="login__mobile.png"></a>
+    <figcaption>login__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/matcher__desktop.png" target="_blank"><img loading="lazy" src="screens/matcher__desktop.png" alt="matcher__desktop.png"></a>
+    <figcaption>matcher__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/matcher__mobile.png" target="_blank"><img loading="lazy" src="screens/matcher__mobile.png" alt="matcher__mobile.png"></a>
+    <figcaption>matcher__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/notfound__desktop.png" target="_blank"><img loading="lazy" src="screens/notfound__desktop.png" alt="notfound__desktop.png"></a>
+    <figcaption>notfound__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/notfound__mobile.png" target="_blank"><img loading="lazy" src="screens/notfound__mobile.png" alt="notfound__mobile.png"></a>
+    <figcaption>notfound__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/signup__desktop.png" target="_blank"><img loading="lazy" src="screens/signup__desktop.png" alt="signup__desktop.png"></a>
+    <figcaption>signup__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/signup__mobile.png" target="_blank"><img loading="lazy" src="screens/signup__mobile.png" alt="signup__mobile.png"></a>
+    <figcaption>signup__mobile</figcaption>
+  </figure></div>
+
+  <h2>Screens — workspace &amp; states (fixture-backed)</h2>
+  <div class="grid">
+  <figure>
+    <a href="screens/admin__desktop.png" target="_blank"><img loading="lazy" src="screens/admin__desktop.png" alt="admin__desktop.png"></a>
+    <figcaption>admin__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/admin__mobile.png" target="_blank"><img loading="lazy" src="screens/admin__mobile.png" alt="admin__mobile.png"></a>
+    <figcaption>admin__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/applications__desktop.png" target="_blank"><img loading="lazy" src="screens/applications__desktop.png" alt="applications__desktop.png"></a>
+    <figcaption>applications__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/applications__mobile.png" target="_blank"><img loading="lazy" src="screens/applications__mobile.png" alt="applications__mobile.png"></a>
+    <figcaption>applications__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/applications_add-drawer__fixture.png" target="_blank"><img loading="lazy" src="screens/applications_add-drawer__fixture.png" alt="applications_add-drawer__fixture.png"></a>
+    <figcaption>applications_add-drawer__fixture</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/applications_failed-save__fixture.png" target="_blank"><img loading="lazy" src="screens/applications_failed-save__fixture.png" alt="applications_failed-save__fixture.png"></a>
+    <figcaption>applications_failed-save__fixture</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/career-dna__desktop.png" target="_blank"><img loading="lazy" src="screens/career-dna__desktop.png" alt="career-dna__desktop.png"></a>
+    <figcaption>career-dna__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/career-dna__mobile.png" target="_blank"><img loading="lazy" src="screens/career-dna__mobile.png" alt="career-dna__mobile.png"></a>
+    <figcaption>career-dna__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/career-intelligence__desktop.png" target="_blank"><img loading="lazy" src="screens/career-intelligence__desktop.png" alt="career-intelligence__desktop.png"></a>
+    <figcaption>career-intelligence__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/career-intelligence__mobile.png" target="_blank"><img loading="lazy" src="screens/career-intelligence__mobile.png" alt="career-intelligence__mobile.png"></a>
+    <figcaption>career-intelligence__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/career-vault__desktop.png" target="_blank"><img loading="lazy" src="screens/career-vault__desktop.png" alt="career-vault__desktop.png"></a>
+    <figcaption>career-vault__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/career-vault__mobile.png" target="_blank"><img loading="lazy" src="screens/career-vault__mobile.png" alt="career-vault__mobile.png"></a>
+    <figcaption>career-vault__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/content-library__desktop.png" target="_blank"><img loading="lazy" src="screens/content-library__desktop.png" alt="content-library__desktop.png"></a>
+    <figcaption>content-library__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/content-library__mobile.png" target="_blank"><img loading="lazy" src="screens/content-library__mobile.png" alt="content-library__mobile.png"></a>
+    <figcaption>content-library__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/dashboard__desktop.png" target="_blank"><img loading="lazy" src="screens/dashboard__desktop.png" alt="dashboard__desktop.png"></a>
+    <figcaption>dashboard__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/dashboard__mobile.png" target="_blank"><img loading="lazy" src="screens/dashboard__mobile.png" alt="dashboard__mobile.png"></a>
+    <figcaption>dashboard__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/dashboard_failed__fixture.png" target="_blank"><img loading="lazy" src="screens/dashboard_failed__fixture.png" alt="dashboard_failed__fixture.png"></a>
+    <figcaption>dashboard_failed__fixture</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/dashboard_loaded__fixture.png" target="_blank"><img loading="lazy" src="screens/dashboard_loaded__fixture.png" alt="dashboard_loaded__fixture.png"></a>
+    <figcaption>dashboard_loaded__fixture</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/dashboard_zero-empty__fixture.png" target="_blank"><img loading="lazy" src="screens/dashboard_zero-empty__fixture.png" alt="dashboard_zero-empty__fixture.png"></a>
+    <figcaption>dashboard_zero-empty__fixture</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/generator__desktop.png" target="_blank"><img loading="lazy" src="screens/generator__desktop.png" alt="generator__desktop.png"></a>
+    <figcaption>generator__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/generator__mobile.png" target="_blank"><img loading="lazy" src="screens/generator__mobile.png" alt="generator__mobile.png"></a>
+    <figcaption>generator__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/home_1024x768__extra.png" target="_blank"><img loading="lazy" src="screens/home_1024x768__extra.png" alt="home_1024x768__extra.png"></a>
+    <figcaption>home_1024x768__extra</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/home_1440x600__extra.png" target="_blank"><img loading="lazy" src="screens/home_1440x600__extra.png" alt="home_1440x600__extra.png"></a>
+    <figcaption>home_1440x600__extra</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/home_360x800__extra.png" target="_blank"><img loading="lazy" src="screens/home_360x800__extra.png" alt="home_360x800__extra.png"></a>
+    <figcaption>home_360x800__extra</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/home_768x1024__extra.png" target="_blank"><img loading="lazy" src="screens/home_768x1024__extra.png" alt="home_768x1024__extra.png"></a>
+    <figcaption>home_768x1024__extra</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/home_reduced-motion__desktop.png" target="_blank"><img loading="lazy" src="screens/home_reduced-motion__desktop.png" alt="home_reduced-motion__desktop.png"></a>
+    <figcaption>home_reduced-motion__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/interview-history__desktop.png" target="_blank"><img loading="lazy" src="screens/interview-history__desktop.png" alt="interview-history__desktop.png"></a>
+    <figcaption>interview-history__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/interview-history__mobile.png" target="_blank"><img loading="lazy" src="screens/interview-history__mobile.png" alt="interview-history__mobile.png"></a>
+    <figcaption>interview-history__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/interview-room__desktop.png" target="_blank"><img loading="lazy" src="screens/interview-room__desktop.png" alt="interview-room__desktop.png"></a>
+    <figcaption>interview-room__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/interview-room__mobile.png" target="_blank"><img loading="lazy" src="screens/interview-room__mobile.png" alt="interview-room__mobile.png"></a>
+    <figcaption>interview-room__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/job-analyzer__desktop.png" target="_blank"><img loading="lazy" src="screens/job-analyzer__desktop.png" alt="job-analyzer__desktop.png"></a>
+    <figcaption>job-analyzer__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/job-analyzer__mobile.png" target="_blank"><img loading="lazy" src="screens/job-analyzer__mobile.png" alt="job-analyzer__mobile.png"></a>
+    <figcaption>job-analyzer__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/mobile_drawer-open__fixture.png" target="_blank"><img loading="lazy" src="screens/mobile_drawer-open__fixture.png" alt="mobile_drawer-open__fixture.png"></a>
+    <figcaption>mobile_drawer-open__fixture</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/profile__desktop.png" target="_blank"><img loading="lazy" src="screens/profile__desktop.png" alt="profile__desktop.png"></a>
+    <figcaption>profile__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/profile__mobile.png" target="_blank"><img loading="lazy" src="screens/profile__mobile.png" alt="profile__mobile.png"></a>
+    <figcaption>profile__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/resume-builder__desktop.png" target="_blank"><img loading="lazy" src="screens/resume-builder__desktop.png" alt="resume-builder__desktop.png"></a>
+    <figcaption>resume-builder__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/resume-builder__mobile.png" target="_blank"><img loading="lazy" src="screens/resume-builder__mobile.png" alt="resume-builder__mobile.png"></a>
+    <figcaption>resume-builder__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/roadmap__desktop.png" target="_blank"><img loading="lazy" src="screens/roadmap__desktop.png" alt="roadmap__desktop.png"></a>
+    <figcaption>roadmap__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/roadmap__mobile.png" target="_blank"><img loading="lazy" src="screens/roadmap__mobile.png" alt="roadmap__mobile.png"></a>
+    <figcaption>roadmap__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/voice-interview-history__desktop.png" target="_blank"><img loading="lazy" src="screens/voice-interview-history__desktop.png" alt="voice-interview-history__desktop.png"></a>
+    <figcaption>voice-interview-history__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/voice-interview-history__mobile.png" target="_blank"><img loading="lazy" src="screens/voice-interview-history__mobile.png" alt="voice-interview-history__mobile.png"></a>
+    <figcaption>voice-interview-history__mobile</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/voice-interview__desktop.png" target="_blank"><img loading="lazy" src="screens/voice-interview__desktop.png" alt="voice-interview__desktop.png"></a>
+    <figcaption>voice-interview__desktop</figcaption>
+  </figure>
+  <figure>
+    <a href="screens/voice-interview__mobile.png" target="_blank"><img loading="lazy" src="screens/voice-interview__mobile.png" alt="voice-interview__mobile.png"></a>
+    <figcaption>voice-interview__mobile</figcaption>
+  </figure></div>
+
+  <h2>Test results</h2><table><thead><tr><th>Test</th><th>Project</th><th>Status</th></tr></thead><tbody>
+    <tr><td>stacked-card CTAs stay visible and clickable when focused</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>reduced motion: hero paused, no overflow</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>home: navigate away and back keeps the hero</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>home extra widths: no horizontal overflow (360 / 768 / 1024 / 1440x600)</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] dashboard states: loaded / genuine-zero / empty / failed</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>stacked-card CTAs stay visible and clickable when focused</td><td>mobile</td><td class="fail">skipped</td></tr><tr><td>reduced motion: hero paused, no overflow</td><td>mobile</td><td class="fail">skipped</td></tr><tr><td>home: navigate away and back keeps the hero</td><td>mobile</td><td class="fail">skipped</td></tr><tr><td>home extra widths: no horizontal overflow (360 / 768 / 1024 / 1440x600)</td><td>mobile</td><td class="fail">skipped</td></tr><tr><td>[fixture] dashboard states: loaded / genuine-zero / empty / failed</td><td>mobile</td><td class="fail">skipped</td></tr><tr><td>[fixture] mobile drawer: opens, contains focus, Escape closes and restores focus</td><td>desktop</td><td class="fail">skipped</td></tr><tr><td>[fixture] mobile drawer: opens, contains focus, Escape closes and restores focus</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] add drawer opens; a failed save shows an error</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] add drawer opens; a failed save shows an error</td><td>mobile</td><td class="fail">skipped</td></tr><tr><td>screenshot home</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>screenshot login</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>screenshot signup</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>screenshot about</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>screenshot matcher</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>screenshot notfound</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot dashboard</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot profile</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot career-intelligence</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot career-dna</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot career-vault</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot resume-builder</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot generator</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot content-library</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot job-analyzer</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot applications</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot interview-room</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot voice-interview</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot interview-history</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot voice-interview-history</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot roadmap</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot admin</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>screenshot home</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>screenshot login</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>screenshot signup</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>screenshot about</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>screenshot matcher</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>screenshot notfound</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot dashboard</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot profile</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot career-intelligence</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot career-dna</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot career-vault</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot resume-builder</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot generator</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot content-library</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot job-analyzer</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot applications</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot interview-room</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot voice-interview</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot interview-history</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot voice-interview-history</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot roadmap</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>[fixture] screenshot admin</td><td>mobile</td><td class="pass">passed</td></tr><tr><td>desktop: hero + logo morph, card stack + release, reverse scroll</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>[fixture] mobile: navigation drawer</td><td>desktop</td><td class="pass">passed</td></tr><tr><td>desktop: hero + logo morph, card stack + release, reverse scroll</td><td>mobile</td><td class="fail">skipped</td></tr><tr><td>[fixture] mobile: navigation drawer</td><td>mobile</td><td class="fail">skipped</td></tr>
+  </tbody></table>
+</main></body></html>
