@@ -1,3 +1,4 @@
+import useDialogFocus from '../hooks/useDialogFocus.js';
 import { useEffect, useMemo, useState } from 'react';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
@@ -256,6 +257,8 @@ export default function Applications() {
   // Presentational-only: controls visibility of the Add/Edit form drawer.
   // No API, data, or business logic depends on this flag.
   const [formOpen, setFormOpen] = useState(false);
+  const formDialogRef = useDialogFocus(formOpen);
+  const detailDialogRef = useDialogFocus(Boolean(selected) && !formOpen);
 
   const set = (e) => {
     const { name, value } = e.target;
@@ -328,6 +331,7 @@ export default function Applications() {
       if (editingId) await applicationsApi.update(editingId, payload);
       else await applicationsApi.create(payload);
       resetForm();
+      setFormOpen(false);
       await load();
     } catch (err) {
       setError(err.message || 'Unable to save application.');
@@ -556,6 +560,8 @@ export default function Applications() {
           <aside
             role="dialog"
             aria-modal="true"
+            ref={formDialogRef}
+            tabIndex={-1}
             aria-label={editingId ? 'Edit application' : 'Add application'}
             className="w-full sm:max-w-xl bg-white h-full shadow-card-hover overflow-y-auto overflow-x-hidden"
             onMouseDown={(event) => event.stopPropagation()}
@@ -582,6 +588,7 @@ export default function Applications() {
               </div>
 
               <form onSubmit={save} className="space-y-5">
+                {error && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
                 <section className="space-y-3">
                   <h3 className="text-xs font-bold uppercase tracking-wide text-sage-600">Basics</h3>
                   <div>
@@ -690,6 +697,8 @@ export default function Applications() {
           <aside
             role="dialog"
             aria-modal="true"
+            ref={detailDialogRef}
+            tabIndex={-1}
             aria-label={`Application intelligence for ${selected.companyName}`}
             className="w-full sm:max-w-2xl lg:max-w-3xl bg-white h-full shadow-card-hover overflow-y-auto overflow-x-hidden"
             onMouseDown={(event) => event.stopPropagation()}

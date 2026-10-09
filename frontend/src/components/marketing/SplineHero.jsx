@@ -1,4 +1,4 @@
-import { Component, Suspense, lazy, useEffect, useState } from 'react';
+import { Component, Suspense, lazy, useEffect, useRef, useState } from 'react';
 
 /**
  * SplineHero — optional 3D hero scene with a production-quality fallback.
@@ -42,27 +42,52 @@ class SceneBoundary extends Component {
 }
 
 export default function SplineHero({ fallback }) {
+  const host = useRef(null);
   const [canRender3D, setCanRender3D] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!SCENE_URL) return;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const roomy = window.matchMedia('(min-width: 768px)').matches;
-    const okConnection = !navigator.connection?.saveData;
-    if (!reduce && roomy && okConnection) setCanRender3D(true);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const roomy = window.matchMedia('(min-width: 768px)');
+    const update = () => setCanRender3D(!reduce.matches && roomy.matches && !navigator.connection?.saveData);
+    update();
+    reduce.addEventListener('change', update);
+    roomy.addEventListener('change', update);
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
+    if (host.current) observer.observe(host.current);
+    return () => {
+      observer.disconnect();
+      reduce.removeEventListener('change', update);
+      roomy.removeEventListener('change', update);
+    };
   }, []);
 
-  // No scene configured, constrained device, or reduced motion → static art.
-  if (!SCENE_URL || !canRender3D || !Spline) return fallback;
+  const active = Boolean(SCENE_URL && Spline && canRender3D && visible && !failed);
+  useEffect(() => {
+    setLoaded(false);
+    if (!active) return;
+  }, [active]);
+  useEffect(() => {
+    if (!active || loaded) return;
+    const timer = setTimeout(() => setFailed(true), 20000);
+    return () => clearTimeout(timer);
+  }, [active, loaded]);
 
   return (
-    <SceneBoundary fallback={fallback}>
-      <Suspense fallback={fallback}>
-        {/* pointer-events-none: decorative, never blocks scroll or CTAs. */}
-        <div className="pointer-events-none h-full w-full" aria-hidden="true">
-          <Spline scene={SCENE_URL} style={{ width: '100%', height: '100%' }} />
-        </div>
-      </Suspense>
-    </SceneBoundary>
+    <div ref={host} className="relative h-full w-full">
+      {(!active || !loaded) && fallback}
+      {active && (
+        <SceneBoundary fallback={fallback}>
+          <Suspense fallback={null}>
+            <div className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" style={{ visibility: loaded ? 'visible' : 'hidden' }}>
+              <Spline scene={SCENE_URL} onLoad={() => setLoaded(true)} onError={() => setFailed(true)} style={{ width: '100%', height: '100%' }} />
+            </div>
+          </Suspense>
+        </SceneBoundary>
+      )}
+    </div>
   );
 }

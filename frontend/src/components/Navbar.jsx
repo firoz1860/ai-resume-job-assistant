@@ -1,3 +1,4 @@
+import useDialogFocus from '../hooks/useDialogFocus.js';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -69,6 +70,7 @@ export default function Navbar() {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
+  const drawerRef = useDialogFocus(drawerOpen);
 
   const isAuthRoute = pathname === '/login' || pathname === '/signup';
   const isAppRoute = ALL_APP_ITEMS.some((i) => isActive(pathname, i.to));
@@ -141,6 +143,12 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
+        <nav aria-label="Mobile navigation" className="flex flex-wrap items-center justify-center gap-1 border-t border-border px-3 py-2 md:hidden">
+          <a href={anchor('product')} className="rounded-lg px-3 py-2 text-sm">Product</a>
+          <a href={anchor('how-it-works')} className="rounded-lg px-3 py-2 text-sm">How it works</a>
+          <Link to="/about" className="rounded-lg px-3 py-2 text-sm">About</Link>
+          {!isAuthenticated && <Link to="/login" className="rounded-lg px-3 py-2 text-sm sm:hidden">Sign in</Link>}
+        </nav>
       </header>
     );
   }
@@ -256,7 +264,7 @@ export default function Navbar() {
 
       {/* ── Mobile drawer ───────────────────────────────────── */}
       {drawerOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Navigation">
+        <div className="fixed inset-0 z-50 lg:hidden" ref={drawerRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label="Navigation">
           <div className="absolute inset-0 bg-ink/40" onClick={() => setDrawerOpen(false)} />
           <div className="absolute inset-y-0 left-0 w-72 max-w-[85%] overflow-y-auto bg-ivory shadow-lift">
             <button

@@ -69,7 +69,9 @@ export default function ScrollStack({ items, topOffset = 96 }) {
     };
 
     const refresh = () => {
-      const want = mqDesktop.matches && !mqReduce.matches;
+      const fits = cardRefs.current.filter(Boolean).every((card, i) =>
+        card.getBoundingClientRect().height + topOffset + i * 14 + 24 <= window.innerHeight);
+      const want = mqDesktop.matches && !mqReduce.matches && fits;
       if (want === on) {
         if (on) render();
         return;
@@ -87,11 +89,14 @@ export default function ScrollStack({ items, topOffset = 96 }) {
       }
     };
 
+    const observer = new ResizeObserver(refresh);
+    cardRefs.current.filter(Boolean).forEach(card => observer.observe(card));
     refresh();
     window.addEventListener('resize', refresh);
     mqDesktop.addEventListener('change', refresh);
     mqReduce.addEventListener('change', refresh);
     return () => {
+      observer.disconnect();
       window.removeEventListener('resize', refresh);
       window.removeEventListener('scroll', onScroll);
       mqDesktop.removeEventListener('change', refresh);
