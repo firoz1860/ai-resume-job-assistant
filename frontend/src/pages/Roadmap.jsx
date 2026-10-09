@@ -76,7 +76,7 @@ export default function Roadmap() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="badge bg-lime text-forest-800">
                       <Icon name="sparkle" className="h-3.5 w-3.5" />
-                      AI-generated plan
+                      Generated plan
                     </span>
                     <span className="text-sm text-sage-600">Review and adapt it to your own pace.</span>
                   </div>

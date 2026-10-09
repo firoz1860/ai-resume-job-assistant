@@ -89,6 +89,9 @@ export default function VoiceInterview() {
       return;
     }
     const data = await voice.submitAnswer(transcript, 0);
+    // submitAnswer returns null on any API failure (and sets voice.error);
+    // bail out so we don't dereference a null result and white-screen.
+    if (!data) return;
     recognition.resetTranscript();
     const spokenFeedback = data.shortSpokenFeedback || `Your score is ${data.score} out of 10. Here is the next question.`;
     setSubtitle(spokenFeedback);
@@ -103,6 +106,7 @@ export default function VoiceInterview() {
   const skip = async () => {
     recognition.setTranscript('I would like to skip this question.');
     const data = await voice.submitAnswer('I would like to skip this question.', 0);
+    if (!data) return;
     recognition.resetTranscript();
     const spokenFeedback = data.shortSpokenFeedback || `Skipping noted. Here is the next question.`;
     setSubtitle(spokenFeedback);

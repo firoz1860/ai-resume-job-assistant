@@ -46,6 +46,7 @@ export default function InterviewRoom() {
   const [report, setReport] = useState(null);
   const [timeLeft, setTimeLeft] = useState(600);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const endedRef = useRef(false);
 
   const set = (e) => setSetup((s) => ({ ...s, [e.target.name]: e.target.value }));
@@ -58,6 +59,8 @@ export default function InterviewRoom() {
       const data = await interviewApi.end({ sessionId: session.sessionId });
       setReport(data.report);
       setSession(null);
+    } catch (err) {
+      setError(err.message || 'Could not end the interview. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -83,11 +86,14 @@ export default function InterviewRoom() {
     setLoading(true);
     setFeedback(null);
     setReport(null);
+    setError('');
     endedRef.current = false;
     try {
       const data = await interviewApi.start(setup);
       setSession({ ...data, question: data.firstQuestion });
       setTimeLeft(data.timeRemaining || setup.durationMinutes * 60);
+    } catch (err) {
+      setError(err.message || 'Could not start the interview. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -95,12 +101,15 @@ export default function InterviewRoom() {
 
   const submitAnswer = async () => {
     setLoading(true);
+    setError('');
     try {
       const data = await interviewApi.answer({ sessionId: session.sessionId, answer });
       setFeedback(data);
       setSession((s) => ({ ...s, question: data.nextQuestion }));
       setTimeLeft(data.timeRemaining);
       setAnswer('');
+    } catch (err) {
+      setError(err.message || 'Could not submit your answer. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -124,6 +133,8 @@ export default function InterviewRoom() {
               </div>
             )}
           </div>
+
+          {error && <div role="alert" className="mb-6 rounded-card border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>}
 
           {report ? <Report report={report} /> : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">

@@ -12,7 +12,7 @@ function SourceTag({ kind }) {
     return (
       <span className="badge bg-lime text-forest-800 shrink-0">
         <Icon name="sparkle" className="h-3.5 w-3.5" />
-        AI suggestion
+        Generated
       </span>
     );
   }
@@ -181,28 +181,28 @@ export default function CareerIntelligence() {
               <div>
                 <SectionHeading icon="chart" title="Overview" subtitle="Headline, calculated readiness signals across your workspace." />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-                  {data.reportCards.map((card) => (
+                  {(data.reportCards || []).map((card) => (
                     <ScoreBar key={card.label} label={card.label} score={card.score} note={card.note} />
                   ))}
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-6">
                   <Panel title="Career Vault" subtitle="Your saved career memory used by the intelligence layer." tag="calculated">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
-                      {Object.entries(vault.assets).map(([key, value]) => (
+                      {Object.entries(vault?.assets || {}).map(([key, value]) => (
                         <div key={key} className="bg-surface border border-border rounded-card p-3">
                           <p className="text-xs text-sage-600 capitalize">{key.replace(/([A-Z])/g, ' $1')}</p>
                           <p className="text-2xl font-bold text-ink font-display">{value}</p>
                         </div>
                       ))}
                     </div>
-                    <p className="text-sm text-sage-600 mb-3">Target role: <span className="font-semibold text-ink">{vault.targetRole}</span></p>
-                    <Chips items={vault.savedSkills} />
+                    <p className="text-sm text-sage-600 mb-3">Target role: <span className="font-semibold text-ink">{vault?.targetRole}</span></p>
+                    <Chips items={vault?.savedSkills || []} />
                   </Panel>
 
                   <Panel title="Application Readiness" subtitle="Checks before applying to serious roles." tag="calculated">
-                    <ScoreBar label="Readiness" score={data.applicationReadiness.score} />
+                    <ScoreBar label="Readiness" score={data.applicationReadiness?.score} />
                     <div className="mt-4 space-y-2">
-                      {data.applicationReadiness.checks.map((check) => (
+                      {(data.applicationReadiness?.checks || []).map((check) => (
                         <div key={check.label} className="flex items-center justify-between gap-3 text-sm border border-border rounded-card p-2.5 bg-surface">
                           <span className="min-w-0">{check.label}</span>
                           <span className={`inline-flex items-center gap-1 font-semibold shrink-0 ${check.done ? 'text-forest-700' : 'text-amber-600'}`}>
@@ -276,15 +276,15 @@ export default function CareerIntelligence() {
                 <SectionHeading icon="target" title="Resume & Skills Evidence" subtitle="Turn your profile and job analysis into stronger proof." />
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <Panel title="ATS Resume Tailor" subtitle="Based on your latest job analysis." tag="ai">
-                    <ScoreBar label="Latest match" score={data.atsTailor.latestMatchScore} />
+                    <ScoreBar label="Latest match" score={data.atsTailor?.latestMatchScore} />
                     <p className="text-xs font-semibold text-sage-600 uppercase tracking-wide mt-4 mb-2">Keywords to add</p>
-                    <Chips items={data.atsTailor.keywordsToAdd} />
-                    <p className="text-sm text-ink bg-surface border border-border rounded-card p-3 mt-4">{data.atsTailor.summarySuggestion}</p>
+                    <Chips items={data.atsTailor?.keywordsToAdd || []} />
+                    <p className="text-sm text-ink bg-surface border border-border rounded-card p-3 mt-4">{data.atsTailor?.summarySuggestion}</p>
                   </Panel>
 
                   <Panel title="Skill Gap Projects" subtitle="Turn missing skills into proof projects." tag="ai">
                     <div className="space-y-3">
-                      {data.skillGapProjects.length ? data.skillGapProjects.map((item) => (
+                      {data.skillGapProjects?.length ? data.skillGapProjects.map((item) => (
                         <div key={item.skill} className="bg-surface border border-border rounded-card p-3">
                           <p className="font-semibold text-ink text-sm">{item.skill}</p>
                           <p className="text-sm text-sage-600 mt-1">{item.project}</p>
@@ -295,8 +295,8 @@ export default function CareerIntelligence() {
                   </Panel>
 
                   <Panel title="Portfolio Analyzer" subtitle="Keywords and improvements for your projects." tag="ai">
-                    <Chips items={data.portfolioAnalyzer.projectKeywords} />
-                    <div className="mt-4"><List items={data.portfolioAnalyzer.improvements} /></div>
+                    <Chips items={data.portfolioAnalyzer?.projectKeywords || []} />
+                    <div className="mt-4"><List items={data.portfolioAnalyzer?.improvements || []} /></div>
                   </Panel>
                 </div>
               </div>
@@ -306,7 +306,7 @@ export default function CareerIntelligence() {
                 <SectionHeading icon="mic" title="Interview Improvement" subtitle="Practice signals from your saved interviews." />
                 <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-6">
                   <Panel title="Voice Speech Analytics" subtitle="Computed from saved interview messages." tag="calculated">
-                    {Object.entries(data.speechAnalytics).map(([key, value]) => (
+                    {Object.entries(data.speechAnalytics || {}).map(([key, value]) => (
                       <div key={key} className="flex justify-between gap-3 text-sm border-b border-border py-2 last:border-0">
                         <span className="text-sage-600 capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
                         <span className="font-semibold text-ink">{String(value)}</span>
@@ -316,7 +316,7 @@ export default function CareerIntelligence() {
 
                   <Panel title="Interview Moment Replay" subtitle="Review where points were gained or lost." tag="ai">
                     <div className="space-y-3">
-                      {data.interviewReplay.length ? data.interviewReplay.map((item, index) => (
+                      {data.interviewReplay?.length ? data.interviewReplay.map((item, index) => (
                         <div key={`${item.question}-${index}`} className="bg-surface border border-border rounded-card p-3">
                           <div className="flex items-start justify-between gap-3">
                             <p className="text-sm font-semibold text-ink min-w-0">{item.question}</p>
@@ -333,7 +333,7 @@ export default function CareerIntelligence() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                   <Panel title="Behavioral Story Library" subtitle="Prompts to build your STAR stories." tag="ai">
                     <div className="space-y-3">
-                      {data.behavioralStories.map((story) => (
+                      {(data.behavioralStories || []).map((story) => (
                         <div key={story.type} className="bg-surface border border-border rounded-card p-3">
                           <p className="text-sm font-semibold text-ink">{story.type}</p>
                           <p className="text-sm text-sage-600 mt-1">{story.prompt}</p>
@@ -344,7 +344,7 @@ export default function CareerIntelligence() {
 
                   <Panel title="Weakness Practice Mode" subtitle="Targeted drills for weak spots." tag="ai">
                     <div className="space-y-3">
-                      {data.weaknessPractice.map((item) => (
+                      {(data.weaknessPractice || []).map((item) => (
                         <div key={item.weakness} className="bg-surface border border-border rounded-card p-3">
                           <p className="text-sm font-semibold text-ink">{item.weakness}</p>
                           <p className="text-sm text-sage-600 mt-1">{item.drill}</p>
@@ -360,15 +360,15 @@ export default function CareerIntelligence() {
                 <SectionHeading icon="rocket" title="Job Search & Outreach" subtitle="Plans and scripts to move applications forward." />
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <Panel title="Job Search Agent" subtitle="A daily plan toward your target role." tag="ai">
-                    <p className="text-sm text-sage-600 mb-3">Target: <span className="font-semibold text-ink">{data.jobSearchAgent.targetRole}</span></p>
-                    <Chips items={data.jobSearchAgent.searchQueries} />
-                    <div className="mt-4"><List items={data.jobSearchAgent.dailyPlan} /></div>
+                    <p className="text-sm text-sage-600 mb-3">Target: <span className="font-semibold text-ink">{data.jobSearchAgent?.targetRole}</span></p>
+                    <Chips items={data.jobSearchAgent?.searchQueries || []} />
+                    <div className="mt-4"><List items={data.jobSearchAgent?.dailyPlan || []} /></div>
                   </Panel>
 
                   <Panel title="Referral Finder" subtitle="Ways to reach insiders at your targets." tag="ai">
-                    <List items={data.referralFinder.searchQueries} />
-                    <p className="text-sm text-ink bg-surface border border-border rounded-card p-3 mt-3">{data.referralFinder.message}</p>
-                    {data.referralFinder.contacts?.length ? (
+                    <List items={data.referralFinder?.searchQueries || []} />
+                    <p className="text-sm text-ink bg-surface border border-border rounded-card p-3 mt-3">{data.referralFinder?.message}</p>
+                    {data.referralFinder?.contacts?.length ? (
                       <div className="mt-3 space-y-2">
                         {data.referralFinder.contacts.map((contact) => (
                           <div key={`${contact.companyName}-${contact.name}`} className="text-xs bg-surface border border-border rounded-card p-2 min-w-0">
@@ -381,15 +381,15 @@ export default function CareerIntelligence() {
                   </Panel>
 
                   <Panel title="Salary Coach" subtitle="Scripts and a negotiation checklist." tag="ai">
-                    <List items={data.salaryCoach.scripts} />
-                    <div className="mt-3"><Chips items={data.salaryCoach.negotiationChecklist} /></div>
+                    <List items={data.salaryCoach?.scripts || []} />
+                    <div className="mt-3"><Chips items={data.salaryCoach?.negotiationChecklist || []} /></div>
                   </Panel>
                 </div>
 
                 <div className="grid grid-cols-1 mt-6">
                   <Panel title="Company Prep" subtitle="Generated from dream company and latest application data." tag="ai">
-                    <p className="text-sm text-sage-600 mb-3">Company: <span className="font-semibold text-ink">{data.companyPrep.targetCompany}</span></p>
-                    <List items={data.companyPrep.prepTasks} />
+                    <p className="text-sm text-sage-600 mb-3">Company: <span className="font-semibold text-ink">{data.companyPrep?.targetCompany}</span></p>
+                    <List items={data.companyPrep?.prepTasks || []} />
                   </Panel>
                 </div>
               </div>
@@ -419,7 +419,7 @@ export default function CareerIntelligence() {
                 <SectionHeading icon="history" title="Career Timeline" subtitle="Recent career activity across the whole platform." />
                 <div className="card p-5 sm:p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {data.careerTimeline.length ? data.careerTimeline.map((event) => (
+                    {data.careerTimeline?.length ? data.careerTimeline.map((event) => (
                       <div key={`${event.type}-${event.title}-${event.date}`} className="bg-surface border border-border rounded-card p-3">
                         <p className="text-xs font-bold text-forest-700 uppercase tracking-wide">{event.type}</p>
                         <p className="text-sm font-semibold text-ink mt-1">{event.title}</p>
