@@ -1,120 +1,83 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
+import Wordmark from './marketing/Wordmark.jsx';
 
-const navLinks = [
-  { label: 'Home', to: '/' },
-  { label: 'Dashboard', to: '/dashboard' },
-  { label: 'Generator', to: '/generator' },
-  { label: 'Applications', to: '/applications' },
-  { label: 'Voice Interview', to: '/voice-interview' },
-  { label: 'Career Vault', to: '/career-vault' },
-  { label: 'Resume Builder', to: '/resume-builder' },
-  { label: 'About', to: '/about' },
+// Workspace routes get no marketing footer (focused screens).
+const APP_PREFIXES = [
+  '/dashboard', '/career-intelligence', '/career-vault', '/career-dna',
+  '/job-analyzer', '/generator', '/content-library', '/resume-builder',
+  '/matcher', '/interview-room', '/interview-history', '/voice-interview',
+  '/voice-interview-history', '/roadmap', '/applications', '/profile', '/admin',
 ];
 
-const toolLinks = [
-  { label: 'Career DNA', to: '/career-dna' },
-  { label: 'Job Analyzer', to: '/job-analyzer' },
-  { label: 'Intelligence', to: '/career-intelligence' },
-  { label: 'Interview Room', to: '/interview-room' },
-  { label: 'Roadmap', to: '/roadmap' },
-  { label: 'Profile', to: '/profile' },
-];
-
-const socials = [
-  { label: 'GitHub', href: 'https://github.com/firoz1860/ai-resume-job-assistant', path: 'M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z' },
-  { label: 'LinkedIn', href: '#', path: 'M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C21.4 8.65 22 11 22 14.1V21h-4v-6.1c0-1.45-.03-3.3-2-3.3-2 0-2.3 1.57-2.3 3.2V21h-4z' },
-  { label: 'Email', href: 'mailto:hello@careeros.ai', path: 'M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm0 3.2V18h18V8.2l-9 5.6z' },
-];
-
-function BrandMark({ className = 'w-9 h-9' }) {
-  return (
-    <div className={`${className} bg-white/10 rounded-lg flex items-center justify-center shrink-0`}>
-      <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
-        <path d="M5 7h10M5 11h10M5 15h6" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" />
-        <circle cx="18" cy="10" r="3" fill="#6D5CF0" />
-        <path d="M18 8.5v3M16.5 10h3" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
-    </div>
-  );
-}
+const GITHUB_URL = 'https://github.com/firoz1860/ai-resume-job-assistant';
 
 export default function Footer() {
+  const { pathname } = useLocation();
+  const { isAuthenticated } = useAuth();
+
+  const onAppRoute = APP_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+  if (isAuthenticated && onAppRoute) return null;
+
+  const anchor = (id) => (pathname === '/' ? `#${id}` : `/#${id}`);
+
   return (
-    <footer className="relative bg-navy-900 text-white mt-auto overflow-hidden">
-      <div className="h-1 w-full bg-brand-gradient" />
-      <div className="absolute inset-0 bg-dots opacity-20" />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-          {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2.5 mb-4">
-              <BrandMark />
-              <span className="font-display font-bold text-lg">CareerOS<span className="text-gradient-light">AI</span></span>
+    <footer className="mt-auto border-t border-border bg-ivory">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div>
+            <Link to="/" aria-label="CareerOS AI home">
+              <Wordmark size="nav" />
             </Link>
-            <p className="text-white/60 text-sm leading-relaxed max-w-xs mb-5">
-              Your AI career operating system. Tailor resumes, track applications, practice interviews, and improve job readiness from one workspace.
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-sage-600">
+              One workspace that connects your resume, job research, applications, and interview
+              practice—so you always know the next move.
             </p>
-            <div className="flex items-center gap-2">
-              {socials.map(({ label, href, path }) => (
+          </div>
+
+          <nav aria-label="Product">
+            <h4 className="text-sm font-semibold text-ink">Product</h4>
+            <ul className="mt-3 space-y-2.5 text-sm">
+              <li><a href={anchor('how-it-works')} className="text-sage-600 transition-colors hover:text-ink">How it works</a></li>
+              <li><a href={anchor('product')} className="text-sage-600 transition-colors hover:text-ink">Product walkthrough</a></li>
+              <li><a href={anchor('faq')} className="text-sage-600 transition-colors hover:text-ink">FAQ</a></li>
+              <li><Link to="/matcher" className="text-sage-600 transition-colors hover:text-ink">Job match analyzer</Link></li>
+            </ul>
+          </nav>
+
+          <nav aria-label="Get started">
+            <h4 className="text-sm font-semibold text-ink">Get started</h4>
+            <ul className="mt-3 space-y-2.5 text-sm">
+              <li><Link to="/signup" className="text-sage-600 transition-colors hover:text-ink">Create your workspace</Link></li>
+              <li><Link to="/login" className="text-sage-600 transition-colors hover:text-ink">Sign in</Link></li>
+              <li><Link to="/dashboard" className="text-sage-600 transition-colors hover:text-ink">Open dashboard</Link></li>
+            </ul>
+          </nav>
+
+          <nav aria-label="Company">
+            <h4 className="text-sm font-semibold text-ink">Company</h4>
+            <ul className="mt-3 space-y-2.5 text-sm">
+              <li><Link to="/about" className="text-sage-600 transition-colors hover:text-ink">About</Link></li>
+              <li>
                 <a
-                  key={label}
-                  href={href}
-                  target={href.startsWith('http') ? '_blank' : undefined}
-                  rel={href.startsWith('http') ? 'noreferrer' : undefined}
-                  aria-label={label}
-                  className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 grid place-items-center transition-colors"
+                  href={GITHUB_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sage-600 transition-colors hover:text-ink"
                 >
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-white/80"><path d={path} /></svg>
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                    <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z" />
+                  </svg>
+                  GitHub
                 </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <div>
-            <h4 className="font-semibold text-sm mb-4 text-white/80 uppercase tracking-wide">Navigation</h4>
-            <ul className="space-y-2.5">
-              {navLinks.map(({ label, to }) => (
-                <li key={to}>
-                  <Link to={to} className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5 group">
-                    <span className="w-1 h-1 rounded-full bg-white/20 group-hover:bg-cyan-400 transition-colors" />
-                    {label}
-                  </Link>
-                </li>
-              ))}
+              </li>
             </ul>
-          </div>
-
-          {/* Tools */}
-          <div>
-            <h4 className="font-semibold text-sm mb-4 text-white/80 uppercase tracking-wide">Tools</h4>
-            <ul className="space-y-2.5">
-              {toolLinks.map(({ label, to }) => (
-                <li key={to}>
-                  <Link to={to} className="text-white/60 hover:text-white text-sm transition-colors inline-flex items-center gap-1.5 group">
-                    <span className="w-1 h-1 rounded-full bg-white/20 group-hover:bg-cyan-400 transition-colors" />
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Built with */}
-          <div>
-            <h4 className="font-semibold text-sm mb-4 text-white/80 uppercase tracking-wide">Built With</h4>
-            <ul className="space-y-2.5">
-              {['React + Vite', 'Tailwind CSS', 'Node.js + Express', 'MongoDB', 'Gemini API', 'JWT Auth'].map((tech) => (
-                <li key={tech} className="text-white/60 text-sm">{tech}</li>
-              ))}
-            </ul>
-          </div>
+          </nav>
         </div>
 
-        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-white/40 text-xs">
-          <span>© {new Date().getFullYear()} CareerOS AI — Built for serious job seekers.</span>
-          <span className="text-white/50">Profile → Generate → Apply → Practice → Improve.</span>
+        <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t border-border pt-6 text-xs text-sage-600 sm:flex-row sm:items-center">
+          <span>© {new Date().getFullYear()} CareerOS AI</span>
+          <span>Build profile → Analyze role → Prepare materials → Track → Practice.</span>
         </div>
       </div>
     </footer>
