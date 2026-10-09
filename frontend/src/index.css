@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── CareerOS design system ───────────────────────────────────────────────
+   Warm ivory canvas, white cards, forest-green primary action, soft-lime
+   accent used only behind dark text, hairline sage borders. Component class
+   names are unchanged from the previous theme so existing pages restyle
+   automatically; only the values are re-themed.                             */
+
 @layer base {
   *,
   *::before,
@@ -23,14 +29,12 @@
   }
 
   body {
-    @apply font-sans text-ink bg-surface antialiased;
-    background:
-      radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 32rem),
-      linear-gradient(180deg, #ffffff 0%, #F8FAFC 22rem);
+    @apply font-sans text-ink bg-ivory antialiased;
+    background-color: #F5F4EE;
   }
 
-  h1, h2, h3, .font-display {
-    font-feature-settings: 'ss01' on, 'cv01' on;
+  h1, h2, h3, h4, .font-display {
+    letter-spacing: -0.02em;
   }
 
   #root {
@@ -39,14 +43,23 @@
     flex-direction: column;
   }
 
-  /* Reserve space for mobile bottom nav — class set by Navbar based on auth state */
+  /* Reserve space for mobile bottom nav — class set by Navbar on auth state */
   body.has-bottom-nav main {
-    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
   }
-  /* Bottom tab bar hides at lg (1024px+), so remove the padding there */
   @media (min-width: 1024px) {
     body.has-bottom-nav main {
       padding-bottom: 0;
+    }
+  }
+
+  /* Reserve space for the fixed workspace sidebar at lg+ (set by Navbar) */
+  @media (min-width: 1024px) {
+    body.has-sidebar main {
+      padding-left: 16rem; /* 256px sidebar */
+    }
+    body.has-sidebar > footer {
+      padding-left: 16rem;
     }
   }
 
@@ -58,7 +71,6 @@
     height: auto;
   }
 
-  /* Prevent long words from overflowing containers */
   p, a, span, div, h1, h2, h3, h4, h5, h6,
   button, input, textarea, select, label, li {
     overflow-wrap: break-word;
@@ -66,32 +78,39 @@
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
+    background: #C9D1C6;
+    border-radius: 9999px;
+  }
+
+  :focus-visible {
+    outline: 2px solid #153D2B;
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: #D4ED8A;
+    color: #102F21;
   }
 }
 
 @layer components {
   /* ─── Buttons ─────────────────────────────────────────── */
-
-  /* Base button - does NOT force full width. Callers add w-full when needed. */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2
-           px-4 sm:px-5 py-2.5 min-h-[2.5rem]
-           bg-accent text-white font-semibold rounded-lg
-           hover:bg-blue-700 active:scale-95
+           px-5 py-2.5 min-h-[2.75rem]
+           bg-forest text-white font-semibold rounded-xl
+           hover:bg-forest-600 active:scale-[0.98]
            transition-all duration-150
-           shadow-sm shadow-blue-500/20
-           focus:outline-none focus:ring-2 focus:ring-accent/30
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-forest/40 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory
            disabled:opacity-60 disabled:cursor-not-allowed;
     white-space: normal;
-    word-break: break-word;
     line-height: 1.3;
     min-width: 0;
     max-width: 100%;
@@ -99,108 +118,106 @@
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2
-           px-4 sm:px-5 py-2.5 min-h-[2.5rem]
-           bg-white text-ink font-semibold rounded-lg
+           px-5 py-2.5 min-h-[2.75rem]
+           bg-white text-ink font-semibold rounded-xl
            border border-border
-           hover:bg-surface active:scale-95
-           transition-all duration-150 shadow-sm
-           focus:outline-none focus:ring-2 focus:ring-accent/20
+           hover:border-forest-300 hover:bg-forest-50 active:scale-[0.98]
+           transition-all duration-150
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-forest/30 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory
            disabled:opacity-60 disabled:cursor-not-allowed;
     white-space: normal;
-    word-break: break-word;
     line-height: 1.3;
     min-width: 0;
     max-width: 100%;
   }
 
-  /* Gradient CTA — premium primary for marketing surfaces */
-  .btn-gradient {
+  /* Lime emphasis button — dark text on soft lime, for secondary marketing CTAs */
+  .btn-lime {
     @apply inline-flex items-center justify-center gap-2
-           px-6 py-3 min-h-[2.75rem]
-           text-white font-semibold rounded-xl
-           bg-brand-gradient bg-[length:200%_200%]
-           transition-all duration-300 active:scale-95
-           shadow-glow hover:shadow-glow-violet
-           focus:outline-none focus:ring-2 focus:ring-white/40;
-    background-position: 0% 50%;
-  }
-  .btn-gradient:hover {
-    background-position: 100% 50%;
+           px-5 py-2.5 min-h-[2.75rem]
+           bg-lime text-forest-800 font-semibold rounded-xl
+           hover:bg-lime-400 active:scale-[0.98]
+           transition-all duration-150
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-forest/40 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory;
+    white-space: normal;
+    line-height: 1.3;
   }
 
-  /* ─── Cards ───────────────────────────────────────────── */
+  /* Legacy marketing CTA alias — now a solid forest button (no rainbow). */
+  .btn-gradient {
+    @apply inline-flex items-center justify-center gap-2
+           px-6 py-3 min-h-[2.875rem]
+           text-white font-semibold rounded-xl
+           bg-forest hover:bg-forest-600
+           transition-all duration-150 active:scale-[0.98]
+           shadow-glow
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-forest/40 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory;
+  }
+
+  /* ─── Cards / panels ──────────────────────────────────── */
   .card {
-    @apply bg-card rounded-xl border border-border;
-    box-shadow: 0 1px 2px rgb(15 23 42 / 0.05), 0 12px 32px rgb(15 23 42 / 0.04);
+    @apply bg-card rounded-card border border-border;
+    box-shadow: 0 1px 2px rgb(16 47 33 / 0.04), 0 1px 2px -1px rgb(16 47 33 / 0.03);
     min-width: 0;
     overflow: hidden;
   }
 
-  /* Glass panel for hero / overlays on dark backgrounds */
-  .glass {
-    background: linear-gradient(155deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05));
-    border: 1px solid rgba(255,255,255,0.14);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-  }
-
-  /* Gradient-border feature card */
-  .card-gradient {
-    position: relative;
-    @apply bg-card rounded-2xl border border-border;
-    box-shadow: 0 1px 2px rgb(15 23 42 / 0.05), 0 18px 44px -20px rgb(15 23 42 / 0.14);
-    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease;
+  /* Large marketing panel — bigger radius, softer lift */
+  .panel {
+    @apply bg-card rounded-panel border border-border;
+    box-shadow: 0 1px 2px rgb(16 47 33 / 0.04), 0 24px 60px -34px rgb(16 47 33 / 0.28);
     min-width: 0;
   }
-  .card-gradient::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(140deg, rgba(37,99,235,0.6), rgba(109,92,240,0.35), rgba(6,182,212,0.45));
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    pointer-events: none;
+
+  /* Glass panel for overlays on dark (forest) backgrounds */
+  .glass {
+    background: linear-gradient(155deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.16);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* Hover-lift feature card (replaces old gradient-border card) */
+  .card-gradient {
+    position: relative;
+    @apply bg-card rounded-panel border border-border;
+    box-shadow: 0 1px 2px rgb(16 47 33 / 0.04), 0 18px 44px -26px rgb(16 47 33 / 0.2);
+    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease, border-color 0.35s ease;
+    min-width: 0;
   }
   .card-gradient:hover {
     transform: translateY(-4px);
-    box-shadow: 0 24px 60px -22px rgb(37 99 235 / 0.32);
-  }
-  .card-gradient:hover::before {
-    opacity: 1;
+    border-color: #AFCBB8;
+    box-shadow: 0 28px 60px -30px rgb(16 47 33 / 0.3);
   }
 
   /* ─── Form elements ────────────────────────────────────── */
   .form-label {
-    @apply block text-sm font-medium text-ink mb-1.5;
+    @apply block text-sm font-semibold text-ink mb-1.5;
   }
 
   .form-input {
-    @apply w-full px-3.5 py-2.5 min-h-[2.75rem] rounded-lg
-           border border-border bg-white text-ink text-sm shadow-sm
+    @apply w-full px-3.5 py-2.5 min-h-[2.75rem] rounded-xl
+           border border-border bg-white text-ink text-sm
            placeholder:text-muted
-           focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-forest/30 focus:border-forest-300
            transition-colors duration-150;
     min-width: 0;
   }
 
   .form-select {
-    @apply w-full px-3.5 py-2.5 min-h-[2.75rem] rounded-lg
-           border border-border bg-white text-ink text-sm shadow-sm
-           focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
+    @apply w-full px-3.5 py-2.5 min-h-[2.75rem] rounded-xl
+           border border-border bg-white text-ink text-sm
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-forest/30 focus:border-forest-300
            transition-colors duration-150 cursor-pointer;
     min-width: 0;
   }
 
   .form-textarea {
-    @apply w-full px-3.5 py-2.5 rounded-lg
-           border border-border bg-white text-ink text-sm shadow-sm
+    @apply w-full px-3.5 py-2.5 rounded-xl
+           border border-border bg-white text-ink text-sm
            placeholder:text-muted
-           focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-forest/30 focus:border-forest-300
            transition-colors duration-150 resize-none;
     min-width: 0;
     min-height: 6.5rem;
@@ -216,15 +233,19 @@
     @apply mb-6 sm:mb-8;
   }
 
-  /* Small pill / eyebrow badge */
+  /* Small pill / eyebrow badge — hairline chip, not an all-caps label */
   .eyebrow-pill {
     @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full
-           text-xs font-semibold tracking-wide;
+           text-xs font-semibold bg-white border border-border text-sage-600;
+  }
+
+  /* Status / category badge */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold;
   }
 }
 
 @layer utilities {
-  /* Animations */
   .animate-fade-in {
     animation: fadeIn 0.3s ease-out both;
   }
@@ -232,55 +253,45 @@
     animation: slideUp 0.35s ease-out both;
   }
 
-  /* Gradient text */
+  /* "Gradient" text aliases — now a flat forest tone so existing markup
+     keeps working without a rainbow fill. */
   .text-gradient {
-    background: linear-gradient(120deg, #2563EB 0%, #6D5CF0 50%, #06B6D4 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #153D2B;
   }
   .text-gradient-light {
-    background: linear-gradient(120deg, #93C5FD 0%, #C4B5FD 50%, #67E8F9 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #D4ED8A;
   }
 
-  /* Aurora backdrop layer (position: absolute inside a relative parent) */
   .aurora-layer {
     background:
-      radial-gradient(38rem 30rem at 8% -10%, rgba(56,189,248,0.28), transparent 60%),
-      radial-gradient(34rem 30rem at 100% 0%, rgba(109,92,240,0.30), transparent 55%),
-      radial-gradient(40rem 34rem at 50% 118%, rgba(37,99,235,0.24), transparent 60%);
-    filter: blur(6px);
+      radial-gradient(38rem 30rem at 92% -10%, rgba(212,237,138,0.45), transparent 62%),
+      radial-gradient(34rem 30rem at 4% 4%, rgba(21,61,43,0.10), transparent 58%);
+    filter: blur(2px);
   }
 
-  /* Subtle dotted / grid texture for dark sections */
   .bg-dots {
-    background-image: radial-gradient(rgba(255,255,255,0.10) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
     background-size: 22px 22px;
   }
   .bg-grid {
     background-image:
-      linear-gradient(rgba(15,23,42,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(15,23,42,0.05) 1px, transparent 1px);
+      linear-gradient(rgba(16,47,33,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(16,47,33,0.05) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
-  /* Shimmer sweep overlay (put inside a relative, overflow-hidden element) */
   .shimmer::after {
     content: '';
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
     animation: shimmer 2.4s ease-in-out infinite;
   }
 
-  /* Scroll-reveal: initial state; .is-visible triggers the transition */
   .reveal {
     opacity: 0;
-    transform: translateY(22px);
+    transform: translateY(20px);
     transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
     will-change: opacity, transform;
   }
@@ -289,18 +300,16 @@
     transform: none;
   }
 
-  /* Marquee track (duplicate children so -50% loops seamlessly) */
   .marquee-track {
     display: flex;
     width: max-content;
-    animation: marquee 28s linear infinite;
+    animation: marquee 30s linear infinite;
   }
   .marquee-mask {
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
   }
 
-  /* Truncate with tooltip hint */
   .text-truncate {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -308,7 +317,6 @@
     min-width: 0;
   }
 
-  /* Safe area padding helpers */
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
   }
@@ -316,17 +324,16 @@
     padding-top: env(safe-area-inset-top);
   }
 
-  /* Scrollable table wrapper for mobile */
   .table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* ── Auth page decorative scene ───── */
+  /* ── Auth page decorative scene (recoloured to forest / lime) ───── */
   .auth-grid {
     background-image:
-      linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+      linear-gradient(rgba(212,237,138,0.14) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,237,138,0.14) 1px, transparent 1px);
     background-size: 34px 34px;
     transform: perspective(900px) rotateX(58deg) translateY(60px);
     transform-origin: center bottom;
@@ -346,47 +353,35 @@
     display: grid;
     place-items: center;
     background:
-      radial-gradient(circle at 32% 28%, rgba(255,255,255,0.95), rgba(56,189,248,0.92) 22%, rgba(37,99,235,0.96) 54%, rgba(7,26,51,1) 100%);
+      radial-gradient(circle at 32% 28%, rgba(246,251,232,0.96), rgba(212,237,138,0.92) 26%, rgba(37,91,64,0.96) 60%, rgba(6,16,9,1) 100%);
     box-shadow:
-      0 28px 70px rgba(37,99,235,0.45),
-      inset -16px -18px 38px rgba(7,26,51,0.42),
-      inset 12px 12px 22px rgba(255,255,255,0.2);
+      0 28px 70px rgba(16,47,33,0.45),
+      inset -16px -18px 38px rgba(6,16,9,0.42),
+      inset 12px 12px 22px rgba(255,255,255,0.18);
     animation: authFloat 5s ease-in-out infinite;
     z-index: 5;
   }
   .auth-orb span {
     font-weight: 900;
     letter-spacing: 0.04em;
-    color: white;
-    text-shadow: 0 2px 10px rgba(7,26,51,0.5);
+    color: #F6FBE8;
+    text-shadow: 0 2px 10px rgba(6,16,9,0.5);
   }
   .auth-card {
     position: absolute;
     width: 250px;
     min-height: 132px;
-    border: 1px solid rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.16);
     border-radius: 14px;
     padding: 18px;
-    background: linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
-    box-shadow: 0 28px 80px rgba(0,0,0,0.22);
-    backdrop-filter: blur(18px);
+    background: linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05));
+    box-shadow: 0 28px 80px rgba(6,16,9,0.28);
+    backdrop-filter: blur(16px);
     transform-style: preserve-3d;
   }
-  .auth-card-one {
-    left: 0;
-    top: 26px;
-    transform: rotateY(-16deg) rotateX(8deg);
-  }
-  .auth-card-two {
-    right: 12px;
-    top: 64px;
-    transform: rotateY(18deg) rotateX(7deg);
-  }
-  .auth-card-three {
-    left: 92px;
-    bottom: 16px;
-    transform: rotateY(-10deg) rotateX(10deg);
-  }
+  .auth-card-one { left: 0; top: 26px; transform: rotateY(-16deg) rotateX(8deg); }
+  .auth-card-two { right: 12px; top: 64px; transform: rotateY(18deg) rotateX(7deg); }
+  .auth-card-three { left: 92px; bottom: 16px; transform: rotateY(-10deg) rotateX(10deg); }
   .auth-wave {
     display: flex;
     align-items: end;
@@ -397,8 +392,8 @@
   .auth-card-three i {
     display: block;
     border-radius: 999px;
-    background: #38BDF8;
-    box-shadow: 0 0 18px rgba(56,189,248,0.55);
+    background: #D4ED8A;
+    box-shadow: 0 0 16px rgba(212,237,138,0.55);
   }
   .auth-wave span {
     width: 8px;
@@ -408,10 +403,7 @@
   .auth-wave span:nth-child(2) { height: 28px; animation-delay: 0.15s; }
   .auth-wave span:nth-child(3) { height: 22px; animation-delay: 0.3s; }
   .auth-wave span:nth-child(4) { height: 32px; animation-delay: 0.45s; }
-  .auth-card-three i {
-    height: 8px;
-    opacity: 0.85;
-  }
+  .auth-card-three i { height: 8px; opacity: 0.85; }
 }
 
 /* ── Respect reduced motion ─────────────────────────────── */
@@ -421,19 +413,18 @@
   .marquee-track,
   .animate-floaty,
   .animate-aurora-shift,
-  .shimmer::after {
+  .animate-pop-in,
+  .shimmer::after,
+  .auth-orb,
+  .auth-wave span {
     animation: none !important;
   }
 }
 
 /* ── Print styles ────────────────────────────────────────── */
 @media print {
-  body {
-    background: white !important;
-  }
-  .print\\:hidden {
-    display: none !important;
-  }
+  body { background: white !important; }
+  .print\:hidden { display: none !important; }
 }
 
 /* ── Keyframes ───────────────────────────────────────────── */
