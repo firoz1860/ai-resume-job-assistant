@@ -138,13 +138,28 @@ function Emblem({ className = '' }) {
 export default function HeroComposition() {
   const sceneRef = useRef(null);
   const tiltRef = useRef(null);
-  const parallaxRef = useRef(null);
+  // One parallax wrapper per depth layer (slowest background → fastest accent).
+  const bgRef = useRef(null);
+  const emblemRef = useRef(null);
+  const resumeRef = useRef(null);
+  const appRef = useRef(null);
+  const interviewRef = useRef(null);
 
   useEffect(() => {
     const scene = sceneRef.current;
     const tilt = tiltRef.current;
-    const parallax = parallaxRef.current;
-    if (!scene || !tilt || !parallax) return undefined;
+    if (!scene || !tilt) return undefined;
+
+    // Depth layers, slowest → fastest. The differing travel (px) is what reads
+    // as depth. All driven by ONE scheduler; each on its own wrapper so scroll
+    // parallax never overwrites pointer tilt / entrance / float.
+    const layers = [
+      [bgRef, 8],
+      [emblemRef, 15],
+      [resumeRef, 19],
+      [appRef, 25],
+      [interviewRef, 30],
+    ];
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     const finePointer = window.matchMedia('(pointer: fine)');
@@ -158,7 +173,9 @@ export default function HeroComposition() {
 
     const resetTransforms = () => {
       tilt.style.transform = 'rotateX(0deg) rotateY(0deg)';
-      parallax.style.transform = 'translateY(0px)';
+      for (const [ref] of layers) {
+        if (ref.current) ref.current.style.transform = 'translateY(0px)';
+      }
     };
 
     const onPointerMove = (e) => {
@@ -182,9 +199,17 @@ export default function HeroComposition() {
       if (rafScroll) return;
       rafScroll = requestAnimationFrame(() => {
         rafScroll = 0;
+        // Measure the UNtransformed scene (never the moving layers) to avoid
+        // feedback/jitter. Section-relative progress in [-1, 1]: 0 when the
+        // scene is centred, so movement is bounded and reverses naturally.
         const r = scene.getBoundingClientRect();
-        const progress = r.top / window.innerHeight;
-        parallax.style.transform = `translateY(${Math.max(-10, Math.min(10, progress * 14))}px)`;
+        const vh = window.innerHeight || 1;
+        const center = r.top + r.height / 2;
+        const p = Math.max(-1, Math.min(1, (center - vh / 2) / (vh / 2 + r.height / 2)));
+        for (const [ref, amt] of layers) {
+          const el = ref.current;
+          if (el) el.style.transform = `translateY(${(p * amt).toFixed(1)}px)`;
+        }
       });
     };
 
@@ -266,46 +291,56 @@ export default function HeroComposition() {
       className="relative mx-auto w-full max-w-lg"
       style={{ perspective: '1200px' }}
     >
-      {/* faint grid texture, matched to the ivory page */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-grid opacity-[0.35]" aria-hidden="true" />
+      {/* faint grid texture (slowest parallax layer) — enlarged so its ≤8px
+          travel never exposes an edge. */}
+      <div ref={bgRef} data-parallax="bg" className="pointer-events-none absolute -inset-5 -z-10 bg-grid opacity-[0.35] will-change-transform" aria-hidden="true" />
       <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2.5rem] bg-lime/25 blur-3xl" aria-hidden="true" />
 
-      <div ref={parallaxRef} className="will-change-transform">
-        <div ref={tiltRef} className="hero-tilt will-change-transform" style={{ transformStyle: 'preserve-3d' }}>
+      {/* tilt wraps the whole illustration (pointer rotate); parallax lives on
+          the individual depth layers inside it. */}
+      <div ref={tiltRef} className="hero-tilt will-change-transform" style={{ transformStyle: 'preserve-3d' }}>
 
-          {/* ── Desktop / tablet: layered composition ── */}
-          <div className="relative hidden h-[30rem] md:block">
-            <Emblem className="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 opacity-90" />
+        {/* ── Desktop / tablet: layered composition ── */}
+        <div className="relative hidden h-[30rem] md:block">
+          {/* emblem — centred via wrapper, parallaxed on the inner element */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div ref={emblemRef} data-parallax="emblem" className="will-change-transform"><Emblem className="h-40 w-40 opacity-90" /></div>
+          </div>
 
-            <div className="hero-rise absolute left-0 top-4 w-[62%]" style={{ '--rise-delay': '60ms' }}>
+          <div ref={resumeRef} data-parallax="resume" className="absolute left-0 top-4 w-[62%] will-change-transform">
+            <div className="hero-rise" style={{ '--rise-delay': '60ms' }}>
               <div className="hero-float" style={{ '--float-dur': '7.5s' }}>
                 <div style={{ transform: 'rotate(-4deg)' }}><ResumePanel /></div>
               </div>
             </div>
+          </div>
 
-            <div className="hero-rise absolute right-0 top-24 w-[52%]" style={{ '--rise-delay': '200ms' }}>
+          <div ref={appRef} data-parallax="app" className="absolute right-0 top-24 w-[52%] will-change-transform">
+            <div className="hero-rise" style={{ '--rise-delay': '200ms' }}>
               <div className="hero-float" style={{ '--float-dur': '6.5s', '--float-delay': '400ms' }}>
                 <div style={{ transform: 'rotate(3deg)' }}><ApplicationPanel /></div>
               </div>
             </div>
+          </div>
 
-            <div className="hero-rise absolute bottom-0 left-[16%] w-[52%]" style={{ '--rise-delay': '340ms' }}>
+          <div ref={interviewRef} data-parallax="interview" className="absolute bottom-0 left-[16%] w-[52%] will-change-transform">
+            <div className="hero-rise" style={{ '--rise-delay': '340ms' }}>
               <div className="hero-float" style={{ '--float-dur': '8s', '--float-delay': '800ms' }}>
                 <div style={{ transform: 'rotate(-2deg)' }}><InterviewPanel /></div>
               </div>
             </div>
           </div>
-
-          {/* ── Mobile: compact stacked composition ── */}
-          <div className="space-y-3 md:hidden">
-            <div className="hero-rise" style={{ '--rise-delay': '40ms' }}><ResumePanel /></div>
-            <div className="grid grid-cols-1 gap-3 xs:grid-cols-2">
-              <div className="hero-rise" style={{ '--rise-delay': '160ms' }}><ApplicationPanel /></div>
-              <div className="hero-rise" style={{ '--rise-delay': '260ms' }}><InterviewPanel /></div>
-            </div>
-          </div>
-
         </div>
+
+        {/* ── Mobile: compact stacked composition (no parallax) ── */}
+        <div className="space-y-3 md:hidden">
+          <div className="hero-rise" style={{ '--rise-delay': '40ms' }}><ResumePanel /></div>
+          <div className="grid grid-cols-1 gap-3 xs:grid-cols-2">
+            <div className="hero-rise" style={{ '--rise-delay': '160ms' }}><ApplicationPanel /></div>
+            <div className="hero-rise" style={{ '--rise-delay': '260ms' }}><InterviewPanel /></div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
