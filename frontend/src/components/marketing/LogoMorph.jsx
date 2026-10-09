@@ -31,6 +31,17 @@ export default function LogoMorph() {
     let raf = 0;
     let measured = null; // { source, dest, distance, scaleStart }
     let active = false;
+    let disposed = false;
+
+    // Track every scheduled frame so delayed callbacks can't run after unmount.
+    const pending = new Set();
+    const schedule = (fn) => {
+      const id = requestAnimationFrame(() => {
+        pending.delete(id);
+        if (!disposed) fn();
+      });
+      pending.add(id);
+    };
 
     const heroEl = () => document.querySelector('[data-brand-anchor="hero"]');
     const navEl = () => document.querySelector('[data-brand-anchor="nav"]');
@@ -69,6 +80,7 @@ export default function LogoMorph() {
 
     const render = () => {
       raf = 0;
+      if (disposed) return;
       const clone = cloneRef.current;
       if (!clone || !measured) return;
       const { source, dest, distance, scaleStart } = measured;
@@ -91,14 +103,14 @@ export default function LogoMorph() {
     };
 
     const start = () => {
-      if (active) return;
+      if (disposed || active) return;
       if (!mqDesktop.matches || mqReduce.matches) return;
       if (!measure()) return;
       active = true;
       setEnabled(true);
       const h = heroEl();
       if (h) h.style.visibility = 'hidden'; // clone is the visible brand now
-      requestAnimationFrame(render);
+      schedule(render);
       window.addEventListener('scroll', onScroll, { passive: true });
     };
 
@@ -112,6 +124,7 @@ export default function LogoMorph() {
     };
 
     const refresh = () => {
+      if (disposed) return;
       if (!mqDesktop.matches || mqReduce.matches) {
         stop();
         return;
@@ -123,17 +136,23 @@ export default function LogoMorph() {
       }
     };
 
-    const kick = () => start();
+    schedule(start);
+    // When fonts finish, widths shift — remeasure and re-render even if the
+    // morph is already active (start() alone would early-exit).
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => requestAnimationFrame(kick));
+      document.fonts.ready.then(() => {
+        if (!disposed) schedule(refresh);
+      });
     }
-    requestAnimationFrame(kick);
     window.addEventListener('load', refresh);
     window.addEventListener('resize', refresh);
     mqDesktop.addEventListener('change', refresh);
     mqReduce.addEventListener('change', refresh);
 
     return () => {
+      disposed = true;
+      pending.forEach((id) => cancelAnimationFrame(id));
+      pending.clear();
       window.removeEventListener('load', refresh);
       window.removeEventListener('resize', refresh);
       mqDesktop.removeEventListener('change', refresh);

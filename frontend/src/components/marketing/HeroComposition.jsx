@@ -153,6 +153,13 @@ export default function HeroComposition() {
     let rafTilt = 0;
     let rafScroll = 0;
     let listening = false;
+    let pointerBound = false;
+    let visible = false; // tracked from the IntersectionObserver
+
+    const resetTransforms = () => {
+      tilt.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      parallax.style.transform = 'translateY(0px)';
+    };
 
     const onPointerMove = (e) => {
       if (rafTilt) return;
@@ -181,56 +188,73 @@ export default function HeroComposition() {
       });
     };
 
-    const canMove = () => !reduce.matches && desktop.matches && !document.hidden;
+    // Motion runs only when EVERY condition holds.
+    const canMove = () =>
+      visible && !reduce.matches && desktop.matches && !document.hidden;
+
+    const bindPointer = () => {
+      if (pointerBound || !finePointer.matches) return;
+      scene.addEventListener('pointermove', onPointerMove);
+      scene.addEventListener('pointerleave', onPointerLeave);
+      pointerBound = true;
+    };
+    const unbindPointer = () => {
+      if (!pointerBound) return;
+      scene.removeEventListener('pointermove', onPointerMove);
+      scene.removeEventListener('pointerleave', onPointerLeave);
+      pointerBound = false;
+    };
 
     const addMotion = () => {
-      if (listening || !canMove()) return;
+      if (listening) return;
       listening = true;
       scene.classList.remove('hero-paused');
-      if (finePointer.matches) {
-        scene.addEventListener('pointermove', onPointerMove);
-        scene.addEventListener('pointerleave', onPointerLeave);
-      }
+      bindPointer();
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
     };
     const removeMotion = (pause) => {
       listening = false;
-      scene.removeEventListener('pointermove', onPointerMove);
-      scene.removeEventListener('pointerleave', onPointerLeave);
+      unbindPointer();
       window.removeEventListener('scroll', onScroll);
       if (rafTilt) cancelAnimationFrame(rafTilt);
       if (rafScroll) cancelAnimationFrame(rafScroll);
       rafTilt = rafScroll = 0;
-      tilt.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      resetTransforms(); // reset BOTH tilt and parallax
       if (pause) scene.classList.add('hero-paused');
     };
 
-    // Only run while the hero is actually on screen.
-    const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && canMove()) addMotion();
-      else removeMotion(true);
-    });
-    io.observe(scene);
-
-    const onVisibility = () => {
-      if (document.hidden) removeMotion(true);
-      else if (canMove()) addMotion();
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-
-    const onPrefChange = () => {
+    const sync = () => {
       if (canMove()) addMotion();
       else removeMotion(true);
     };
-    reduce.addEventListener('change', onPrefChange);
-    desktop.addEventListener('change', onPrefChange);
+
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      sync();
+    });
+    io.observe(scene);
+
+    const onVisibility = () => sync();
+    document.addEventListener('visibilitychange', onVisibility);
+
+    // Pointer capability can change (e.g. a tablet docking a mouse): rebind.
+    const onPointerPref = () => {
+      if (!listening) return;
+      unbindPointer();
+      bindPointer();
+    };
+
+    reduce.addEventListener('change', sync);
+    desktop.addEventListener('change', sync);
+    finePointer.addEventListener('change', onPointerPref);
 
     return () => {
       io.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
-      reduce.removeEventListener('change', onPrefChange);
-      desktop.removeEventListener('change', onPrefChange);
+      reduce.removeEventListener('change', sync);
+      desktop.removeEventListener('change', sync);
+      finePointer.removeEventListener('change', onPointerPref);
       removeMotion(false);
     };
   }, []);
@@ -238,6 +262,7 @@ export default function HeroComposition() {
   return (
     <div
       ref={sceneRef}
+      data-hero-scene=""
       className="relative mx-auto w-full max-w-lg"
       style={{ perspective: '1200px' }}
     >

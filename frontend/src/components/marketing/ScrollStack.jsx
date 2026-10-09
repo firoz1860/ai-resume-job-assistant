@@ -20,6 +20,11 @@ import { Link } from 'react-router-dom';
 export default function ScrollStack({ items, topOffset = 96 }) {
   const cardRefs = useRef([]);
   const [stacking, setStacking] = useState(false);
+  // When a control inside a covered card gets keyboard focus we bring that card
+  // forward so the focused control is never hidden behind a later card.
+  const [focusIdx, setFocusIdx] = useState(null);
+  const focusedRef = useRef(null);
+  const renderRef = useRef(() => {});
 
   useEffect(() => {
     const mqDesktop = window.matchMedia('(min-width: 1024px)');
@@ -31,11 +36,13 @@ export default function ScrollStack({ items, topOffset = 96 }) {
 
     const render = () => {
       raf = 0;
+      if (!on) return;
       const cards = cardRefs.current.filter(Boolean);
       cards.forEach((card, i) => {
         const inner = card.firstElementChild;
         if (!inner) return;
-        if (i === cards.length - 1) {
+        // A focused card is shown in full (no recede) and raised in the JSX.
+        if (i === focusedRef.current || i === cards.length - 1) {
           inner.style.transform = '';
           inner.style.opacity = '';
           return;
@@ -53,6 +60,7 @@ export default function ScrollStack({ items, topOffset = 96 }) {
         inner.style.opacity = String(1 - 0.28 * coverage);
       });
     };
+    renderRef.current = render;
 
     const onScroll = () => {
       if (on && !raf) raf = requestAnimationFrame(render);
@@ -114,7 +122,20 @@ export default function ScrollStack({ items, topOffset = 96 }) {
             cardRefs.current[i] = el;
           }}
           className={stacking ? 'sticky pb-6' : 'mb-6 last:mb-0'}
-          style={stacking ? { top: `${topOffset + i * 14}px`, zIndex: i + 1 } : undefined}
+          style={stacking ? { top: `${topOffset + i * 14}px`, zIndex: focusIdx === i ? 50 : i + 1 } : undefined}
+          onFocus={() => {
+            if (!stacking) return;
+            focusedRef.current = i;
+            setFocusIdx(i);
+            renderRef.current();
+          }}
+          onBlur={(e) => {
+            if (!stacking) return;
+            if (e.currentTarget.contains(e.relatedTarget)) return;
+            focusedRef.current = null;
+            setFocusIdx(null);
+            renderRef.current();
+          }}
         >
           {/* inner wrapper carries the recede transform so sticky `top` is untouched */}
           <article className="panel overflow-hidden will-change-transform">
